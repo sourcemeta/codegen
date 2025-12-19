@@ -10,7 +10,7 @@
     const sourcemeta::core::PointerTemplate key{                               \
         sourcemeta::core::to_pointer((instance_location))};                    \
     EXPECT_TRUE(result.contains(key));                                         \
-    EXPECT_EQ(result.at(key).size(), (expected_size));                         \
+    EXPECT_EQ(result.at(key).locations.size(), (expected_size));               \
   }
 
 #define EXPECT_GROUP_ENTRY(instance_location, index, schema_location)          \
@@ -19,7 +19,7 @@
         sourcemeta::core::to_pointer((instance_location))};                    \
     const auto expected_pointer{                                               \
         sourcemeta::core::to_pointer((schema_location))};                      \
-    EXPECT_EQ(result.at(key).at((index)).location.get().pointer,               \
+    EXPECT_EQ(result.at(key).locations.at((index)).location.get().pointer,     \
               expected_pointer);                                               \
   }
 

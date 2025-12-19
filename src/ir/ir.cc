@@ -51,16 +51,16 @@ auto compile(
   IRResult result;
 
   // Process each instance location group
-  for (const auto &[instance_location, entries] : instance_to_locations) {
-    for (const auto &entry : entries) {
+  for (const auto &[instance_location, entry] : instance_to_locations) {
+    for (const auto &group_location : entry.locations) {
       const auto &subschema{
-          sourcemeta::core::get(schema, entry.location.get().pointer)};
+          sourcemeta::core::get(schema, group_location.location.get().pointer)};
       if (!subschema.is_object()) {
         continue;
       }
 
       const auto vocabularies{
-          frame.vocabularies(entry.location.get(), resolver)};
+          frame.vocabularies(group_location.location.get(), resolver)};
 
       if (subschema.defines("type")) {
         const auto &type_result{walker("type", vocabularies)};
@@ -84,7 +84,7 @@ auto compile(
           object.pointer = instance_location;
 
           // Find child instance locations (one property token deeper)
-          for (const auto &[child_instance, child_locations] :
+          for (const auto &[child_instance, child_entry] :
                instance_to_locations) {
             if (!child_instance.trivial() || child_instance.empty()) {
               continue;

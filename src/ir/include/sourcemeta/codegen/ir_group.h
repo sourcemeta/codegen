@@ -15,7 +15,7 @@
 namespace sourcemeta::codegen {
 
 /// @ingroup ir
-struct IRGroupEntry {
+struct IRGroupLocation {
   std::reference_wrapper<const sourcemeta::core::PointerTemplate>
       instance_location;
   std::reference_wrapper<const sourcemeta::core::SchemaFrame::Location>
@@ -23,8 +23,12 @@ struct IRGroupEntry {
 };
 
 /// @ingroup ir
-using IRGroup =
-    std::map<sourcemeta::core::PointerTemplate, std::vector<IRGroupEntry>>;
+struct IRGroupEntry {
+  std::vector<IRGroupLocation> locations;
+};
+
+/// @ingroup ir
+using IRGroup = std::map<sourcemeta::core::PointerTemplate, IRGroupEntry>;
 
 /// @ingroup ir
 SOURCEMETA_CODEGEN_IR_EXPORT
