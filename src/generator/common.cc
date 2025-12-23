@@ -1,19 +1,12 @@
 #include <sourcemeta/codegen/generator.h>
 
-#include <stdexcept> // std::runtime_error
-
 namespace sourcemeta::codegen {
 
 auto to_pascal_case(const sourcemeta::core::Pointer &,
                     const sourcemeta::core::PointerTemplate &instance_location,
-                    const std::optional<std::string> &default_namespace)
-    -> std::string {
+                    const std::string &default_namespace) -> std::string {
   if (instance_location.empty()) {
-    if (!default_namespace.has_value()) {
-      throw std::runtime_error(
-          "Empty pointer without default namespace provided");
-    }
-    return default_namespace.value();
+    return default_namespace;
   }
 
   std::string result;

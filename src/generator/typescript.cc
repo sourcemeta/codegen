@@ -13,9 +13,8 @@ static auto scalar_type_to_typescript(IRScalarType type) -> std::string {
   }
 }
 
-static auto
-handle_ir_scalar(std::ostream &output, const IRScalar &entry,
-                 const std::optional<std::string> &default_namespace) -> void {
+static auto handle_ir_scalar(std::ostream &output, const IRScalar &entry,
+                             const std::string &default_namespace) -> void {
   const auto name{to_pascal_case(entry.pointer, entry.instance_location,
                                  default_namespace)};
   output << "export type " << name << " = "
@@ -23,13 +22,12 @@ handle_ir_scalar(std::ostream &output, const IRScalar &entry,
 }
 
 static auto handle_ir_union(std::ostream &, const IRUnion &,
-                            const std::optional<std::string> &) -> void {
+                            const std::string &) -> void {
   throw std::runtime_error("IRUnion is not supported yet");
 }
 
-static auto
-handle_ir_object(std::ostream &output, const IRObject &entry,
-                 const std::optional<std::string> &default_namespace) -> void {
+static auto handle_ir_object(std::ostream &output, const IRObject &entry,
+                             const std::string &default_namespace) -> void {
   const auto name{to_pascal_case(entry.pointer, entry.instance_location,
                                  default_namespace)};
   output << "export interface " << name << " {\n";
@@ -46,24 +44,25 @@ handle_ir_object(std::ostream &output, const IRObject &entry,
 }
 
 static auto handle_ir_impossible(std::ostream &, const IRImpossible &,
-                                 const std::optional<std::string> &) -> void {
+                                 const std::string &) -> void {
   throw std::runtime_error("IRImpossible is not supported yet");
 }
 
 auto typescript(std::ostream &output, const IRResult &result,
                 const std::optional<std::string> &default_namespace) -> void {
+  const std::string ns{default_namespace.value_or("Schema")};
   const char *separator{""};
   for (const auto &entity : result) {
     output << separator;
     separator = "\n";
     if (const auto *scalar = std::get_if<IRScalar>(&entity)) {
-      handle_ir_scalar(output, *scalar, default_namespace);
+      handle_ir_scalar(output, *scalar, ns);
     } else if (const auto *union_entry = std::get_if<IRUnion>(&entity)) {
-      handle_ir_union(output, *union_entry, default_namespace);
+      handle_ir_union(output, *union_entry, ns);
     } else if (const auto *object = std::get_if<IRObject>(&entity)) {
-      handle_ir_object(output, *object, default_namespace);
+      handle_ir_object(output, *object, ns);
     } else if (const auto *impossible = std::get_if<IRImpossible>(&entity)) {
-      handle_ir_impossible(output, *impossible, default_namespace);
+      handle_ir_impossible(output, *impossible, ns);
     }
   }
 }
