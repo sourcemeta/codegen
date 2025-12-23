@@ -15,15 +15,17 @@ static auto hex_escape(std::ostringstream &output, char character) -> void {
 
 // Encode a string to a collision-free PascalCase identifier
 // Rules:
-// - Lowercase at segment start: capitalize (no marker) - common case
-// - Uppercase at segment start (except X, U): U + letter
-// - Uppercase X at segment start: X58 (hex escape)
-// - Uppercase U at segment start: X55 (hex escape)
+// - Lowercase at segment start (except x, u, z): capitalize (no marker)
+// - Lowercase x, u, z at segment start: hex escape (reserved characters)
+// - Uppercase at segment start (except X, U, Z): U + letter
+// - Uppercase X, U, Z at segment start: hex escape (reserved characters)
 // - Non-segment-start lowercase: as-is
 // - Non-segment-start uppercase (except X, U): as-is
 // - Non-segment-start X: X58, Non-segment-start U: X55
 // - Digits: as-is
 // - Non-alphanumeric: hex escape, starts new segment
+// Note: Z/z reserved for special token prefixes (ZNot, ZMaybe, ZAnyProperty,
+// etc.)
 static auto encode_string(const std::string &input) -> std::string {
   std::ostringstream result;
   bool segment_start{true};
@@ -34,7 +36,7 @@ static auto encode_string(const std::string &input) -> std::string {
     if (std::isalpha(unsigned_char) != 0) {
       if (segment_start) {
         if (character == 'X' || character == 'U' || character == 'x' ||
-            character == 'u') {
+            character == 'u' || character == 'Z' || character == 'z') {
           hex_escape(result, character);
         } else if (std::islower(unsigned_char) != 0) {
           result << static_cast<char>(std::toupper(unsigned_char));
@@ -54,7 +56,9 @@ static auto encode_string(const std::string &input) -> std::string {
       segment_start = false;
     } else {
       hex_escape(result, character);
-      segment_start = true;
+      // Non-ASCII bytes (>= 0x80) don't start new segments (UTF-8 continuation)
+      // ASCII special characters (< 0x80) do start new segments
+      segment_start = (unsigned_char < 0x80);
     }
   }
 
@@ -89,29 +93,29 @@ auto to_pascal_case(const sourcemeta::core::PointerTemplate &instance_location,
       result += '_';
       switch (*wildcard) {
         case sourcemeta::core::PointerTemplate::Wildcard::Property:
-          result += "AnyProperty";
+          result += "ZAnyProperty";
           break;
         case sourcemeta::core::PointerTemplate::Wildcard::Item:
-          result += "AnyItem";
+          result += "ZAnyItem";
           break;
         case sourcemeta::core::PointerTemplate::Wildcard::Key:
-          result += "AnyKey";
+          result += "ZAnyKey";
           break;
       }
     } else if (const auto *condition =
                    std::get_if<sourcemeta::core::PointerTemplate::Condition>(
                        &token)) {
-      result += "_Maybe";
+      result += "_ZMaybe";
       if (condition->suffix.has_value()) {
         result += encode_string(condition->suffix.value());
       }
     } else if (std::holds_alternative<
                    sourcemeta::core::PointerTemplate::Negation>(token)) {
-      result += "_Not";
+      result += "_ZNot";
     } else if (const auto *regex =
                    std::get_if<sourcemeta::core::PointerTemplate::Regex>(
                        &token)) {
-      result += "_Regex";
+      result += "_ZRegex";
       result += encode_string(*regex);
     }
   }
