@@ -4,6 +4,7 @@
 #include <sourcemeta/core/alterschema.h>
 
 #include <algorithm> // std::ranges::sort
+#include <cassert>   // assert
 
 namespace sourcemeta::codegen {
 
@@ -27,10 +28,11 @@ auto compile(
 
   sourcemeta::core::SchemaTransformer canonicalizer;
   sourcemeta::core::add(canonicalizer,
-                        sourcemeta::core::AlterSchemaMode::StaticAnalysis);
-  canonicalizer.apply(
+                        sourcemeta::core::AlterSchemaMode::Canonicalizer);
+  const auto canonicalized{canonicalizer.apply(
       schema, walker, resolver,
-      [](const auto &, const auto, const auto, const auto &) {});
+      [](const auto &, const auto, const auto, const auto &) {})};
+  assert(canonicalized.first);
 
   // --------------------------------------------------------------------------
   // (3) Frame the resulting schema with instance location information
