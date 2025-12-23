@@ -86,13 +86,32 @@ auto handle_array(const sourcemeta::core::JSON &schema,
                          "We do not support this type of subschema yet");
 }
 
-auto handle_enum(const sourcemeta::core::JSON &schema,
+auto handle_enum(const sourcemeta::core::JSON &,
                  const sourcemeta::core::Vocabularies &,
-                 const sourcemeta::core::JSON &,
-                 const sourcemeta::core::Pointer &pointer,
-                 const sourcemeta::core::PointerTemplate &) -> IREntity {
-  throw UnexpectedSchema(schema, pointer,
-                         "We do not support this type of subschema yet");
+                 const sourcemeta::core::JSON &subschema,
+                 const sourcemeta::core::Pointer &,
+                 const sourcemeta::core::PointerTemplate &instance_location)
+    -> IREntity {
+  const auto &enum_json{subschema.at("enum")};
+
+  // Boolean and null special cases
+  if (enum_json.size() == 1 && enum_json.at(0).is_null()) {
+    return IRScalar{.instance_location = instance_location,
+                    .value = IRScalarType::Null};
+  } else if (enum_json.size() == 2) {
+    const auto &first{enum_json.at(0)};
+    const auto &second{enum_json.at(1)};
+    if ((first.is_boolean() && second.is_boolean()) &&
+        (first.to_boolean() != second.to_boolean())) {
+      return IRScalar{.instance_location = instance_location,
+                      .value = IRScalarType::Boolean};
+    }
+  }
+
+  std::vector<sourcemeta::core::JSON> values{enum_json.as_array().cbegin(),
+                                             enum_json.as_array().cend()};
+  return IRUnion{.instance_location = instance_location,
+                 .values = std::move(values)};
 }
 
 auto handle_anyof(const sourcemeta::core::JSON &schema,

@@ -25,12 +25,24 @@
 namespace sourcemeta::codegen {
 
 /// @ingroup ir
-enum class IRScalarType : std::uint8_t { String, Number, Integer };
+enum class IRScalarType : std::uint8_t {
+  String,
+  Number,
+  Integer,
+  Boolean,
+  Null
+};
 
 /// @ingroup ir
 struct IRScalar {
   sourcemeta::core::PointerTemplate instance_location;
   IRScalarType value;
+};
+
+/// @ingroup ir
+struct IRUnion {
+  sourcemeta::core::PointerTemplate instance_location;
+  std::vector<sourcemeta::core::JSON> values;
 };
 
 /// @ingroup ir
@@ -47,7 +59,7 @@ struct IRObject {
 };
 
 /// @ingroup ir
-using IREntity = std::variant<IRObject, IRScalar>;
+using IREntity = std::variant<IRObject, IRScalar, IRUnion>;
 
 /// @ingroup ir
 using IRResult = std::vector<IREntity>;
