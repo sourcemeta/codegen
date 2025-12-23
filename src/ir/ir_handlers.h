@@ -153,7 +153,7 @@ auto handle_schema(const sourcemeta::core::JSON &schema,
     return handle_ref(schema, vocabularies, subschema, pointer,
                       instance_location);
   } else {
-    throw std::runtime_error("TODO: unknown subschema shape");
+    throw UnexpectedSchema(schema, pointer, "Unsupported subschema");
   }
 }
 

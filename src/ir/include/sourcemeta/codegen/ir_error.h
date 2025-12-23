@@ -67,6 +67,43 @@ private:
   const char *message_;
 };
 
+/// @ingroup ir
+/// An error that represents an unexpected schema during IR compilation
+class SOURCEMETA_CODEGEN_IR_EXPORT UnexpectedSchema : public std::exception {
+public:
+  UnexpectedSchema(sourcemeta::core::JSON json,
+                   sourcemeta::core::Pointer pointer, const char *message)
+      : json_{std::move(json)}, pointer_{std::move(pointer)},
+        message_{message} {}
+  UnexpectedSchema(sourcemeta::core::JSON json,
+                   sourcemeta::core::Pointer pointer,
+                   std::string message) = delete;
+  UnexpectedSchema(sourcemeta::core::JSON json,
+                   sourcemeta::core::Pointer pointer,
+                   std::string &&message) = delete;
+  UnexpectedSchema(sourcemeta::core::JSON json,
+                   sourcemeta::core::Pointer pointer,
+                   std::string_view message) = delete;
+
+  [[nodiscard]] auto what() const noexcept -> const char * override {
+    return this->message_;
+  }
+
+  [[nodiscard]] auto json() const noexcept -> const sourcemeta::core::JSON & {
+    return this->json_;
+  }
+
+  [[nodiscard]] auto pointer() const noexcept
+      -> const sourcemeta::core::Pointer & {
+    return this->pointer_;
+  }
+
+private:
+  sourcemeta::core::JSON json_;
+  sourcemeta::core::Pointer pointer_;
+  const char *message_;
+};
+
 #if defined(_MSC_VER)
 #pragma warning(default : 4251 4275)
 #endif
