@@ -52,8 +52,8 @@ auto handle_object(const sourcemeta::core::JSON &schema,
        // of additional properties, mainly if they differ from the types of the
        // other properties. Therefore, we whitelist this, but we consider it to
        // be the responsability of the validator
-       "patternProperties", "additionalProperties", "minProperties",
-       "maxProperties", "propertyNames"});
+       "additionalProperties", "minProperties", "maxProperties",
+       "propertyNames"});
 
   std::unordered_map<sourcemeta::core::JSON::String, IRObjectValue> members;
 
