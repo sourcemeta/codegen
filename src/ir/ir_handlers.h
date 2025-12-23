@@ -10,6 +10,13 @@
 
 namespace sourcemeta::codegen {
 
+inline auto ONLY_CONTINUE_IF(const bool condition, const char *message)
+    -> void {
+  if (!condition) {
+    throw std::runtime_error(message);
+  }
+}
+
 auto handle_string(const sourcemeta::core::Vocabularies &,
                    const sourcemeta::core::PointerTemplate &instance_location)
     -> IRScalar {
@@ -57,14 +64,11 @@ auto handle_schema(const sourcemeta::core::Vocabularies &vocabularies,
                    const sourcemeta::core::JSON &subschema,
                    const sourcemeta::core::PointerTemplate &instance_location)
     -> IREntity {
-  if (!subschema.is_object() || !subschema.defines("type")) {
-    throw std::runtime_error("Cannot handle subschema without type");
-  }
+  ONLY_CONTINUE_IF(subschema.is_object() && subschema.defines("type"),
+                   "Cannot handle subschema without type");
 
   const auto &type_value{subschema.at("type")};
-  if (!type_value.is_string()) {
-    throw std::runtime_error("Cannot handle non-string type");
-  }
+  ONLY_CONTINUE_IF(type_value.is_string(), "Cannot handle non-string type");
 
   const auto type_string{type_value.to_string()};
 
@@ -76,7 +80,8 @@ auto handle_schema(const sourcemeta::core::Vocabularies &vocabularies,
     return handle_object(vocabularies, subschema, instance_location);
   }
 
-  throw std::runtime_error("Unknown type: " + type_string);
+  ONLY_CONTINUE_IF(false, "Unknown type");
+  return handle_string(vocabularies, instance_location);
 }
 
 } // namespace sourcemeta::codegen
