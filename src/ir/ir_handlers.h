@@ -8,24 +8,46 @@
 #include <string_view>   // std::string_view
 #include <unordered_set> // std::unordered_set
 
+// We do not check vocabularies here because the canonicaliser ensures
+// we never get an official keyword when its vocabulary is not present
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+#define ONLY_WHITELIST_KEYWORDS(schema, subschema, pointer, ...)               \
+  {                                                                            \
+    static const std::unordered_set<std::string_view> allowed{__VA_ARGS__};    \
+    for (const auto &entry : (subschema).as_object()) {                        \
+      if (!allowed.contains(entry.first)) {                                    \
+        throw sourcemeta::codegen::UnsupportedKeyword(                         \
+            (schema), (pointer), entry.first,                                  \
+            "Unexpected keyword in subschema");                                \
+      }                                                                        \
+    }                                                                          \
+  }
+
 namespace sourcemeta::codegen {
 
-auto handle_string(const sourcemeta::core::JSON &,
+auto handle_string(const sourcemeta::core::JSON &schema,
                    const sourcemeta::core::Vocabularies &,
-                   const sourcemeta::core::JSON &,
-                   const sourcemeta::core::Pointer &,
+                   const sourcemeta::core::JSON &subschema,
+                   const sourcemeta::core::Pointer &pointer,
                    const sourcemeta::core::PointerTemplate &instance_location)
     -> IRScalar {
+  ONLY_WHITELIST_KEYWORDS(
+      schema, subschema, pointer,
+      {"$schema", "$id", "type", "minLength", "maxLength", "pattern"});
   return IRScalar{.instance_location = instance_location,
                   .value = IRScalarType::String};
 }
 
-auto handle_object(const sourcemeta::core::JSON &,
+auto handle_object(const sourcemeta::core::JSON &schema,
                    const sourcemeta::core::Vocabularies &,
                    const sourcemeta::core::JSON &subschema,
-                   const sourcemeta::core::Pointer &,
+                   const sourcemeta::core::Pointer &pointer,
                    const sourcemeta::core::PointerTemplate &instance_location)
     -> IRObject {
+  ONLY_WHITELIST_KEYWORDS(schema, subschema, pointer,
+                          {"$schema", "$id", "type", "properties", "required",
+                           "additionalProperties", "patternProperties",
+                           "minProperties", "maxProperties", "propertyNames"});
   std::unordered_map<sourcemeta::core::JSON::String, IRObjectValue> members;
 
   if (subschema.defines("properties")) {
@@ -58,22 +80,30 @@ auto handle_object(const sourcemeta::core::JSON &,
                   .members = std::move(members)};
 }
 
-auto handle_integer(const sourcemeta::core::JSON &,
+auto handle_integer(const sourcemeta::core::JSON &schema,
                     const sourcemeta::core::Vocabularies &,
-                    const sourcemeta::core::JSON &,
-                    const sourcemeta::core::Pointer &,
+                    const sourcemeta::core::JSON &subschema,
+                    const sourcemeta::core::Pointer &pointer,
                     const sourcemeta::core::PointerTemplate &instance_location)
     -> IRScalar {
+  ONLY_WHITELIST_KEYWORDS(schema, subschema, pointer,
+                          {"$schema", "$id", "type", "minimum", "maximum",
+                           "exclusiveMinimum", "exclusiveMaximum",
+                           "multipleOf"});
   return IRScalar{.instance_location = instance_location,
                   .value = IRScalarType::Integer};
 }
 
-auto handle_number(const sourcemeta::core::JSON &,
+auto handle_number(const sourcemeta::core::JSON &schema,
                    const sourcemeta::core::Vocabularies &,
-                   const sourcemeta::core::JSON &,
-                   const sourcemeta::core::Pointer &,
+                   const sourcemeta::core::JSON &subschema,
+                   const sourcemeta::core::Pointer &pointer,
                    const sourcemeta::core::PointerTemplate &instance_location)
     -> IRScalar {
+  ONLY_WHITELIST_KEYWORDS(schema, subschema, pointer,
+                          {"$schema", "$id", "type", "minimum", "maximum",
+                           "exclusiveMinimum", "exclusiveMaximum",
+                           "multipleOf"});
   return IRScalar{.instance_location = instance_location,
                   .value = IRScalarType::Number};
 }
@@ -87,12 +117,14 @@ auto handle_array(const sourcemeta::core::JSON &schema,
                          "We do not support this type of subschema yet");
 }
 
-auto handle_enum(const sourcemeta::core::JSON &,
+auto handle_enum(const sourcemeta::core::JSON &schema,
                  const sourcemeta::core::Vocabularies &,
                  const sourcemeta::core::JSON &subschema,
-                 const sourcemeta::core::Pointer &,
+                 const sourcemeta::core::Pointer &pointer,
                  const sourcemeta::core::PointerTemplate &instance_location)
     -> IREntity {
+  ONLY_WHITELIST_KEYWORDS(schema, subschema, pointer,
+                          {"$schema", "$id", "enum"});
   const auto &enum_json{subschema.at("enum")};
 
   // Boolean and null special cases

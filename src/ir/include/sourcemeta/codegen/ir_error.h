@@ -23,6 +23,49 @@ namespace sourcemeta::codegen {
 #endif
 
 /// @ingroup ir
+/// An error that represents an unsupported keyword during IR compilation
+class SOURCEMETA_CODEGEN_IR_EXPORT UnsupportedKeyword : public std::exception {
+public:
+  UnsupportedKeyword(sourcemeta::core::JSON json,
+                     sourcemeta::core::Pointer pointer, std::string keyword,
+                     const char *message)
+      : json_{std::move(json)}, pointer_{std::move(pointer)},
+        keyword_{std::move(keyword)}, message_{message} {}
+  UnsupportedKeyword(sourcemeta::core::JSON json,
+                     sourcemeta::core::Pointer pointer, std::string keyword,
+                     std::string message) = delete;
+  UnsupportedKeyword(sourcemeta::core::JSON json,
+                     sourcemeta::core::Pointer pointer, std::string keyword,
+                     std::string &&message) = delete;
+  UnsupportedKeyword(sourcemeta::core::JSON json,
+                     sourcemeta::core::Pointer pointer, std::string keyword,
+                     std::string_view message) = delete;
+
+  [[nodiscard]] auto what() const noexcept -> const char * override {
+    return this->message_;
+  }
+
+  [[nodiscard]] auto json() const noexcept -> const sourcemeta::core::JSON & {
+    return this->json_;
+  }
+
+  [[nodiscard]] auto pointer() const noexcept
+      -> const sourcemeta::core::Pointer & {
+    return this->pointer_;
+  }
+
+  [[nodiscard]] auto keyword() const noexcept -> std::string_view {
+    return this->keyword_;
+  }
+
+private:
+  sourcemeta::core::JSON json_;
+  sourcemeta::core::Pointer pointer_;
+  std::string keyword_;
+  const char *message_;
+};
+
+/// @ingroup ir
 /// An error that represents an unsupported keyword value during IR compilation
 class SOURCEMETA_CODEGEN_IR_EXPORT UnsupportedKeywordValue
     : public std::exception {
