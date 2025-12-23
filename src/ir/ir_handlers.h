@@ -64,7 +64,7 @@ auto handle_schema(const sourcemeta::core::Vocabularies &vocabularies,
                    const sourcemeta::core::JSON &subschema,
                    const sourcemeta::core::PointerTemplate &instance_location)
     -> IREntity {
-  ONLY_CONTINUE_IF(subschema.is_object() && subschema.defines("type"),
+  ONLY_CONTINUE_IF(subschema.defines("type"),
                    "Cannot handle subschema without type");
 
   const auto &type_value{subschema.at("type")};
