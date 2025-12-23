@@ -4,13 +4,14 @@
 #include <algorithm>     // std::ranges::sort
 #include <unordered_set> // std::unordered_set
 
+#include "ir_default_compiler.h"
+
 namespace sourcemeta::codegen {
 
 auto compile(
     const sourcemeta::core::JSON &input,
     const sourcemeta::core::SchemaWalker &walker,
-    const sourcemeta::core::SchemaResolver &resolver,
-    const Generator &generator,
+    const sourcemeta::core::SchemaResolver &resolver, const Compiler &compiler,
     const std::optional<sourcemeta::core::JSON::String> &default_dialect,
     const std::optional<sourcemeta::core::JSON::String> &default_id)
     -> IRResult {
@@ -92,8 +93,8 @@ auto compile(
     vocabularies.throw_if_any_unsupported(
         SUPPORTED_VOCABULARIES, "Cannot analyse unsupported vocabulary");
 
-    result.push_back(generator(schema, vocabularies, subschema,
-                               location.pointer, instance_locations.front()));
+    result.push_back(compiler(schema, vocabularies, subschema, location.pointer,
+                              instance_locations.front()));
   }
 
   // --------------------------------------------------------------------------

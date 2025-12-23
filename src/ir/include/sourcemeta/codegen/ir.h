@@ -77,14 +77,14 @@ using IREntity = std::variant<IRObject, IRScalar, IRUnion, IRImpossible>;
 using IRResult = std::vector<IREntity>;
 
 /// @ingroup ir
-using Generator = std::function<IREntity(
+using Compiler = std::function<IREntity(
     const sourcemeta::core::JSON &, const sourcemeta::core::Vocabularies &,
     const sourcemeta::core::JSON &, const sourcemeta::core::Pointer &,
     const sourcemeta::core::PointerTemplate &)>;
 
 /// @ingroup ir
 SOURCEMETA_CODEGEN_IR_EXPORT
-auto default_generator(
+auto default_compiler(
     const sourcemeta::core::JSON &schema,
     const sourcemeta::core::Vocabularies &vocabularies,
     const sourcemeta::core::JSON &subschema,
@@ -96,7 +96,7 @@ SOURCEMETA_CODEGEN_IR_EXPORT
 auto compile(const sourcemeta::core::JSON &schema,
              const sourcemeta::core::SchemaWalker &walker,
              const sourcemeta::core::SchemaResolver &resolver,
-             const Generator &generator = default_generator,
+             const Compiler &compiler,
              const std::optional<sourcemeta::core::JSON::String>
                  &default_dialect = std::nullopt,
              const std::optional<sourcemeta::core::JSON::String> &default_id =

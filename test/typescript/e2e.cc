@@ -42,7 +42,8 @@ public:
 
     const auto result{
         sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                     sourcemeta::core::schema_resolver)};
+                                     sourcemeta::core::schema_resolver,
+                                     sourcemeta::codegen::default_compiler)};
 
     std::ostringstream output;
     sourcemeta::codegen::typescript(output, result, default_namespace);

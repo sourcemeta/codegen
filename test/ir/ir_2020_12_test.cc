@@ -12,7 +12,8 @@ TEST(IR_2020_12, test_1) {
 
   const auto result{
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver)};
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
 
   using namespace sourcemeta::codegen;
 
@@ -37,7 +38,8 @@ TEST(IR_2020_12, test_2) {
 
   const auto result{
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver)};
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
 
   using namespace sourcemeta::codegen;
 
@@ -71,7 +73,8 @@ TEST(IR_2020_12, test_3) {
 
   const auto result{
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver)};
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
 
   using namespace sourcemeta::codegen;
 
@@ -91,7 +94,8 @@ TEST(IR_2020_12, test_4) {
 
   const auto result{
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver)};
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
 
   using namespace sourcemeta::codegen;
 
@@ -114,7 +118,8 @@ TEST(IR_2020_12, test_5) {
 
   const auto result{
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver)};
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
 
   using namespace sourcemeta::codegen;
 
@@ -137,7 +142,8 @@ TEST(IR_2020_12, test_6) {
 
   const auto result{
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver)};
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
 
   using namespace sourcemeta::codegen;
 
@@ -157,7 +163,8 @@ TEST(IR_2020_12, enum_null) {
 
   const auto result{
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver)};
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
 
   using namespace sourcemeta::codegen;
 
@@ -177,7 +184,8 @@ TEST(IR_2020_12, enum_boolean_true_false) {
 
   const auto result{
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver)};
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
 
   using namespace sourcemeta::codegen;
 
@@ -197,7 +205,8 @@ TEST(IR_2020_12, enum_boolean_false_true) {
 
   const auto result{
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver)};
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
 
   using namespace sourcemeta::codegen;
 
@@ -217,7 +226,8 @@ TEST(IR_2020_12, enum_string_values) {
 
   const auto result{
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver)};
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
 
   using namespace sourcemeta::codegen;
 
@@ -240,7 +250,8 @@ TEST(IR_2020_12, const_null) {
 
   const auto result{
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver)};
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
 
   using namespace sourcemeta::codegen;
 
@@ -260,7 +271,8 @@ TEST(IR_2020_12, const_string) {
 
   const auto result{
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver)};
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
 
   using namespace sourcemeta::codegen;
 
@@ -281,7 +293,8 @@ TEST(IR_2020_12, const_integer) {
 
   const auto result{
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver)};
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
 
   using namespace sourcemeta::codegen;
 
@@ -302,7 +315,8 @@ TEST(IR_2020_12, const_boolean_true) {
 
   const auto result{
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver)};
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
 
   using namespace sourcemeta::codegen;
 
@@ -323,7 +337,8 @@ TEST(IR_2020_12, object_type_only) {
 
   const auto result{
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver)};
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
 
   using namespace sourcemeta::codegen;
 
@@ -345,7 +360,8 @@ TEST(IR_2020_12, object_empty_properties) {
 
   const auto result{
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver)};
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
 
   using namespace sourcemeta::codegen;
 
@@ -370,7 +386,8 @@ TEST(IR_2020_12, object_with_additional_properties) {
 
   const auto result{
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver)};
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
 
   using namespace sourcemeta::codegen;
 
@@ -422,7 +439,8 @@ TEST(IR_2020_12, object_with_impossible_property) {
 
   const auto result{
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver)};
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
 
   using namespace sourcemeta::codegen;
 
@@ -461,7 +479,8 @@ TEST(IR_2020_12, object_with_impossible_additional_properties) {
 
   const auto result{
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver)};
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
 
   using namespace sourcemeta::codegen;
 

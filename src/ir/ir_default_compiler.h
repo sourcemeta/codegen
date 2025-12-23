@@ -1,5 +1,5 @@
-#ifndef SOURCEMETA_CODEGEN_IR_DEFAULT_GENERATOR_H_
-#define SOURCEMETA_CODEGEN_IR_DEFAULT_GENERATOR_H_
+#ifndef SOURCEMETA_CODEGEN_IR_DEFAULT_COMPILER_H_
+#define SOURCEMETA_CODEGEN_IR_DEFAULT_COMPILER_H_
 
 #include <sourcemeta/codegen/ir.h>
 
@@ -214,7 +214,7 @@ auto handle_ref(const sourcemeta::core::JSON &schema,
                          "We do not support this type of subschema yet");
 }
 
-auto default_generator(
+auto default_compiler(
     const sourcemeta::core::JSON &schema,
     const sourcemeta::core::Vocabularies &vocabularies,
     const sourcemeta::core::JSON &subschema,
