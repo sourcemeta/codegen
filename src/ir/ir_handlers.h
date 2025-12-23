@@ -72,10 +72,18 @@ auto handle_schema(const sourcemeta::core::Vocabularies &vocabularies,
     const auto &type_value{subschema.at("type")};
     ONLY_CONTINUE_IF(type_value.is_string(), "Cannot handle non-string type");
     const auto &type_string{type_value.to_string()};
+
+    // The canonicaliser transforms any other type
     if (type_string == "string") {
       return handle_string(vocabularies, instance_location);
     } else if (type_string == "object") {
       return handle_object(vocabularies, subschema, instance_location);
+    } else if (type_string == "integer") {
+      throw std::runtime_error("TODO");
+    } else if (type_string == "number") {
+      throw std::runtime_error("TODO");
+    } else if (type_string == "array") {
+      throw std::runtime_error("TODO");
     } else {
       throw std::runtime_error("TODO");
     }
