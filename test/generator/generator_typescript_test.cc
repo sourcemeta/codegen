@@ -40,10 +40,10 @@ TEST(Generator_typescript, test_2) {
   std::ostringstream output;
   typescript(output, result, "MyObject");
 
-  const auto expected{R"TS(export type MyObjectFoo = string;
+  const auto expected{R"TS(export type MyObject_Foo = string;
 
 export interface MyObject {
-  foo?: MyObjectFoo;
+  foo?: MyObject_Foo;
 }
 )TS"};
 
