@@ -1,69 +1,12 @@
 #include <sourcemeta/codegen/ir.h>
-
 #include <sourcemeta/core/alterschema.h>
 
 #include <algorithm> // std::ranges::sort
 #include <cassert>   // assert
-#include <set>       // std::set
-#include <stdexcept> // std::runtime_error
+
+#include "ir_handlers.h"
 
 namespace sourcemeta::codegen {
-
-static auto
-schema_to_ir(const sourcemeta::core::JSON &subschema,
-             const sourcemeta::core::PointerTemplate &instance_location)
-    -> IREntity {
-  if (!subschema.is_object() || !subschema.defines("type")) {
-    throw std::runtime_error("Cannot handle subschema without type");
-  }
-
-  const auto &type_value{subschema.at("type")};
-  if (!type_value.is_string()) {
-    throw std::runtime_error("Cannot handle non-string type");
-  }
-
-  const auto type_string{type_value.to_string()};
-
-  if (type_string == "string") {
-    return IRScalar{.instance_location = instance_location,
-                    .value = IRScalarType::String};
-  }
-
-  if (type_string == "object") {
-    std::unordered_map<sourcemeta::core::JSON::String, IRObjectValue> members;
-
-    if (subschema.defines("properties")) {
-      const auto &properties{subschema.at("properties")};
-
-      std::set<std::string> required_set;
-      if (subschema.defines("required")) {
-        for (const auto &item : subschema.at("required").as_array()) {
-          required_set.insert(item.to_string());
-        }
-      }
-
-      for (const auto &[property_name, property_schema, property_hash] :
-           properties.as_object()) {
-        static_cast<void>(property_hash);
-        auto property_instance_location{instance_location};
-        property_instance_location.emplace_back(
-            sourcemeta::core::Pointer::Token{property_name});
-
-        IRObjectValue member_value{
-            .required = required_set.contains(property_name),
-            .immutable = false,
-            .instance_location = property_instance_location};
-
-        members.emplace(property_name, std::move(member_value));
-      }
-    }
-
-    return IRObject{.instance_location = instance_location,
-                    .members = std::move(members)};
-  }
-
-  throw std::runtime_error("Unknown type: " + type_string);
-}
 
 auto compile(
     const sourcemeta::core::JSON &input,
@@ -89,6 +32,8 @@ auto compile(
   const auto canonicalized{canonicalizer.apply(
       schema, walker, resolver,
       [](const auto &, const auto, const auto, const auto &) {})};
+  // Canonicalization should only consists of transformable rules, so this would
+  // never be false and the callback would never be called
   assert(canonicalized.first);
 
   // --------------------------------------------------------------------------
@@ -114,8 +59,9 @@ auto compile(
 
     const auto &subschema{sourcemeta::core::get(schema, location.pointer)};
     const auto &instance_locations{frame.instance_locations(location)};
+    // Canonicalisation is expected to take care of this
     assert(!instance_locations.empty());
-    result.push_back(schema_to_ir(subschema, instance_locations.front()));
+    result.push_back(handle_schema(subschema, instance_locations.front()));
   }
 
   // --------------------------------------------------------------------------

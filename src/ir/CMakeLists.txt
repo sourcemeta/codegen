@@ -1,6 +1,6 @@
 sourcemeta_library(NAMESPACE sourcemeta PROJECT codegen NAME ir
   FOLDER "Codegen/IR"
-  SOURCES ir.cc)
+  SOURCES ir.cc ir_handlers.h)
 
 if(CODEGEN_INSTALL)
   sourcemeta_library_install(NAMESPACE sourcemeta PROJECT codegen NAME ir)
