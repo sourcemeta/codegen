@@ -1,10 +1,11 @@
-#ifndef SOURCEMETA_CODEGEN_IR_HANDLERS_H_
-#define SOURCEMETA_CODEGEN_IR_HANDLERS_H_
+#ifndef SOURCEMETA_CODEGEN_IR_DEFAULT_GENERATOR_H_
+#define SOURCEMETA_CODEGEN_IR_DEFAULT_GENERATOR_H_
 
 #include <sourcemeta/codegen/ir.h>
 
 #include <sourcemeta/core/jsonschema.h>
 
+#include <cassert>       // assert
 #include <string_view>   // std::string_view
 #include <unordered_set> // std::unordered_set
 
@@ -211,6 +212,63 @@ auto handle_ref(const sourcemeta::core::JSON &schema,
                 const sourcemeta::core::PointerTemplate &) -> IREntity {
   throw UnexpectedSchema(schema, pointer,
                          "We do not support this type of subschema yet");
+}
+
+auto default_generator(
+    const sourcemeta::core::JSON &schema,
+    const sourcemeta::core::Vocabularies &vocabularies,
+    const sourcemeta::core::JSON &subschema,
+    const sourcemeta::core::Pointer &pointer,
+    const sourcemeta::core::PointerTemplate &instance_location) -> IREntity {
+  // The canonicaliser ensures that every subschema schema is only in one of the
+  // following shapes
+
+  if (subschema.is_boolean()) {
+    assert(!subschema.to_boolean());
+    return handle_impossible(schema, vocabularies, subschema, pointer,
+                             instance_location);
+  } else if (subschema.defines("type")) {
+    const auto &type_value{subschema.at("type")};
+    if (!type_value.is_string()) {
+      throw UnsupportedKeywordValue(schema, pointer, "type",
+                                    "Expected a string value");
+    }
+
+    const auto &type_string{type_value.to_string()};
+
+    // The canonicaliser transforms any other type
+    if (type_string == "string") {
+      return handle_string(schema, vocabularies, subschema, pointer,
+                           instance_location);
+    } else if (type_string == "object") {
+      return handle_object(schema, vocabularies, subschema, pointer,
+                           instance_location);
+    } else if (type_string == "integer") {
+      return handle_integer(schema, vocabularies, subschema, pointer,
+                            instance_location);
+    } else if (type_string == "number") {
+      return handle_number(schema, vocabularies, subschema, pointer,
+                           instance_location);
+    } else if (type_string == "array") {
+      return handle_array(schema, vocabularies, subschema, pointer,
+                          instance_location);
+    } else {
+      throw UnsupportedKeywordValue(schema, pointer, "type",
+                                    "Unsupported type value");
+    }
+  } else if (subschema.defines("enum")) {
+    return handle_enum(schema, vocabularies, subschema, pointer,
+                       instance_location);
+  } else if (subschema.defines("anyOf")) {
+    return handle_anyof(schema, vocabularies, subschema, pointer,
+                        instance_location);
+    // Only the recursive case
+  } else if (subschema.defines("$ref")) {
+    return handle_ref(schema, vocabularies, subschema, pointer,
+                      instance_location);
+  } else {
+    throw UnexpectedSchema(schema, pointer, "Unsupported subschema");
+  }
 }
 
 } // namespace sourcemeta::codegen

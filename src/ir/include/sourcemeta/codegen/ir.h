@@ -14,6 +14,7 @@
 #include <sourcemeta/core/jsonschema.h>
 
 #include <cstdint>       // std::uint8_t
+#include <functional>    // std::function
 #include <optional>      // std::optional, std::nullopt
 #include <unordered_map> // std::unordered_map
 #include <variant>       // std::variant
@@ -76,13 +77,26 @@ using IREntity = std::variant<IRObject, IRScalar, IRUnion, IRImpossible>;
 using IRResult = std::vector<IREntity>;
 
 /// @ingroup ir
-// TODO: Provide the idea of a "generator" callback like Blaze does for
-// compilation, in case we ever need to extend. It would default to the
-// `handle_schema thing we have right now`
+using Generator = std::function<IREntity(
+    const sourcemeta::core::JSON &, const sourcemeta::core::Vocabularies &,
+    const sourcemeta::core::JSON &, const sourcemeta::core::Pointer &,
+    const sourcemeta::core::PointerTemplate &)>;
+
+/// @ingroup ir
+SOURCEMETA_CODEGEN_IR_EXPORT
+auto default_generator(
+    const sourcemeta::core::JSON &schema,
+    const sourcemeta::core::Vocabularies &vocabularies,
+    const sourcemeta::core::JSON &subschema,
+    const sourcemeta::core::Pointer &pointer,
+    const sourcemeta::core::PointerTemplate &instance_location) -> IREntity;
+
+/// @ingroup ir
 SOURCEMETA_CODEGEN_IR_EXPORT
 auto compile(const sourcemeta::core::JSON &schema,
              const sourcemeta::core::SchemaWalker &walker,
              const sourcemeta::core::SchemaResolver &resolver,
+             const Generator &generator = default_generator,
              const std::optional<sourcemeta::core::JSON::String>
                  &default_dialect = std::nullopt,
              const std::optional<sourcemeta::core::JSON::String> &default_id =
