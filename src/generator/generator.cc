@@ -1,4 +1,4 @@
-#include <sourcemeta/codegen/typescript.h>
+#include <sourcemeta/codegen/generator.h>
 
 #include <stdexcept> // std::runtime_error
 

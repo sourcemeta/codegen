@@ -1,5 +1,5 @@
+#include <sourcemeta/codegen/generator.h>
 #include <sourcemeta/codegen/ir.h>
-#include <sourcemeta/codegen/typescript.h>
 
 #include <cstdlib> // EXIT_SUCCESS
 

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <sourcemeta/codegen/generator.h>
 #include <sourcemeta/codegen/ir.h>
-#include <sourcemeta/codegen/typescript.h>
 
 #include <sourcemeta/core/json.h>
 #include <sourcemeta/core/jsonschema.h>

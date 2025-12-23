@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <sourcemeta/codegen/typescript.h>
+#include <sourcemeta/codegen/generator.h>
 
 #include <sstream> // std::ostringstream
 

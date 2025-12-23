@@ -6,7 +6,7 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 # Options
 option(CODEGEN_IR "Build the Codegen IR library" ON)
-option(CODEGEN_TYPESCRIPT "Build the Codegen IR library" ON)
+option(CODEGEN_GENERATOR "Build the Codegen Generator library" ON)
 option(CODEGEN_TESTS "Build the Codegen tests" OFF)
 option(CODEGEN_CONTRIB "Build the Codegen contrib programs" OFF)
 option(CODEGEN_DOCS "Build the Codegen docs" OFF)
@@ -42,8 +42,8 @@ if(CODEGEN_IR)
   add_subdirectory(src/ir)
 endif()
 
-if(CODEGEN_TYPESCRIPT)
-  add_subdirectory(src/typescript)
+if(CODEGEN_GENERATOR)
+  add_subdirectory(src/generator)
 endif()
 
 if(CODEGEN_CONTRIB)
@@ -76,8 +76,8 @@ if(CODEGEN_TESTS)
     add_subdirectory(test/ir)
   endif()
 
-  if(CODEGEN_TYPESCRIPT)
-    add_subdirectory(test/typescript)
+  if(CODEGEN_GENERATOR)
+    add_subdirectory(test/generator)
   endif()
 
   if(PROJECT_IS_TOP_LEVEL)

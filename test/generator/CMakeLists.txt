@@ -1,19 +1,19 @@
-sourcemeta_googletest(NAMESPACE sourcemeta PROJECT codegen NAME typescript
-  FOLDER "Codegen/TypeScript"
-  SOURCES typescript_test.cc)
+sourcemeta_googletest(NAMESPACE sourcemeta PROJECT codegen NAME generator
+  FOLDER "Codegen/Generator"
+  SOURCES generator_test.cc)
 
-target_link_libraries(sourcemeta_codegen_typescript_unit
-  PRIVATE sourcemeta::codegen::typescript)
+target_link_libraries(sourcemeta_codegen_generator_unit
+  PRIVATE sourcemeta::codegen::generator)
 
-sourcemeta_googletest(NAMESPACE sourcemeta PROJECT codegen NAME typescript_e2e
-  FOLDER "Codegen/TypeScript"
+sourcemeta_googletest(NAMESPACE sourcemeta PROJECT codegen NAME generator_e2e
+  FOLDER "Codegen/Generator"
   SOURCES e2e.cc)
 
-target_link_libraries(sourcemeta_codegen_typescript_e2e_unit
+target_link_libraries(sourcemeta_codegen_generator_e2e_unit
   PRIVATE sourcemeta::codegen::ir)
-target_link_libraries(sourcemeta_codegen_typescript_e2e_unit
-  PRIVATE sourcemeta::codegen::typescript)
-target_compile_definitions(sourcemeta_codegen_typescript_e2e_unit
+target_link_libraries(sourcemeta_codegen_generator_e2e_unit
+  PRIVATE sourcemeta::codegen::generator)
+target_compile_definitions(sourcemeta_codegen_generator_e2e_unit
   PRIVATE TYPESCRIPT_E2E_PATH="${CMAKE_CURRENT_SOURCE_DIR}/e2e")
 
 file(GLOB TYPESCRIPT_DIALECT_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/e2e/*")
