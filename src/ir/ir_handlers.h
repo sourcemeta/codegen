@@ -46,8 +46,8 @@ auto handle_object(const sourcemeta::core::JSON &schema,
     -> IRObject {
   ONLY_WHITELIST_KEYWORDS(schema, subschema, pointer,
                           {"$schema", "$id", "type", "properties", "required",
-                           "additionalProperties", "patternProperties",
-                           "minProperties", "maxProperties", "propertyNames"});
+                           "additionalProperties", "minProperties",
+                           "maxProperties", "propertyNames"});
   std::unordered_map<sourcemeta::core::JSON::String, IRObjectValue> members;
 
   if (subschema.defines("properties")) {
