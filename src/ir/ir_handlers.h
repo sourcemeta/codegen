@@ -10,13 +10,6 @@
 
 namespace sourcemeta::codegen {
 
-inline auto ONLY_CONTINUE_IF(const bool condition, const char *message)
-    -> void {
-  if (!condition) {
-    throw std::runtime_error(message);
-  }
-}
-
 auto handle_string(const sourcemeta::core::JSON &,
                    const sourcemeta::core::Vocabularies &,
                    const sourcemeta::core::Pointer &,
