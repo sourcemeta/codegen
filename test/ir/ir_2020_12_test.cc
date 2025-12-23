@@ -2,7 +2,7 @@
 
 #include <sourcemeta/codegen/ir.h>
 
-TEST(IR, test_1) {
+TEST(IR_2020_12, test_1) {
   const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "string"
@@ -21,7 +21,7 @@ TEST(IR, test_1) {
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::String);
 }
 
-TEST(IR, test_2) {
+TEST(IR_2020_12, test_2) {
   const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
@@ -58,7 +58,7 @@ TEST(IR, test_2) {
       foo_pointer);
 }
 
-TEST(IR, test_3) {
+TEST(IR_2020_12, test_3) {
   const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "integer"
@@ -77,7 +77,7 @@ TEST(IR, test_3) {
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::Integer);
 }
 
-TEST(IR, test_4) {
+TEST(IR_2020_12, test_4) {
   const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "number"
@@ -96,7 +96,7 @@ TEST(IR, test_4) {
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::Number);
 }
 
-TEST(IR, test_5) {
+TEST(IR_2020_12, test_5) {
   const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "integer",
@@ -118,7 +118,7 @@ TEST(IR, test_5) {
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::Integer);
 }
 
-TEST(IR, test_6) {
+TEST(IR_2020_12, test_6) {
   const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "number",
@@ -140,7 +140,7 @@ TEST(IR, test_6) {
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::Number);
 }
 
-TEST(IR, enum_null) {
+TEST(IR_2020_12, enum_null) {
   const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "enum": [ null ]
@@ -159,7 +159,7 @@ TEST(IR, enum_null) {
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::Null);
 }
 
-TEST(IR, enum_boolean_true_false) {
+TEST(IR_2020_12, enum_boolean_true_false) {
   const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "enum": [ true, false ]
@@ -178,7 +178,7 @@ TEST(IR, enum_boolean_true_false) {
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::Boolean);
 }
 
-TEST(IR, enum_boolean_false_true) {
+TEST(IR_2020_12, enum_boolean_false_true) {
   const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "enum": [ false, true ]
@@ -197,7 +197,7 @@ TEST(IR, enum_boolean_false_true) {
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::Boolean);
 }
 
-TEST(IR, enum_string_values) {
+TEST(IR_2020_12, enum_string_values) {
   const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "enum": [ "foo", "bar", "baz" ]
@@ -219,7 +219,7 @@ TEST(IR, enum_string_values) {
   EXPECT_EQ(std::get<IRUnion>(result.at(0)).values.at(2).to_string(), "baz");
 }
 
-TEST(IR, const_null) {
+TEST(IR_2020_12, const_null) {
   const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "const": null
@@ -238,7 +238,7 @@ TEST(IR, const_null) {
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::Null);
 }
 
-TEST(IR, const_string) {
+TEST(IR_2020_12, const_string) {
   const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "const": "hello"
@@ -258,7 +258,7 @@ TEST(IR, const_string) {
   EXPECT_EQ(std::get<IRUnion>(result.at(0)).values.at(0).to_string(), "hello");
 }
 
-TEST(IR, const_integer) {
+TEST(IR_2020_12, const_integer) {
   const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "const": 42
@@ -278,7 +278,7 @@ TEST(IR, const_integer) {
   EXPECT_EQ(std::get<IRUnion>(result.at(0)).values.at(0).to_integer(), 42);
 }
 
-TEST(IR, const_boolean_true) {
+TEST(IR_2020_12, const_boolean_true) {
   const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "const": true
