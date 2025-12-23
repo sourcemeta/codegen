@@ -7,6 +7,8 @@
 
 #include <sourcemeta/codegen/ir.h>
 
+#include <sourcemeta/core/jsonpointer.h>
+
 #include <optional> // std::optional, std::nullopt
 #include <ostream>  // std::ostream
 #include <string>   // std::string
@@ -15,6 +17,13 @@
 /// @brief The codegen JSON Schema code generation package
 
 namespace sourcemeta::codegen {
+
+/// @ingroup generator
+SOURCEMETA_CODEGEN_GENERATOR_EXPORT
+auto safe_name(const sourcemeta::core::Pointer &pointer,
+               const sourcemeta::core::PointerTemplate &instance_location,
+               const std::optional<std::string> &default_namespace)
+    -> std::string;
 
 /// @ingroup generator
 SOURCEMETA_CODEGEN_GENERATOR_EXPORT
