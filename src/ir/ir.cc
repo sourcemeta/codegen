@@ -5,27 +5,21 @@
 #include <algorithm> // std::ranges::sort
 #include <cassert>   // assert
 #include <set>       // std::set
+#include <stdexcept> // std::runtime_error
 
 namespace sourcemeta::codegen {
 
 static auto
-schema_to_ir(const sourcemeta::core::JSON &schema,
-             const sourcemeta::core::SchemaFrame &frame,
-             const sourcemeta::core::SchemaFrame::Location &location)
-    -> std::optional<IREntity> {
-  const auto &subschema{sourcemeta::core::get(schema, location.pointer)};
-
-  const auto &instance_locations{frame.instance_locations(location)};
-  assert(!instance_locations.empty());
-  const auto &instance_location{instance_locations.front()};
-
+schema_to_ir(const sourcemeta::core::JSON &subschema,
+             const sourcemeta::core::PointerTemplate &instance_location)
+    -> IREntity {
   if (!subschema.is_object() || !subschema.defines("type")) {
-    return std::nullopt;
+    throw std::runtime_error("Cannot handle subschema without type");
   }
 
   const auto &type_value{subschema.at("type")};
   if (!type_value.is_string()) {
-    return std::nullopt;
+    throw std::runtime_error("Cannot handle non-string type");
   }
 
   const auto type_string{type_value.to_string()};
@@ -68,7 +62,7 @@ schema_to_ir(const sourcemeta::core::JSON &schema,
                     .members = std::move(members)};
   }
 
-  return std::nullopt;
+  throw std::runtime_error("Unknown type: " + type_string);
 }
 
 auto compile(
@@ -106,11 +100,10 @@ auto compile(
   frame.analyse(schema, walker, resolver);
 
   // --------------------------------------------------------------------------
-  // (4) XXXXX
+  // (4) Convert every subschema into a code generation object
   // --------------------------------------------------------------------------
 
   IRResult result;
-
   for (const auto &[key, location] : frame.locations()) {
     if (location.type !=
             sourcemeta::core::SchemaFrame::LocationType::Resource &&
@@ -119,10 +112,10 @@ auto compile(
       continue;
     }
 
-    auto entry{schema_to_ir(schema, frame, location)};
-    if (entry.has_value()) {
-      result.push_back(std::move(entry.value()));
-    }
+    const auto &subschema{sourcemeta::core::get(schema, location.pointer)};
+    const auto &instance_locations{frame.instance_locations(location)};
+    assert(!instance_locations.empty());
+    result.push_back(schema_to_ir(subschema, instance_locations.front()));
   }
 
   // --------------------------------------------------------------------------
