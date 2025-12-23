@@ -5,8 +5,7 @@
 
 #include <sourcemeta/core/jsonschema.h>
 
-#include <set>       // std::set
-#include <stdexcept> // std::runtime_error
+#include <set> // std::set
 
 namespace sourcemeta::codegen {
 
@@ -57,52 +56,58 @@ auto handle_object(const sourcemeta::core::JSON &,
                   .members = std::move(members)};
 }
 
-auto handle_integer(const sourcemeta::core::JSON &,
+auto handle_integer(const sourcemeta::core::JSON &schema,
                     const sourcemeta::core::Vocabularies &,
                     const sourcemeta::core::JSON &,
-                    const sourcemeta::core::Pointer &,
+                    const sourcemeta::core::Pointer &pointer,
                     const sourcemeta::core::PointerTemplate &) -> IREntity {
-  throw std::runtime_error("TODO: handle_integer");
+  throw UnexpectedSchema(schema, pointer,
+                         "We do not support this type of subschema yet");
 }
 
-auto handle_number(const sourcemeta::core::JSON &,
+auto handle_number(const sourcemeta::core::JSON &schema,
                    const sourcemeta::core::Vocabularies &,
                    const sourcemeta::core::JSON &,
-                   const sourcemeta::core::Pointer &,
+                   const sourcemeta::core::Pointer &pointer,
                    const sourcemeta::core::PointerTemplate &) -> IREntity {
-  throw std::runtime_error("TODO: handle_number");
+  throw UnexpectedSchema(schema, pointer,
+                         "We do not support this type of subschema yet");
 }
 
-auto handle_array(const sourcemeta::core::JSON &,
+auto handle_array(const sourcemeta::core::JSON &schema,
                   const sourcemeta::core::Vocabularies &,
                   const sourcemeta::core::JSON &,
-                  const sourcemeta::core::Pointer &,
+                  const sourcemeta::core::Pointer &pointer,
                   const sourcemeta::core::PointerTemplate &) -> IREntity {
-  throw std::runtime_error("TODO: handle_array");
+  throw UnexpectedSchema(schema, pointer,
+                         "We do not support this type of subschema yet");
 }
 
-auto handle_enum(const sourcemeta::core::JSON &,
+auto handle_enum(const sourcemeta::core::JSON &schema,
                  const sourcemeta::core::Vocabularies &,
                  const sourcemeta::core::JSON &,
-                 const sourcemeta::core::Pointer &,
+                 const sourcemeta::core::Pointer &pointer,
                  const sourcemeta::core::PointerTemplate &) -> IREntity {
-  throw std::runtime_error("TODO: handle_enum");
+  throw UnexpectedSchema(schema, pointer,
+                         "We do not support this type of subschema yet");
 }
 
-auto handle_anyof(const sourcemeta::core::JSON &,
+auto handle_anyof(const sourcemeta::core::JSON &schema,
                   const sourcemeta::core::Vocabularies &,
                   const sourcemeta::core::JSON &,
-                  const sourcemeta::core::Pointer &,
+                  const sourcemeta::core::Pointer &pointer,
                   const sourcemeta::core::PointerTemplate &) -> IREntity {
-  throw std::runtime_error("TODO: handle_anyof");
+  throw UnexpectedSchema(schema, pointer,
+                         "We do not support this type of subschema yet");
 }
 
-auto handle_ref(const sourcemeta::core::JSON &,
+auto handle_ref(const sourcemeta::core::JSON &schema,
                 const sourcemeta::core::Vocabularies &,
                 const sourcemeta::core::JSON &,
-                const sourcemeta::core::Pointer &,
+                const sourcemeta::core::Pointer &pointer,
                 const sourcemeta::core::PointerTemplate &) -> IREntity {
-  throw std::runtime_error("TODO: handle_ref");
+  throw UnexpectedSchema(schema, pointer,
+                         "We do not support this type of subschema yet");
 }
 
 auto handle_schema(const sourcemeta::core::JSON &schema,
