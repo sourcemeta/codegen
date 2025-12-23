@@ -2,6 +2,8 @@
 
 #include <sourcemeta/codegen/ir.h>
 
+#include "ir_test_utils.h"
+
 TEST(IR_2020_12, test_1) {
   const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
     "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -17,8 +19,8 @@ TEST(IR_2020_12, test_1) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_TRUE(std::holds_alternative<IRScalar>(result.at(0)));
-  EXPECT_TRUE(std::get<IRScalar>(result.at(0)).pointer.empty());
-  EXPECT_TRUE(std::get<IRScalar>(result.at(0)).instance_location.empty());
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).pointer, "");
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).instance_location, "");
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::String);
 }
 
@@ -41,29 +43,23 @@ TEST(IR_2020_12, test_2) {
 
   EXPECT_EQ(result.size(), 2);
 
-  const sourcemeta::core::PointerTemplate foo_instance_location{
-      sourcemeta::core::to_pointer("/foo")};
-  const sourcemeta::core::Pointer foo_schema_pointer{
-      sourcemeta::core::to_pointer("/properties/foo")};
-
   EXPECT_TRUE(std::holds_alternative<IRScalar>(result.at(0)));
-  EXPECT_EQ(std::get<IRScalar>(result.at(0)).pointer, foo_schema_pointer);
-  EXPECT_EQ(std::get<IRScalar>(result.at(0)).instance_location,
-            foo_instance_location);
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).pointer, "/properties/foo");
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).instance_location, "/foo");
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::String);
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(1)));
-  EXPECT_TRUE(std::get<IRObject>(result.at(1)).pointer.empty());
-  EXPECT_TRUE(std::get<IRObject>(result.at(1)).instance_location.empty());
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(1)).pointer, "");
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(1)).instance_location, "");
   EXPECT_EQ(std::get<IRObject>(result.at(1)).members.size(), 1);
   EXPECT_TRUE(std::get<IRObject>(result.at(1)).members.contains("foo"));
   EXPECT_FALSE(std::get<IRObject>(result.at(1)).members.at("foo").required);
   EXPECT_FALSE(std::get<IRObject>(result.at(1)).members.at("foo").immutable);
-  EXPECT_EQ(std::get<IRObject>(result.at(1)).members.at("foo").pointer,
-            foo_schema_pointer);
-  EXPECT_EQ(
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(1)).members.at("foo").pointer,
+                   "/properties/foo");
+  EXPECT_AS_STRING(
       std::get<IRObject>(result.at(1)).members.at("foo").instance_location,
-      foo_instance_location);
+      "/foo");
 }
 
 TEST(IR_2020_12, test_3) {
@@ -81,8 +77,8 @@ TEST(IR_2020_12, test_3) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_TRUE(std::holds_alternative<IRScalar>(result.at(0)));
-  EXPECT_TRUE(std::get<IRScalar>(result.at(0)).pointer.empty());
-  EXPECT_TRUE(std::get<IRScalar>(result.at(0)).instance_location.empty());
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).pointer, "");
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).instance_location, "");
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::Integer);
 }
 
@@ -101,8 +97,8 @@ TEST(IR_2020_12, test_4) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_TRUE(std::holds_alternative<IRScalar>(result.at(0)));
-  EXPECT_TRUE(std::get<IRScalar>(result.at(0)).pointer.empty());
-  EXPECT_TRUE(std::get<IRScalar>(result.at(0)).instance_location.empty());
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).pointer, "");
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).instance_location, "");
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::Number);
 }
 
@@ -124,8 +120,8 @@ TEST(IR_2020_12, test_5) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_TRUE(std::holds_alternative<IRScalar>(result.at(0)));
-  EXPECT_TRUE(std::get<IRScalar>(result.at(0)).pointer.empty());
-  EXPECT_TRUE(std::get<IRScalar>(result.at(0)).instance_location.empty());
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).pointer, "");
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).instance_location, "");
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::Integer);
 }
 
@@ -147,8 +143,8 @@ TEST(IR_2020_12, test_6) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_TRUE(std::holds_alternative<IRScalar>(result.at(0)));
-  EXPECT_TRUE(std::get<IRScalar>(result.at(0)).pointer.empty());
-  EXPECT_TRUE(std::get<IRScalar>(result.at(0)).instance_location.empty());
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).pointer, "");
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).instance_location, "");
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::Number);
 }
 
@@ -167,8 +163,8 @@ TEST(IR_2020_12, enum_null) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_TRUE(std::holds_alternative<IRScalar>(result.at(0)));
-  EXPECT_TRUE(std::get<IRScalar>(result.at(0)).pointer.empty());
-  EXPECT_TRUE(std::get<IRScalar>(result.at(0)).instance_location.empty());
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).pointer, "");
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).instance_location, "");
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::Null);
 }
 
@@ -187,8 +183,8 @@ TEST(IR_2020_12, enum_boolean_true_false) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_TRUE(std::holds_alternative<IRScalar>(result.at(0)));
-  EXPECT_TRUE(std::get<IRScalar>(result.at(0)).pointer.empty());
-  EXPECT_TRUE(std::get<IRScalar>(result.at(0)).instance_location.empty());
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).pointer, "");
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).instance_location, "");
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::Boolean);
 }
 
@@ -207,8 +203,8 @@ TEST(IR_2020_12, enum_boolean_false_true) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_TRUE(std::holds_alternative<IRScalar>(result.at(0)));
-  EXPECT_TRUE(std::get<IRScalar>(result.at(0)).pointer.empty());
-  EXPECT_TRUE(std::get<IRScalar>(result.at(0)).instance_location.empty());
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).pointer, "");
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).instance_location, "");
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::Boolean);
 }
 
@@ -227,8 +223,8 @@ TEST(IR_2020_12, enum_string_values) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_TRUE(std::holds_alternative<IRUnion>(result.at(0)));
-  EXPECT_TRUE(std::get<IRUnion>(result.at(0)).pointer.empty());
-  EXPECT_TRUE(std::get<IRUnion>(result.at(0)).instance_location.empty());
+  EXPECT_AS_STRING(std::get<IRUnion>(result.at(0)).pointer, "");
+  EXPECT_AS_STRING(std::get<IRUnion>(result.at(0)).instance_location, "");
   EXPECT_EQ(std::get<IRUnion>(result.at(0)).values.size(), 3);
   EXPECT_EQ(std::get<IRUnion>(result.at(0)).values.at(0).to_string(), "foo");
   EXPECT_EQ(std::get<IRUnion>(result.at(0)).values.at(1).to_string(), "bar");
@@ -250,8 +246,8 @@ TEST(IR_2020_12, const_null) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_TRUE(std::holds_alternative<IRScalar>(result.at(0)));
-  EXPECT_TRUE(std::get<IRScalar>(result.at(0)).pointer.empty());
-  EXPECT_TRUE(std::get<IRScalar>(result.at(0)).instance_location.empty());
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).pointer, "");
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).instance_location, "");
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::Null);
 }
 
@@ -270,8 +266,8 @@ TEST(IR_2020_12, const_string) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_TRUE(std::holds_alternative<IRUnion>(result.at(0)));
-  EXPECT_TRUE(std::get<IRUnion>(result.at(0)).pointer.empty());
-  EXPECT_TRUE(std::get<IRUnion>(result.at(0)).instance_location.empty());
+  EXPECT_AS_STRING(std::get<IRUnion>(result.at(0)).pointer, "");
+  EXPECT_AS_STRING(std::get<IRUnion>(result.at(0)).instance_location, "");
   EXPECT_EQ(std::get<IRUnion>(result.at(0)).values.size(), 1);
   EXPECT_EQ(std::get<IRUnion>(result.at(0)).values.at(0).to_string(), "hello");
 }
@@ -291,8 +287,8 @@ TEST(IR_2020_12, const_integer) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_TRUE(std::holds_alternative<IRUnion>(result.at(0)));
-  EXPECT_TRUE(std::get<IRUnion>(result.at(0)).pointer.empty());
-  EXPECT_TRUE(std::get<IRUnion>(result.at(0)).instance_location.empty());
+  EXPECT_AS_STRING(std::get<IRUnion>(result.at(0)).pointer, "");
+  EXPECT_AS_STRING(std::get<IRUnion>(result.at(0)).instance_location, "");
   EXPECT_EQ(std::get<IRUnion>(result.at(0)).values.size(), 1);
   EXPECT_EQ(std::get<IRUnion>(result.at(0)).values.at(0).to_integer(), 42);
 }
@@ -312,8 +308,8 @@ TEST(IR_2020_12, const_boolean_true) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_TRUE(std::holds_alternative<IRUnion>(result.at(0)));
-  EXPECT_TRUE(std::get<IRUnion>(result.at(0)).pointer.empty());
-  EXPECT_TRUE(std::get<IRUnion>(result.at(0)).instance_location.empty());
+  EXPECT_AS_STRING(std::get<IRUnion>(result.at(0)).pointer, "");
+  EXPECT_AS_STRING(std::get<IRUnion>(result.at(0)).instance_location, "");
   EXPECT_EQ(std::get<IRUnion>(result.at(0)).values.size(), 1);
   EXPECT_TRUE(std::get<IRUnion>(result.at(0)).values.at(0).to_boolean());
 }
@@ -333,8 +329,8 @@ TEST(IR_2020_12, object_type_only) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(0)));
-  EXPECT_TRUE(std::get<IRObject>(result.at(0)).pointer.empty());
-  EXPECT_TRUE(std::get<IRObject>(result.at(0)).instance_location.empty());
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(0)).pointer, "");
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(0)).instance_location, "");
   EXPECT_TRUE(std::get<IRObject>(result.at(0)).members.empty());
 }
 
@@ -354,8 +350,8 @@ TEST(IR_2020_12, object_empty_properties) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(0)));
-  EXPECT_TRUE(std::get<IRObject>(result.at(0)).pointer.empty());
-  EXPECT_TRUE(std::get<IRObject>(result.at(0)).instance_location.empty());
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(0)).pointer, "");
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(0)).instance_location, "");
   EXPECT_TRUE(std::get<IRObject>(result.at(0)).members.empty());
 }
 
@@ -377,43 +373,30 @@ TEST(IR_2020_12, object_with_additional_properties) {
 
   EXPECT_EQ(result.size(), 3);
 
-  const sourcemeta::core::PointerTemplate foo_instance_location{
-      sourcemeta::core::to_pointer("/foo")};
-  const sourcemeta::core::Pointer foo_schema_pointer{
-      sourcemeta::core::to_pointer("/properties/foo")};
-
   EXPECT_TRUE(std::holds_alternative<IRScalar>(result.at(0)));
-  EXPECT_EQ(std::get<IRScalar>(result.at(0)).pointer, foo_schema_pointer);
-  EXPECT_EQ(std::get<IRScalar>(result.at(0)).instance_location,
-            foo_instance_location);
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).pointer, "/properties/foo");
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).instance_location, "/foo");
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::String);
 
-  const sourcemeta::core::PointerTemplate additional_instance_location{
-      sourcemeta::core::PointerTemplate::Condition{.suffix =
-                                                       "additionalProperties"},
-      sourcemeta::core::PointerTemplate::Wildcard::Property};
-  const sourcemeta::core::Pointer additional_schema_pointer{
-      sourcemeta::core::to_pointer("/additionalProperties")};
-
   EXPECT_TRUE(std::holds_alternative<IRScalar>(result.at(1)));
-  EXPECT_EQ(std::get<IRScalar>(result.at(1)).pointer,
-            additional_schema_pointer);
-  EXPECT_EQ(std::get<IRScalar>(result.at(1)).instance_location,
-            additional_instance_location);
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(1)).pointer,
+                   "/additionalProperties");
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(1)).instance_location,
+                   "/~?additionalProperties~/~P~");
   EXPECT_EQ(std::get<IRScalar>(result.at(1)).value, IRScalarType::Integer);
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(2)));
-  EXPECT_TRUE(std::get<IRObject>(result.at(2)).pointer.empty());
-  EXPECT_TRUE(std::get<IRObject>(result.at(2)).instance_location.empty());
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(2)).pointer, "");
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(2)).instance_location, "");
   EXPECT_EQ(std::get<IRObject>(result.at(2)).members.size(), 1);
   EXPECT_TRUE(std::get<IRObject>(result.at(2)).members.contains("foo"));
   EXPECT_FALSE(std::get<IRObject>(result.at(2)).members.at("foo").required);
   EXPECT_FALSE(std::get<IRObject>(result.at(2)).members.at("foo").immutable);
-  EXPECT_EQ(std::get<IRObject>(result.at(2)).members.at("foo").pointer,
-            foo_schema_pointer);
-  EXPECT_EQ(
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(2)).members.at("foo").pointer,
+                   "/properties/foo");
+  EXPECT_AS_STRING(
       std::get<IRObject>(result.at(2)).members.at("foo").instance_location,
-      foo_instance_location);
+      "/foo");
 }
 
 TEST(IR_2020_12, object_with_pattern_properties) {
@@ -436,39 +419,31 @@ TEST(IR_2020_12, object_with_pattern_properties) {
 
   EXPECT_EQ(result.size(), 3);
 
-  const sourcemeta::core::PointerTemplate name_instance_location{
-      sourcemeta::core::to_pointer("/name")};
-  const sourcemeta::core::Pointer name_schema_pointer{
-      sourcemeta::core::to_pointer("/properties/name")};
-  const sourcemeta::core::PointerTemplate pattern_instance_location{
-      std::string{"^x-"}};
-  const sourcemeta::core::Pointer pattern_schema_pointer{
-      sourcemeta::core::to_pointer("/patternProperties/^x-")};
-
   EXPECT_TRUE(std::holds_alternative<IRScalar>(result.at(0)));
-  EXPECT_EQ(std::get<IRScalar>(result.at(0)).pointer, name_schema_pointer);
-  EXPECT_EQ(std::get<IRScalar>(result.at(0)).instance_location,
-            name_instance_location);
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).pointer,
+                   "/properties/name");
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).instance_location, "/name");
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::String);
 
   EXPECT_TRUE(std::holds_alternative<IRScalar>(result.at(1)));
-  EXPECT_EQ(std::get<IRScalar>(result.at(1)).pointer, pattern_schema_pointer);
-  EXPECT_EQ(std::get<IRScalar>(result.at(1)).instance_location,
-            pattern_instance_location);
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(1)).pointer,
+                   "/patternProperties/^x-");
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(1)).instance_location,
+                   "/~R^x-~");
   EXPECT_EQ(std::get<IRScalar>(result.at(1)).value, IRScalarType::String);
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(2)));
-  EXPECT_TRUE(std::get<IRObject>(result.at(2)).pointer.empty());
-  EXPECT_TRUE(std::get<IRObject>(result.at(2)).instance_location.empty());
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(2)).pointer, "");
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(2)).instance_location, "");
   EXPECT_EQ(std::get<IRObject>(result.at(2)).members.size(), 1);
   EXPECT_TRUE(std::get<IRObject>(result.at(2)).members.contains("name"));
   EXPECT_FALSE(std::get<IRObject>(result.at(2)).members.at("name").required);
   EXPECT_FALSE(std::get<IRObject>(result.at(2)).members.at("name").immutable);
-  EXPECT_EQ(std::get<IRObject>(result.at(2)).members.at("name").pointer,
-            name_schema_pointer);
-  EXPECT_EQ(
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(2)).members.at("name").pointer,
+                   "/properties/name");
+  EXPECT_AS_STRING(
       std::get<IRObject>(result.at(2)).members.at("name").instance_location,
-      name_instance_location);
+      "/name");
 }
 
 TEST(IR_2020_12, object_with_required) {
@@ -490,46 +465,37 @@ TEST(IR_2020_12, object_with_required) {
 
   EXPECT_EQ(result.size(), 3);
 
-  const sourcemeta::core::PointerTemplate id_instance_location{
-      sourcemeta::core::to_pointer("/id")};
-  const sourcemeta::core::Pointer id_schema_pointer{
-      sourcemeta::core::to_pointer("/properties/id")};
-  const sourcemeta::core::PointerTemplate name_instance_location{
-      sourcemeta::core::to_pointer("/name")};
-  const sourcemeta::core::Pointer name_schema_pointer{
-      sourcemeta::core::to_pointer("/properties/name")};
-
   EXPECT_TRUE(std::holds_alternative<IRScalar>(result.at(0)));
-  EXPECT_EQ(std::get<IRScalar>(result.at(0)).pointer, name_schema_pointer);
-  EXPECT_EQ(std::get<IRScalar>(result.at(0)).instance_location,
-            name_instance_location);
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).pointer,
+                   "/properties/name");
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(0)).instance_location, "/name");
   EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::String);
 
   EXPECT_TRUE(std::holds_alternative<IRScalar>(result.at(1)));
-  EXPECT_EQ(std::get<IRScalar>(result.at(1)).pointer, id_schema_pointer);
-  EXPECT_EQ(std::get<IRScalar>(result.at(1)).instance_location,
-            id_instance_location);
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(1)).pointer, "/properties/id");
+  EXPECT_AS_STRING(std::get<IRScalar>(result.at(1)).instance_location, "/id");
   EXPECT_EQ(std::get<IRScalar>(result.at(1)).value, IRScalarType::Integer);
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(2)));
-  EXPECT_TRUE(std::get<IRObject>(result.at(2)).pointer.empty());
-  EXPECT_TRUE(std::get<IRObject>(result.at(2)).instance_location.empty());
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(2)).pointer, "");
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(2)).instance_location, "");
   EXPECT_EQ(std::get<IRObject>(result.at(2)).members.size(), 2);
 
   EXPECT_TRUE(std::get<IRObject>(result.at(2)).members.contains("id"));
   EXPECT_TRUE(std::get<IRObject>(result.at(2)).members.at("id").required);
   EXPECT_FALSE(std::get<IRObject>(result.at(2)).members.at("id").immutable);
-  EXPECT_EQ(std::get<IRObject>(result.at(2)).members.at("id").pointer,
-            id_schema_pointer);
-  EXPECT_EQ(std::get<IRObject>(result.at(2)).members.at("id").instance_location,
-            id_instance_location);
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(2)).members.at("id").pointer,
+                   "/properties/id");
+  EXPECT_AS_STRING(
+      std::get<IRObject>(result.at(2)).members.at("id").instance_location,
+      "/id");
 
   EXPECT_TRUE(std::get<IRObject>(result.at(2)).members.contains("name"));
   EXPECT_FALSE(std::get<IRObject>(result.at(2)).members.at("name").required);
   EXPECT_FALSE(std::get<IRObject>(result.at(2)).members.at("name").immutable);
-  EXPECT_EQ(std::get<IRObject>(result.at(2)).members.at("name").pointer,
-            name_schema_pointer);
-  EXPECT_EQ(
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(2)).members.at("name").pointer,
+                   "/properties/name");
+  EXPECT_AS_STRING(
       std::get<IRObject>(result.at(2)).members.at("name").instance_location,
-      name_instance_location);
+      "/name");
 }
