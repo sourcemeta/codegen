@@ -53,7 +53,7 @@ TEST(Generator_to_pascal_case, property_with_hyphen) {
       sourcemeta::core::Pointer{"foo-bar"}};
   const auto result{sourcemeta::codegen::to_pascal_case(
       pointer, instance_location, "Schema")};
-  EXPECT_EQ(result, "SchemaFooBar");
+  EXPECT_EQ(result, "SchemaFooX2DBar");
 }
 
 TEST(Generator_to_pascal_case, property_starting_with_number) {
@@ -80,7 +80,7 @@ TEST(Generator_to_pascal_case, property_with_underscore) {
       sourcemeta::core::Pointer{"foo_bar"}};
   const auto result{sourcemeta::codegen::to_pascal_case(
       pointer, instance_location, "Schema")};
-  EXPECT_EQ(result, "SchemaFooBar");
+  EXPECT_EQ(result, "SchemaFooX5FBar");
 }
 
 TEST(Generator_to_pascal_case, property_with_spaces) {
@@ -89,7 +89,7 @@ TEST(Generator_to_pascal_case, property_with_spaces) {
       sourcemeta::core::Pointer{"foo bar"}};
   const auto result{sourcemeta::codegen::to_pascal_case(
       pointer, instance_location, "Schema")};
-  EXPECT_EQ(result, "SchemaFooBar");
+  EXPECT_EQ(result, "SchemaFooX20Bar");
 }
 
 TEST(Generator_to_pascal_case, property_with_special_characters) {
@@ -98,7 +98,7 @@ TEST(Generator_to_pascal_case, property_with_special_characters) {
       sourcemeta::core::Pointer{"foo@bar"}};
   const auto result{sourcemeta::codegen::to_pascal_case(
       pointer, instance_location, "Schema")};
-  EXPECT_EQ(result, "SchemaFooBar");
+  EXPECT_EQ(result, "SchemaFooX40Bar");
 }
 
 TEST(Generator_to_pascal_case, empty_property_name) {
@@ -152,7 +152,7 @@ TEST(Generator_to_pascal_case, multiple_special_chars_in_sequence) {
       sourcemeta::core::Pointer{"foo--bar"}};
   const auto result{sourcemeta::codegen::to_pascal_case(
       pointer, instance_location, "Schema")};
-  EXPECT_EQ(result, "SchemaFooBar");
+  EXPECT_EQ(result, "SchemaFooX2DX2DBar");
 }
 
 TEST(Generator_to_pascal_case, leading_special_characters) {
@@ -161,7 +161,7 @@ TEST(Generator_to_pascal_case, leading_special_characters) {
       sourcemeta::core::Pointer{"--foo"}};
   const auto result{sourcemeta::codegen::to_pascal_case(
       pointer, instance_location, "Schema")};
-  EXPECT_EQ(result, "SchemaFoo");
+  EXPECT_EQ(result, "SchemaX2DX2DFoo");
 }
 
 TEST(Generator_to_pascal_case, trailing_special_characters) {
@@ -170,7 +170,7 @@ TEST(Generator_to_pascal_case, trailing_special_characters) {
       sourcemeta::core::Pointer{"foo--"}};
   const auto result{sourcemeta::codegen::to_pascal_case(
       pointer, instance_location, "Schema")};
-  EXPECT_EQ(result, "SchemaFoo");
+  EXPECT_EQ(result, "SchemaFooX2DX2D");
 }
 
 TEST(Generator_to_pascal_case, only_special_characters) {
@@ -179,5 +179,5 @@ TEST(Generator_to_pascal_case, only_special_characters) {
       sourcemeta::core::Pointer{"@#$%"}};
   const auto result{sourcemeta::codegen::to_pascal_case(
       pointer, instance_location, "Schema")};
-  EXPECT_EQ(result, "Schema");
+  EXPECT_EQ(result, "SchemaX40X23X24X25");
 }

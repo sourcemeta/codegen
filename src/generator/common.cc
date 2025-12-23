@@ -1,29 +1,35 @@
 #include <sourcemeta/codegen/generator.h>
 
-#include <cctype> // std::isalnum, std::isalpha, std::isdigit, std::toupper
+#include <cctype>  // std::isalpha, std::isdigit, std::toupper
+#include <iomanip> // std::setfill, std::setw
+#include <sstream> // std::ostringstream
 
 namespace sourcemeta::codegen {
 
-// Helper to convert a string to PascalCase
+// Helper to convert a string to PascalCase with hex-escaped special characters
 static auto string_to_pascal_case(const std::string &input) -> std::string {
-  std::string result;
+  std::ostringstream result;
   bool capitalize_next{true};
   for (const char character : input) {
     if (std::isalpha(static_cast<unsigned char>(character)) != 0) {
       if (capitalize_next) {
-        result += static_cast<char>(
+        result << static_cast<char>(
             std::toupper(static_cast<unsigned char>(character)));
         capitalize_next = false;
       } else {
-        result += character;
+        result << character;
       }
     } else if (std::isdigit(static_cast<unsigned char>(character)) != 0) {
-      result += character;
+      result << character;
     } else {
+      result << 'X' << std::uppercase << std::hex << std::setfill('0')
+             << std::setw(2)
+             << static_cast<unsigned int>(
+                    static_cast<unsigned char>(character));
       capitalize_next = true;
     }
   }
-  return result;
+  return result.str();
 }
 
 auto to_pascal_case(const sourcemeta::core::Pointer &,
