@@ -277,7 +277,31 @@ TEST(Generator_to_pascal_case, empty_token) {
       sourcemeta::core::Pointer{""}};
   const auto result{
       sourcemeta::codegen::to_pascal_case(instance_location, "schema")};
-  EXPECT_EQ(result, "Schema");
+  EXPECT_EQ(result, "Schema_ZEmpty");
+}
+
+TEST(Generator_to_pascal_case, empty_token_then_property) {
+  const sourcemeta::core::PointerTemplate instance_location{
+      sourcemeta::core::Pointer{"", "foo"}};
+  const auto result{
+      sourcemeta::codegen::to_pascal_case(instance_location, "schema")};
+  EXPECT_EQ(result, "Schema_ZEmpty_Foo");
+}
+
+TEST(Generator_to_pascal_case, property_then_empty_token) {
+  const sourcemeta::core::PointerTemplate instance_location{
+      sourcemeta::core::Pointer{"foo", ""}};
+  const auto result{
+      sourcemeta::codegen::to_pascal_case(instance_location, "schema")};
+  EXPECT_EQ(result, "Schema_Foo_ZEmpty");
+}
+
+TEST(Generator_to_pascal_case, property_ZEmpty_escaped) {
+  const sourcemeta::core::PointerTemplate instance_location{
+      sourcemeta::core::Pointer{"ZEmpty"}};
+  const auto result{
+      sourcemeta::codegen::to_pascal_case(instance_location, "schema")};
+  EXPECT_EQ(result, "Schema_X5AEmpty");
 }
 
 TEST(Generator_to_pascal_case, deeply_nested_path) {
@@ -344,6 +368,14 @@ TEST(Generator_to_pascal_case, condition_with_uppercase_suffix) {
   EXPECT_EQ(result, "Schema_ZMaybeUThen");
 }
 
+TEST(Generator_to_pascal_case, condition_with_empty_suffix) {
+  const sourcemeta::core::PointerTemplate instance_location{
+      sourcemeta::core::PointerTemplate::Condition{""}};
+  const auto result{
+      sourcemeta::codegen::to_pascal_case(instance_location, "schema")};
+  EXPECT_EQ(result, "Schema_ZMaybeZEmpty");
+}
+
 TEST(Generator_to_pascal_case, negation) {
   const sourcemeta::core::PointerTemplate instance_location{
       sourcemeta::core::PointerTemplate::Negation{}};
@@ -357,6 +389,13 @@ TEST(Generator_to_pascal_case, regex_simple) {
   const auto result{
       sourcemeta::codegen::to_pascal_case(instance_location, "schema")};
   EXPECT_EQ(result, "Schema_ZRegexFoo");
+}
+
+TEST(Generator_to_pascal_case, regex_empty) {
+  const sourcemeta::core::PointerTemplate instance_location{std::string{""}};
+  const auto result{
+      sourcemeta::codegen::to_pascal_case(instance_location, "schema")};
+  EXPECT_EQ(result, "Schema_ZRegexZEmpty");
 }
 
 TEST(Generator_to_pascal_case, regex_with_special_chars) {

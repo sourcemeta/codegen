@@ -82,10 +82,11 @@ auto to_pascal_case(const sourcemeta::core::PointerTemplate &instance_location,
     if (const auto *property_token =
             std::get_if<sourcemeta::core::Pointer::Token>(&token)) {
       const auto &property{property_token->to_property()};
-      std::string encoded{encode_string(property)};
-      if (!encoded.empty()) {
-        result += '_';
-        result += encoded;
+      result += '_';
+      if (property.empty()) {
+        result += "ZEmpty";
+      } else {
+        result += encode_string(property);
       }
     } else if (const auto *wildcard =
                    std::get_if<sourcemeta::core::PointerTemplate::Wildcard>(
@@ -107,7 +108,12 @@ auto to_pascal_case(const sourcemeta::core::PointerTemplate &instance_location,
                        &token)) {
       result += "_ZMaybe";
       if (condition->suffix.has_value()) {
-        result += encode_string(condition->suffix.value());
+        const auto &suffix_value{condition->suffix.value()};
+        if (suffix_value.empty()) {
+          result += "ZEmpty";
+        } else {
+          result += encode_string(suffix_value);
+        }
       }
     } else if (std::holds_alternative<
                    sourcemeta::core::PointerTemplate::Negation>(token)) {
@@ -116,7 +122,11 @@ auto to_pascal_case(const sourcemeta::core::PointerTemplate &instance_location,
                    std::get_if<sourcemeta::core::PointerTemplate::Regex>(
                        &token)) {
       result += "_ZRegex";
-      result += encode_string(*regex);
+      if (regex->empty()) {
+        result += "ZEmpty";
+      } else {
+        result += encode_string(*regex);
+      }
     }
   }
 
