@@ -218,3 +218,82 @@ TEST(IR, enum_string_values) {
   EXPECT_EQ(std::get<IRUnion>(result.at(0)).values.at(1).to_string(), "bar");
   EXPECT_EQ(std::get<IRUnion>(result.at(0)).values.at(2).to_string(), "baz");
 }
+
+TEST(IR, const_null) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "const": null
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver)};
+
+  using namespace sourcemeta::codegen;
+
+  EXPECT_EQ(result.size(), 1);
+
+  EXPECT_TRUE(std::holds_alternative<IRScalar>(result.at(0)));
+  EXPECT_TRUE(std::get<IRScalar>(result.at(0)).instance_location.empty());
+  EXPECT_EQ(std::get<IRScalar>(result.at(0)).value, IRScalarType::Null);
+}
+
+TEST(IR, const_string) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "const": "hello"
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver)};
+
+  using namespace sourcemeta::codegen;
+
+  EXPECT_EQ(result.size(), 1);
+
+  EXPECT_TRUE(std::holds_alternative<IRUnion>(result.at(0)));
+  EXPECT_TRUE(std::get<IRUnion>(result.at(0)).instance_location.empty());
+  EXPECT_EQ(std::get<IRUnion>(result.at(0)).values.size(), 1);
+  EXPECT_EQ(std::get<IRUnion>(result.at(0)).values.at(0).to_string(), "hello");
+}
+
+TEST(IR, const_integer) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "const": 42
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver)};
+
+  using namespace sourcemeta::codegen;
+
+  EXPECT_EQ(result.size(), 1);
+
+  EXPECT_TRUE(std::holds_alternative<IRUnion>(result.at(0)));
+  EXPECT_TRUE(std::get<IRUnion>(result.at(0)).instance_location.empty());
+  EXPECT_EQ(std::get<IRUnion>(result.at(0)).values.size(), 1);
+  EXPECT_EQ(std::get<IRUnion>(result.at(0)).values.at(0).to_integer(), 42);
+}
+
+TEST(IR, const_boolean_true) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "const": true
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver)};
+
+  using namespace sourcemeta::codegen;
+
+  EXPECT_EQ(result.size(), 1);
+
+  EXPECT_TRUE(std::holds_alternative<IRUnion>(result.at(0)));
+  EXPECT_TRUE(std::get<IRUnion>(result.at(0)).instance_location.empty());
+  EXPECT_EQ(std::get<IRUnion>(result.at(0)).values.size(), 1);
+  EXPECT_TRUE(std::get<IRUnion>(result.at(0)).values.at(0).to_boolean());
+}
