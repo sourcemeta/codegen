@@ -360,9 +360,12 @@ auto handle_ref(const sourcemeta::core::JSON &schema,
                 const sourcemeta::core::SchemaFrame::Location &location,
                 const sourcemeta::core::Vocabularies &,
                 const sourcemeta::core::SchemaResolver &,
-                const sourcemeta::core::JSON &,
+                const sourcemeta::core::JSON &subschema,
                 const sourcemeta::core::PointerTemplate &instance_location)
     -> IREntity {
+  ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
+                          {"$schema", "$id", "$ref"});
+
   const auto &references{frame.references()};
   const auto reference{
       references.find({sourcemeta::core::SchemaReferenceType::Static,
@@ -373,7 +376,7 @@ auto handle_ref(const sourcemeta::core::JSON &schema,
   const auto target{frame.traverse(destination)};
   if (!target.has_value()) {
     throw UnexpectedSchema(schema, location.pointer,
-                           "Could not resolve $ref destination");
+                           "Could not resolve reference destination");
   }
 
   const auto &target_location{target.value().get()};
