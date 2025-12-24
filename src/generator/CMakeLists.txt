@@ -1,7 +1,7 @@
 sourcemeta_library(NAMESPACE sourcemeta PROJECT codegen NAME generator
   FOLDER "Codegen/Generator"
   PRIVATE_HEADERS typescript.h
-  SOURCES common.cc typescript.cc)
+  SOURCES typescript.cc)
 
 if(CODEGEN_INSTALL)
   sourcemeta_library_install(NAMESPACE sourcemeta PROJECT codegen NAME generator)

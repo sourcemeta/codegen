@@ -23,11 +23,6 @@
 namespace sourcemeta::codegen {
 
 /// @ingroup generator
-SOURCEMETA_CODEGEN_GENERATOR_EXPORT
-auto to_pascal_case(const sourcemeta::core::PointerTemplate &instance_location,
-                    const std::string &prefix) -> std::string;
-
-/// @ingroup generator
 template <typename T>
 auto generate(std::ostream &output, const IRResult &result,
               const std::string &prefix = "Schema") -> void {
