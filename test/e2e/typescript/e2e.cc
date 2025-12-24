@@ -21,10 +21,12 @@ public:
     const auto options_path{this->directory / "options.json"};
     const auto expected_path{this->directory / "expected.d.ts"};
 
+    // TODO: Use read_json
     std::ifstream schema_stream{schema_path};
     schema_stream.exceptions(std::ios_base::badbit);
     const auto schema{sourcemeta::core::parse_json(schema_stream)};
 
+    // TODO: Use read_json
     std::ifstream options_stream{options_path};
     options_stream.exceptions(std::ios_base::badbit);
     const auto options{sourcemeta::core::parse_json(options_stream)};
@@ -34,14 +36,17 @@ public:
     const std::string expected{std::istreambuf_iterator<char>(expected_stream),
                                std::istreambuf_iterator<char>()};
 
+    // TODO: Don't apply the default here, keep it as optional
     const std::string prefix{options.defines("defaultPrefix")
                                  ? options.at("defaultPrefix").to_string()
                                  : "Schema"};
 
-    const auto result{
-        sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                     sourcemeta::core::schema_resolver,
-                                     sourcemeta::codegen::default_compiler)};
+    // TODO: Assert on result true
+    const auto result{sourcemeta::codegen::compile(
+        schema, sourcemeta::core::schema_walker,
+        sourcemeta::core::schema_resolver,
+        sourcemeta::codegen::default_compiler,
+        [](const auto &, const auto, const auto, const auto &) {})};
 
     std::ostringstream output;
     sourcemeta::codegen::generate<sourcemeta::codegen::TypeScript>(

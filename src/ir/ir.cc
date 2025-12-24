@@ -12,6 +12,7 @@ auto compile(
     const sourcemeta::core::JSON &input,
     const sourcemeta::core::SchemaWalker &walker,
     const sourcemeta::core::SchemaResolver &resolver, const Compiler &compiler,
+    const sourcemeta::core::SchemaTransformer::Callback &callback,
     const std::optional<sourcemeta::core::JSON::String> &default_dialect,
     const std::optional<sourcemeta::core::JSON::String> &default_id)
     -> IRResult {
@@ -29,12 +30,11 @@ auto compile(
   sourcemeta::core::SchemaTransformer canonicalizer;
   sourcemeta::core::add(canonicalizer,
                         sourcemeta::core::AlterSchemaMode::Canonicalizer);
-  const auto canonicalized{canonicalizer.apply(
-      schema, walker, resolver,
-      [](const auto &, const auto, const auto, const auto &) {})};
-  // Canonicalization should only consists of transformable rules, so this would
-  // never be false and the callback would never be called
-  assert(canonicalized.first);
+  const auto canonicalized{
+      canonicalizer.apply(schema, walker, resolver, callback)};
+  if (!canonicalized.first) {
+    throw NonCanonicalizableError{};
+  }
 
   // --------------------------------------------------------------------------
   // (3) Frame the resulting schema with instance location information

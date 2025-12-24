@@ -147,6 +147,16 @@ private:
   const char *message_;
 };
 
+/// @ingroup ir
+/// An error that represents a non-canonicalizable schema during IR compilation
+class SOURCEMETA_CODEGEN_IR_EXPORT NonCanonicalizableError
+    : public std::exception {
+public:
+  [[nodiscard]] auto what() const noexcept -> const char * override {
+    return "The schema contains canonicalization issues that must be resolved";
+  }
+};
+
 #if defined(_MSC_VER)
 #pragma warning(default : 4251 4275)
 #endif

@@ -24,10 +24,13 @@ auto main(int argc, char *argv[]) -> int {
   const std::filesystem::path schema_path{positional_arguments.front()};
   const auto schema{sourcemeta::core::read_json(schema_path)};
 
-  const auto result{
-      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver,
-                                   sourcemeta::codegen::default_compiler)};
+  const auto result{sourcemeta::codegen::compile(
+      schema, sourcemeta::core::schema_walker,
+      sourcemeta::core::schema_resolver, sourcemeta::codegen::default_compiler,
+      [](const auto &pointer, const auto, const auto message, const auto &) {
+        std::cerr << sourcemeta::core::to_string(pointer) << ": " << message
+                  << "\n";
+      })};
 
   const std::string prefix{
       options.contains("default-prefix")

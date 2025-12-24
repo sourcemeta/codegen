@@ -116,6 +116,7 @@ auto compile(const sourcemeta::core::JSON &schema,
              const sourcemeta::core::SchemaWalker &walker,
              const sourcemeta::core::SchemaResolver &resolver,
              const Compiler &compiler,
+             const sourcemeta::core::SchemaTransformer::Callback &callback,
              const std::optional<sourcemeta::core::JSON::String>
                  &default_dialect = std::nullopt,
              const std::optional<sourcemeta::core::JSON::String> &default_id =
