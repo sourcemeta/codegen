@@ -4,7 +4,7 @@
 
 #include <sstream> // std::ostringstream
 
-TEST(Generator_typescript, test_1) {
+TEST(Generator_typescript, scalar_string) {
   using namespace sourcemeta::codegen;
 
   IRResult result;
@@ -16,7 +16,55 @@ TEST(Generator_typescript, test_1) {
   EXPECT_EQ(output.str(), "export type MyType = string;\n");
 }
 
-TEST(Generator_typescript, test_2) {
+TEST(Generator_typescript, scalar_number) {
+  using namespace sourcemeta::codegen;
+
+  IRResult result;
+  result.emplace_back(IRScalar{{}, IRScalarType::Number});
+
+  std::ostringstream output;
+  typescript(output, result, "MyType");
+
+  EXPECT_EQ(output.str(), "export type MyType = number;\n");
+}
+
+TEST(Generator_typescript, scalar_integer) {
+  using namespace sourcemeta::codegen;
+
+  IRResult result;
+  result.emplace_back(IRScalar{{}, IRScalarType::Integer});
+
+  std::ostringstream output;
+  typescript(output, result, "MyType");
+
+  EXPECT_EQ(output.str(), "export type MyType = number;\n");
+}
+
+TEST(Generator_typescript, scalar_boolean) {
+  using namespace sourcemeta::codegen;
+
+  IRResult result;
+  result.emplace_back(IRScalar{{}, IRScalarType::Boolean});
+
+  std::ostringstream output;
+  typescript(output, result, "MyType");
+
+  EXPECT_EQ(output.str(), "export type MyType = boolean;\n");
+}
+
+TEST(Generator_typescript, scalar_null) {
+  using namespace sourcemeta::codegen;
+
+  IRResult result;
+  result.emplace_back(IRScalar{{}, IRScalarType::Null});
+
+  std::ostringstream output;
+  typescript(output, result, "MyType");
+
+  EXPECT_EQ(output.str(), "export type MyType = null;\n");
+}
+
+TEST(Generator_typescript, object_with_optional_string_property) {
   using namespace sourcemeta::codegen;
 
   IRResult result;

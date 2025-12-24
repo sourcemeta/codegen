@@ -4,15 +4,6 @@
 
 namespace sourcemeta::codegen {
 
-static auto scalar_type_to_typescript(IRScalarType type) -> std::string {
-  switch (type) {
-    case IRScalarType::String:
-      return "string";
-    default:
-      return "unknown";
-  }
-}
-
 class TypeScriptGenerator {
 public:
   TypeScriptGenerator(std::ostream &stream, const std::string &type_prefix)
@@ -21,7 +12,25 @@ public:
   auto operator()(const IRScalar &entry) const -> void {
     this->output << "export type "
                  << to_pascal_case(entry.instance_location, this->prefix)
-                 << " = " << scalar_type_to_typescript(entry.value) << ";\n";
+                 << " = ";
+
+    switch (entry.value) {
+      case IRScalarType::String:
+        this->output << "string";
+        break;
+      case IRScalarType::Number:
+      case IRScalarType::Integer:
+        this->output << "number";
+        break;
+      case IRScalarType::Boolean:
+        this->output << "boolean";
+        break;
+      case IRScalarType::Null:
+        this->output << "null";
+        break;
+    }
+
+    this->output << ";\n";
   }
 
   auto operator()(const IREnumeration &entry) const -> void {
