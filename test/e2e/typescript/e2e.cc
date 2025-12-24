@@ -21,27 +21,14 @@ public:
     const auto options_path{this->directory / "options.json"};
     const auto expected_path{this->directory / "expected.d.ts"};
 
-    // TODO: Use read_json
-    std::ifstream schema_stream{schema_path};
-    schema_stream.exceptions(std::ios_base::badbit);
-    const auto schema{sourcemeta::core::parse_json(schema_stream)};
-
-    // TODO: Use read_json
-    std::ifstream options_stream{options_path};
-    options_stream.exceptions(std::ios_base::badbit);
-    const auto options{sourcemeta::core::parse_json(options_stream)};
+    const auto schema{sourcemeta::core::read_json(schema_path)};
+    const auto options{sourcemeta::core::read_json(options_path)};
 
     std::ifstream expected_stream{expected_path};
     expected_stream.exceptions(std::ios_base::badbit);
     const std::string expected{std::istreambuf_iterator<char>(expected_stream),
                                std::istreambuf_iterator<char>()};
 
-    // TODO: Don't apply the default here, keep it as optional
-    const std::string prefix{options.defines("defaultPrefix")
-                                 ? options.at("defaultPrefix").to_string()
-                                 : "Schema"};
-
-    // TODO: Assert on result true
     const auto result{sourcemeta::codegen::compile(
         schema, sourcemeta::core::schema_walker,
         sourcemeta::core::schema_resolver,
@@ -49,8 +36,13 @@ public:
         [](const auto &, const auto, const auto, const auto &) {})};
 
     std::ostringstream output;
-    sourcemeta::codegen::generate<sourcemeta::codegen::TypeScript>(
-        output, result, prefix);
+    if (options.defines("defaultPrefix")) {
+      sourcemeta::codegen::generate<sourcemeta::codegen::TypeScript>(
+          output, result, options.at("defaultPrefix").to_string());
+    } else {
+      sourcemeta::codegen::generate<sourcemeta::codegen::TypeScript>(output,
+                                                                     result);
+    }
 
     EXPECT_EQ(output.str(), expected)
         << "Generated TypeScript does not match expected output";

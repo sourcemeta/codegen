@@ -30,7 +30,7 @@ auto to_pascal_case(const sourcemeta::core::PointerTemplate &instance_location,
 /// @ingroup generator
 template <typename T>
 auto generate(std::ostream &output, const IRResult &result,
-              const std::string &prefix) -> void {
+              const std::string &prefix = "Schema") -> void {
   const T visitor{output, prefix};
   const char *separator{""};
   for (const auto &entity : result) {
