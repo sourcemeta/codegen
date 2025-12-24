@@ -40,9 +40,12 @@ static auto handle_ir_object(std::ostream &output, const IRObject &entry,
   output << "}\n";
 }
 
-static auto handle_ir_impossible(std::ostream &, const IRImpossible &,
-                                 const std::string &) -> void {
-  throw std::runtime_error("IRImpossible is not supported yet");
+static auto handle_ir_impossible(std::ostream &output,
+                                 const IRImpossible &entry,
+                                 const std::string &default_namespace) -> void {
+  output << "export type "
+         << to_pascal_case(entry.instance_location, default_namespace)
+         << " = never;\n";
 }
 
 auto typescript(std::ostream &output, const IRResult &result,
