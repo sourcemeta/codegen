@@ -92,7 +92,7 @@ using IRResult = std::vector<IREntity>;
 using Compiler = std::function<IREntity(
     const sourcemeta::core::JSON &, const sourcemeta::core::SchemaFrame &,
     const sourcemeta::core::SchemaFrame::Location &,
-    const sourcemeta::core::Vocabularies &, const sourcemeta::core::JSON &,
+    const sourcemeta::core::SchemaResolver &, const sourcemeta::core::JSON &,
     const sourcemeta::core::PointerTemplate &)>;
 
 /// @ingroup ir
@@ -101,7 +101,7 @@ auto default_compiler(
     const sourcemeta::core::JSON &schema,
     const sourcemeta::core::SchemaFrame &frame,
     const sourcemeta::core::SchemaFrame::Location &location,
-    const sourcemeta::core::Vocabularies &vocabularies,
+    const sourcemeta::core::SchemaResolver &resolver,
     const sourcemeta::core::JSON &subschema,
     const sourcemeta::core::PointerTemplate &instance_location) -> IREntity;
 

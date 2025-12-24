@@ -29,7 +29,8 @@ namespace sourcemeta::codegen {
 auto handle_impossible(
     const sourcemeta::core::JSON &, const sourcemeta::core::SchemaFrame &,
     const sourcemeta::core::SchemaFrame::Location &location,
-    const sourcemeta::core::Vocabularies &, const sourcemeta::core::JSON &,
+    const sourcemeta::core::Vocabularies &,
+    const sourcemeta::core::SchemaResolver &, const sourcemeta::core::JSON &,
     const sourcemeta::core::PointerTemplate &instance_location)
     -> IRImpossible {
   return IRImpossible{
@@ -40,6 +41,7 @@ auto handle_string(const sourcemeta::core::JSON &schema,
                    const sourcemeta::core::SchemaFrame &,
                    const sourcemeta::core::SchemaFrame::Location &location,
                    const sourcemeta::core::Vocabularies &,
+                   const sourcemeta::core::SchemaResolver &,
                    const sourcemeta::core::JSON &subschema,
                    const sourcemeta::core::PointerTemplate &instance_location)
     -> IRScalar {
@@ -55,6 +57,7 @@ auto handle_object(const sourcemeta::core::JSON &schema,
                    const sourcemeta::core::SchemaFrame &,
                    const sourcemeta::core::SchemaFrame::Location &location,
                    const sourcemeta::core::Vocabularies &,
+                   const sourcemeta::core::SchemaResolver &,
                    const sourcemeta::core::JSON &subschema,
                    const sourcemeta::core::PointerTemplate &instance_location)
     -> IRObject {
@@ -132,6 +135,7 @@ auto handle_integer(const sourcemeta::core::JSON &schema,
                     const sourcemeta::core::SchemaFrame &,
                     const sourcemeta::core::SchemaFrame::Location &location,
                     const sourcemeta::core::Vocabularies &,
+                    const sourcemeta::core::SchemaResolver &,
                     const sourcemeta::core::JSON &subschema,
                     const sourcemeta::core::PointerTemplate &instance_location)
     -> IRScalar {
@@ -148,6 +152,7 @@ auto handle_number(const sourcemeta::core::JSON &schema,
                    const sourcemeta::core::SchemaFrame &,
                    const sourcemeta::core::SchemaFrame::Location &location,
                    const sourcemeta::core::Vocabularies &,
+                   const sourcemeta::core::SchemaResolver &,
                    const sourcemeta::core::JSON &subschema,
                    const sourcemeta::core::PointerTemplate &instance_location)
     -> IRScalar {
@@ -164,6 +169,7 @@ auto handle_array(const sourcemeta::core::JSON &schema,
                   const sourcemeta::core::SchemaFrame &,
                   const sourcemeta::core::SchemaFrame::Location &location,
                   const sourcemeta::core::Vocabularies &vocabularies,
+                  const sourcemeta::core::SchemaResolver &,
                   const sourcemeta::core::JSON &subschema,
                   const sourcemeta::core::PointerTemplate &instance_location)
     -> IREntity {
@@ -281,6 +287,7 @@ auto handle_enum(const sourcemeta::core::JSON &schema,
                  const sourcemeta::core::SchemaFrame &,
                  const sourcemeta::core::SchemaFrame::Location &location,
                  const sourcemeta::core::Vocabularies &,
+                 const sourcemeta::core::SchemaResolver &,
                  const sourcemeta::core::JSON &subschema,
                  const sourcemeta::core::PointerTemplate &instance_location)
     -> IREntity {
@@ -315,6 +322,7 @@ auto handle_anyof(const sourcemeta::core::JSON &schema,
                   const sourcemeta::core::SchemaFrame &,
                   const sourcemeta::core::SchemaFrame::Location &location,
                   const sourcemeta::core::Vocabularies &,
+                  const sourcemeta::core::SchemaResolver &,
                   const sourcemeta::core::JSON &subschema,
                   const sourcemeta::core::PointerTemplate &instance_location)
     -> IREntity {
@@ -351,6 +359,7 @@ auto handle_ref(const sourcemeta::core::JSON &schema,
                 const sourcemeta::core::SchemaFrame &,
                 const sourcemeta::core::SchemaFrame::Location &location,
                 const sourcemeta::core::Vocabularies &,
+                const sourcemeta::core::SchemaResolver &,
                 const sourcemeta::core::JSON &,
                 const sourcemeta::core::PointerTemplate &) -> IREntity {
   throw UnexpectedSchema(schema, location.pointer,
@@ -361,16 +370,41 @@ auto default_compiler(
     const sourcemeta::core::JSON &schema,
     const sourcemeta::core::SchemaFrame &frame,
     const sourcemeta::core::SchemaFrame::Location &location,
-    const sourcemeta::core::Vocabularies &vocabularies,
+    const sourcemeta::core::SchemaResolver &resolver,
     const sourcemeta::core::JSON &subschema,
     const sourcemeta::core::PointerTemplate &instance_location) -> IREntity {
+  const auto vocabularies{frame.vocabularies(location, resolver)};
+  assert(!vocabularies.empty());
+
+  // Be strict with vocabulary support
+  using Vocabularies = sourcemeta::core::Vocabularies;
+  static const std::unordered_set<Vocabularies::URI> supported{
+      Vocabularies::Known::JSON_Schema_2020_12_Core,
+      Vocabularies::Known::JSON_Schema_2020_12_Applicator,
+      Vocabularies::Known::JSON_Schema_2020_12_Validation,
+      Vocabularies::Known::JSON_Schema_2020_12_Unevaluated,
+      Vocabularies::Known::JSON_Schema_2020_12_Content,
+      Vocabularies::Known::JSON_Schema_2020_12_Meta_Data,
+      Vocabularies::Known::JSON_Schema_2020_12_Format_Annotation,
+      Vocabularies::Known::JSON_Schema_2019_09_Core,
+      Vocabularies::Known::JSON_Schema_2019_09_Applicator,
+      Vocabularies::Known::JSON_Schema_2019_09_Validation,
+      Vocabularies::Known::JSON_Schema_2019_09_Content,
+      Vocabularies::Known::JSON_Schema_2019_09_Meta_Data,
+      Vocabularies::Known::JSON_Schema_2019_09_Format,
+      Vocabularies::Known::JSON_Schema_Draft_7,
+      Vocabularies::Known::JSON_Schema_Draft_6,
+      Vocabularies::Known::JSON_Schema_Draft_4};
+  vocabularies.throw_if_any_unsupported(supported,
+                                        "Unsupported required vocabulary");
+
   // The canonicaliser ensures that every subschema schema is only in one of the
   // following shapes
 
   if (subschema.is_boolean()) {
     assert(!subschema.to_boolean());
-    return handle_impossible(schema, frame, location, vocabularies, subschema,
-                             instance_location);
+    return handle_impossible(schema, frame, location, vocabularies, resolver,
+                             subschema, instance_location);
   } else if (subschema.defines("type")) {
     const auto &type_value{subschema.at("type")};
     if (!type_value.is_string()) {
@@ -382,34 +416,34 @@ auto default_compiler(
 
     // The canonicaliser transforms any other type
     if (type_string == "string") {
-      return handle_string(schema, frame, location, vocabularies, subschema,
-                           instance_location);
+      return handle_string(schema, frame, location, vocabularies, resolver,
+                           subschema, instance_location);
     } else if (type_string == "object") {
-      return handle_object(schema, frame, location, vocabularies, subschema,
-                           instance_location);
+      return handle_object(schema, frame, location, vocabularies, resolver,
+                           subschema, instance_location);
     } else if (type_string == "integer") {
-      return handle_integer(schema, frame, location, vocabularies, subschema,
-                            instance_location);
+      return handle_integer(schema, frame, location, vocabularies, resolver,
+                            subschema, instance_location);
     } else if (type_string == "number") {
-      return handle_number(schema, frame, location, vocabularies, subschema,
-                           instance_location);
+      return handle_number(schema, frame, location, vocabularies, resolver,
+                           subschema, instance_location);
     } else if (type_string == "array") {
-      return handle_array(schema, frame, location, vocabularies, subschema,
-                          instance_location);
+      return handle_array(schema, frame, location, vocabularies, resolver,
+                          subschema, instance_location);
     } else {
       throw UnsupportedKeywordValue(schema, location.pointer, "type",
                                     "Unsupported type value");
     }
   } else if (subschema.defines("enum")) {
-    return handle_enum(schema, frame, location, vocabularies, subschema,
-                       instance_location);
+    return handle_enum(schema, frame, location, vocabularies, resolver,
+                       subschema, instance_location);
   } else if (subschema.defines("anyOf")) {
-    return handle_anyof(schema, frame, location, vocabularies, subschema,
-                        instance_location);
+    return handle_anyof(schema, frame, location, vocabularies, resolver,
+                        subschema, instance_location);
     // Only the recursive case
   } else if (subschema.defines("$ref")) {
-    return handle_ref(schema, frame, location, vocabularies, subschema,
-                      instance_location);
+    return handle_ref(schema, frame, location, vocabularies, resolver,
+                      subschema, instance_location);
   } else {
     throw UnexpectedSchema(schema, location.pointer, "Unsupported subschema");
   }

@@ -61,39 +61,8 @@ auto compile(
     const auto &instance_locations{frame.instance_locations(location)};
     // Canonicalisation is expected to take care of this
     assert(!instance_locations.empty());
-    const auto vocabularies{frame.vocabularies(location, resolver)};
-    assert(!vocabularies.empty());
 
-    // Be strict with vocabulary support
-    using Known = sourcemeta::core::Vocabularies::Known;
-    static std::unordered_set<sourcemeta::core::Vocabularies::URI>
-        SUPPORTED_VOCABULARIES{Known::JSON_Schema_2020_12_Core,
-                               Known::JSON_Schema_2020_12_Applicator,
-                               Known::JSON_Schema_2020_12_Unevaluated,
-                               Known::JSON_Schema_2020_12_Validation,
-                               Known::JSON_Schema_2020_12_Meta_Data,
-                               Known::JSON_Schema_2020_12_Format_Annotation,
-                               Known::JSON_Schema_2020_12_Format_Assertion,
-                               Known::JSON_Schema_2020_12_Content,
-                               Known::JSON_Schema_2019_09_Core,
-                               Known::JSON_Schema_2019_09_Applicator,
-                               Known::JSON_Schema_2019_09_Validation,
-                               Known::JSON_Schema_2019_09_Meta_Data,
-                               Known::JSON_Schema_2019_09_Format,
-                               Known::JSON_Schema_2019_09_Content,
-                               Known::JSON_Schema_2019_09_Hyper_Schema,
-                               Known::JSON_Schema_Draft_7,
-                               Known::JSON_Schema_Draft_7_Hyper,
-                               Known::JSON_Schema_Draft_6,
-                               Known::JSON_Schema_Draft_6_Hyper,
-                               Known::JSON_Schema_Draft_4,
-                               Known::JSON_Schema_Draft_4_Hyper,
-                               Known::OpenAPI_3_1_Base,
-                               Known::OpenAPI_3_2_Base};
-    vocabularies.throw_if_any_unsupported(
-        SUPPORTED_VOCABULARIES, "Cannot analyse unsupported vocabulary");
-
-    result.push_back(compiler(schema, frame, location, vocabularies, subschema,
+    result.push_back(compiler(schema, frame, location, resolver, subschema,
                               instance_locations.front()));
   }
 
