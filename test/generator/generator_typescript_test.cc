@@ -261,3 +261,82 @@ export interface Node {
 
   EXPECT_EQ(output.str(), expected);
 }
+
+TEST(Generator_typescript, enumeration_strings) {
+  using namespace sourcemeta::codegen;
+
+  IRResult result;
+
+  IREnumeration enumeration;
+  enumeration.pointer = {};
+  enumeration.instance_location = {};
+  enumeration.values.push_back(sourcemeta::core::JSON{"foo"});
+  enumeration.values.push_back(sourcemeta::core::JSON{"bar"});
+  enumeration.values.push_back(sourcemeta::core::JSON{"baz"});
+  result.emplace_back(std::move(enumeration));
+
+  std::ostringstream output;
+  typescript(output, result, "Status");
+
+  EXPECT_EQ(output.str(),
+            "export type Status = \"foo\" | \"bar\" | \"baz\";\n");
+}
+
+TEST(Generator_typescript, enumeration_mixed_primitives) {
+  using namespace sourcemeta::codegen;
+
+  IRResult result;
+
+  IREnumeration enumeration;
+  enumeration.pointer = {};
+  enumeration.instance_location = {};
+  enumeration.values.push_back(sourcemeta::core::JSON{"active"});
+  enumeration.values.push_back(sourcemeta::core::JSON{42});
+  enumeration.values.push_back(sourcemeta::core::JSON{true});
+  enumeration.values.push_back(sourcemeta::core::JSON{nullptr});
+  result.emplace_back(std::move(enumeration));
+
+  std::ostringstream output;
+  typescript(output, result, "Value");
+
+  EXPECT_EQ(output.str(),
+            "export type Value = \"active\" | 42 | true | null;\n");
+}
+
+TEST(Generator_typescript, enumeration_with_object) {
+  using namespace sourcemeta::codegen;
+
+  IRResult result;
+
+  IREnumeration enumeration;
+  enumeration.pointer = {};
+  enumeration.instance_location = {};
+  enumeration.values.push_back(sourcemeta::core::JSON{"simple"});
+  enumeration.values.push_back(
+      sourcemeta::core::parse_json("{\"type\":\"complex\"}"));
+  result.emplace_back(std::move(enumeration));
+
+  std::ostringstream output;
+  typescript(output, result, "Config");
+
+  EXPECT_EQ(output.str(),
+            "export type Config = \"simple\" | {\"type\":\"complex\"};\n");
+}
+
+TEST(Generator_typescript, enumeration_with_array) {
+  using namespace sourcemeta::codegen;
+
+  IRResult result;
+
+  IREnumeration enumeration;
+  enumeration.pointer = {};
+  enumeration.instance_location = {};
+  enumeration.values.push_back(sourcemeta::core::JSON{1});
+  enumeration.values.push_back(sourcemeta::core::parse_json("[1,2,3]"));
+  result.emplace_back(std::move(enumeration));
+
+  std::ostringstream output;
+  typescript(output, result, "Data");
+
+  EXPECT_EQ(output.str(), "export type Data = 1 | [1,2,3];\n");
+}

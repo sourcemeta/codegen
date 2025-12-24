@@ -1,7 +1,5 @@
 #include <sourcemeta/codegen/generator.h>
 
-#include <stdexcept> // std::runtime_error
-
 namespace sourcemeta::codegen {
 
 static auto scalar_type_to_typescript(IRScalarType type) -> std::string {
@@ -20,9 +18,21 @@ static auto handle_ir_scalar(std::ostream &output, const IRScalar &entry,
          << scalar_type_to_typescript(entry.value) << ";\n";
 }
 
-static auto handle_ir_enumeration(std::ostream &, const IREnumeration &,
-                                  const std::string &) -> void {
-  throw std::runtime_error("IREnumeration is not supported yet");
+static auto handle_ir_enumeration(std::ostream &output,
+                                  const IREnumeration &entry,
+                                  const std::string &default_namespace)
+    -> void {
+  output << "export type "
+         << to_pascal_case(entry.instance_location, default_namespace) << " = ";
+
+  const char *separator{""};
+  for (const auto &value : entry.values) {
+    output << separator;
+    sourcemeta::core::stringify(value, output);
+    separator = " | ";
+  }
+
+  output << ";\n";
 }
 
 static auto handle_ir_object(std::ostream &output, const IRObject &entry,
