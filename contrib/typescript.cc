@@ -8,7 +8,6 @@
 #include <cstdlib>    // EXIT_SUCCESS, EXIT_FAILURE
 #include <filesystem> // std::filesystem::path
 #include <iostream>   // std::cout, std::cerr
-#include <optional>   // std::optional, std::nullopt
 #include <string>     // std::string
 
 auto main(int argc, char *argv[]) -> int {
@@ -30,11 +29,12 @@ auto main(int argc, char *argv[]) -> int {
                                    sourcemeta::core::schema_resolver,
                                    sourcemeta::codegen::default_compiler)};
 
-  std::optional<std::string> default_prefix{std::nullopt};
-  if (options.contains("default-prefix")) {
-    default_prefix = std::string{options.at("default-prefix").front()};
-  }
+  const std::string prefix{
+      options.contains("default-prefix")
+          ? std::string{options.at("default-prefix").front()}
+          : "Schema"};
 
-  sourcemeta::codegen::typescript(std::cout, result, default_prefix);
+  sourcemeta::codegen::generate<sourcemeta::codegen::TypeScript>(
+      std::cout, result, prefix);
   return EXIT_SUCCESS;
 }

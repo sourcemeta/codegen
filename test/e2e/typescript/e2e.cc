@@ -8,7 +8,6 @@
 
 #include <filesystem> // std::filesystem
 #include <fstream>    // std::ifstream
-#include <optional>   // std::optional, std::nullopt
 #include <sstream>    // std::ostringstream
 #include <string>     // std::string
 
@@ -35,10 +34,9 @@ public:
     const std::string expected{std::istreambuf_iterator<char>(expected_stream),
                                std::istreambuf_iterator<char>()};
 
-    std::optional<std::string> default_prefix{std::nullopt};
-    if (options.defines("defaultPrefix")) {
-      default_prefix = options.at("defaultPrefix").to_string();
-    }
+    const std::string prefix{options.defines("defaultPrefix")
+                                 ? options.at("defaultPrefix").to_string()
+                                 : "Schema"};
 
     const auto result{
         sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
@@ -46,7 +44,8 @@ public:
                                      sourcemeta::codegen::default_compiler)};
 
     std::ostringstream output;
-    sourcemeta::codegen::typescript(output, result, default_prefix);
+    sourcemeta::codegen::generate<sourcemeta::codegen::TypeScript>(
+        output, result, prefix);
 
     EXPECT_EQ(output.str(), expected)
         << "Generated TypeScript does not match expected output";

@@ -11,7 +11,7 @@ TEST(Generator_typescript, scalar_string) {
   result.emplace_back(IRScalar{{}, IRScalarType::String});
 
   std::ostringstream output;
-  typescript(output, result, "MyType");
+  generate<TypeScript>(output, result, "MyType");
 
   EXPECT_EQ(output.str(), "export type MyType = string;\n");
 }
@@ -23,7 +23,7 @@ TEST(Generator_typescript, scalar_number) {
   result.emplace_back(IRScalar{{}, IRScalarType::Number});
 
   std::ostringstream output;
-  typescript(output, result, "MyType");
+  generate<TypeScript>(output, result, "MyType");
 
   EXPECT_EQ(output.str(), "export type MyType = number;\n");
 }
@@ -35,7 +35,7 @@ TEST(Generator_typescript, scalar_integer) {
   result.emplace_back(IRScalar{{}, IRScalarType::Integer});
 
   std::ostringstream output;
-  typescript(output, result, "MyType");
+  generate<TypeScript>(output, result, "MyType");
 
   EXPECT_EQ(output.str(), "export type MyType = number;\n");
 }
@@ -47,7 +47,7 @@ TEST(Generator_typescript, scalar_boolean) {
   result.emplace_back(IRScalar{{}, IRScalarType::Boolean});
 
   std::ostringstream output;
-  typescript(output, result, "MyType");
+  generate<TypeScript>(output, result, "MyType");
 
   EXPECT_EQ(output.str(), "export type MyType = boolean;\n");
 }
@@ -59,7 +59,7 @@ TEST(Generator_typescript, scalar_null) {
   result.emplace_back(IRScalar{{}, IRScalarType::Null});
 
   std::ostringstream output;
-  typescript(output, result, "MyType");
+  generate<TypeScript>(output, result, "MyType");
 
   EXPECT_EQ(output.str(), "export type MyType = null;\n");
 }
@@ -84,7 +84,7 @@ TEST(Generator_typescript, object_with_optional_string_property) {
   result.emplace_back(std::move(object));
 
   std::ostringstream output;
-  typescript(output, result, "MyObject");
+  generate<TypeScript>(output, result, "MyObject");
 
   const auto expected{R"TS(export type MyObject_Foo = string;
 
@@ -103,7 +103,7 @@ TEST(Generator_typescript, impossible_at_root) {
   result.emplace_back(IRImpossible{{}});
 
   std::ostringstream output;
-  typescript(output, result, "MyType");
+  generate<TypeScript>(output, result, "MyType");
 
   EXPECT_EQ(output.str(), "export type MyType = never;\n");
 }
@@ -117,7 +117,7 @@ TEST(Generator_typescript, impossible_nested) {
        sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"foo"}}}});
 
   std::ostringstream output;
-  typescript(output, result, "MyType");
+  generate<TypeScript>(output, result, "MyType");
 
   EXPECT_EQ(output.str(), "export type MyType_Foo = never;\n");
 }
@@ -141,7 +141,7 @@ TEST(Generator_typescript, array_at_root) {
   result.emplace_back(std::move(array));
 
   std::ostringstream output;
-  typescript(output, result, "MyArray");
+  generate<TypeScript>(output, result, "MyArray");
 
   const auto expected{R"TS(export type MyArray_0 = string;
 
@@ -183,7 +183,7 @@ TEST(Generator_typescript, array_nested_in_object) {
   result.emplace_back(std::move(object));
 
   std::ostringstream output;
-  typescript(output, result, "MyObject");
+  generate<TypeScript>(output, result, "MyObject");
 
   const auto expected{R"TS(export type MyObject_Tags_0 = string;
 
@@ -224,7 +224,7 @@ TEST(Generator_typescript, tuple_without_additional) {
   result.emplace_back(std::move(tuple));
 
   std::ostringstream output;
-  typescript(output, result, "MyTuple");
+  generate<TypeScript>(output, result, "MyTuple");
 
   const auto expected{R"TS(export type MyTuple_0 = string;
 
@@ -263,7 +263,7 @@ TEST(Generator_typescript, tuple_with_additional) {
   result.emplace_back(std::move(tuple));
 
   std::ostringstream output;
-  typescript(output, result, "MyTuple");
+  generate<TypeScript>(output, result, "MyTuple");
 
   const auto expected{R"TS(export type MyTuple_0 = string;
 
@@ -298,7 +298,7 @@ TEST(Generator_typescript, reference_property_to_root) {
   result.emplace_back(std::move(object));
 
   std::ostringstream output;
-  typescript(output, result, "Node");
+  generate<TypeScript>(output, result, "Node");
 
   const auto expected{R"TS(export type Node_Child = Node;
 
@@ -324,7 +324,7 @@ TEST(Generator_typescript, enumeration_strings) {
   result.emplace_back(std::move(enumeration));
 
   std::ostringstream output;
-  typescript(output, result, "Status");
+  generate<TypeScript>(output, result, "Status");
 
   EXPECT_EQ(output.str(),
             "export type Status = \"foo\" | \"bar\" | \"baz\";\n");
@@ -345,7 +345,7 @@ TEST(Generator_typescript, enumeration_mixed_primitives) {
   result.emplace_back(std::move(enumeration));
 
   std::ostringstream output;
-  typescript(output, result, "Value");
+  generate<TypeScript>(output, result, "Value");
 
   EXPECT_EQ(output.str(),
             "export type Value = \"active\" | 42 | true | null;\n");
@@ -365,7 +365,7 @@ TEST(Generator_typescript, enumeration_with_object) {
   result.emplace_back(std::move(enumeration));
 
   std::ostringstream output;
-  typescript(output, result, "Config");
+  generate<TypeScript>(output, result, "Config");
 
   const auto expected{R"TS(export type Config = "simple" | {
   "type": "complex"
@@ -388,7 +388,7 @@ TEST(Generator_typescript, enumeration_with_array) {
   result.emplace_back(std::move(enumeration));
 
   std::ostringstream output;
-  typescript(output, result, "Data");
+  generate<TypeScript>(output, result, "Data");
 
   EXPECT_EQ(output.str(), "export type Data = 1 | [ 1, 2, 3 ];\n");
 }
@@ -420,7 +420,7 @@ TEST(Generator_typescript, union_at_root) {
   result.emplace_back(std::move(my_union));
 
   std::ostringstream output;
-  typescript(output, result, "MyUnion");
+  generate<TypeScript>(output, result, "MyUnion");
 
   const auto expected{R"TS(export type MyUnion_0 = string;
 
@@ -475,7 +475,7 @@ TEST(Generator_typescript, union_nested_in_object) {
   result.emplace_back(std::move(object));
 
   std::ostringstream output;
-  typescript(output, result, "MyObject");
+  generate<TypeScript>(output, result, "MyObject");
 
   const auto expected{R"TS(export type MyObject_Value_0 = string;
 
