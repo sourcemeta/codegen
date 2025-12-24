@@ -20,8 +20,8 @@ static auto handle_ir_scalar(std::ostream &output, const IRScalar &entry,
          << scalar_type_to_typescript(entry.value) << ";\n";
 }
 
-static auto handle_ir_union(std::ostream &, const IREnumeration &,
-                            const std::string &) -> void {
+static auto handle_ir_enumeration(std::ostream &, const IREnumeration &,
+                                  const std::string &) -> void {
   throw std::runtime_error("IREnumeration is not supported yet");
 }
 
@@ -69,8 +69,8 @@ auto typescript(std::ostream &output, const IRResult &result,
     separator = "\n";
     if (const auto *scalar = std::get_if<IRScalar>(&entity)) {
       handle_ir_scalar(output, *scalar, ns);
-    } else if (const auto *union_entry = std::get_if<IREnumeration>(&entity)) {
-      handle_ir_union(output, *union_entry, ns);
+    } else if (const auto *enumeration = std::get_if<IREnumeration>(&entity)) {
+      handle_ir_enumeration(output, *enumeration, ns);
     } else if (const auto *object = std::get_if<IRObject>(&entity)) {
       handle_ir_object(output, *object, ns);
     } else if (const auto *impossible = std::get_if<IRImpossible>(&entity)) {
