@@ -723,3 +723,80 @@ TEST(IR_2020_12, ref_recursive_to_root) {
       "/child");
   EXPECT_FALSE(std::get<IRObject>(result.at(1)).additional.has_value());
 }
+
+TEST(IR_2020_12, invalid_property_name) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "$!@": { "type": "string" }
+    }
+  })JSON")};
+
+  struct CallbackEntry {
+    sourcemeta::core::Pointer pointer;
+    std::string rule_name;
+    std::string message;
+    bool applies;
+    std::vector<sourcemeta::core::Pointer> locations;
+    std::optional<std::string> description;
+  };
+
+  std::vector<CallbackEntry> callback_entries;
+
+  EXPECT_THROW(
+      {
+        sourcemeta::codegen::compile(
+            schema, sourcemeta::core::schema_walker,
+            sourcemeta::core::schema_resolver,
+            sourcemeta::codegen::default_compiler,
+            [&callback_entries](const sourcemeta::core::Pointer &pointer,
+                                const std::string_view rule_name,
+                                const std::string_view message,
+                                const auto &result) {
+              CallbackEntry entry;
+              entry.pointer = pointer;
+              entry.rule_name = std::string{rule_name};
+              entry.message = std::string{message};
+              entry.applies = result.applies;
+              entry.locations = result.locations;
+              entry.description = result.description;
+              callback_entries.push_back(std::move(entry));
+            });
+      },
+      sourcemeta::codegen::NonCanonicalizableError);
+
+  EXPECT_EQ(callback_entries.size(), 3);
+
+  // TODO: Why is this emitted 3 times?
+
+  EXPECT_AS_STRING(callback_entries.at(0).pointer, "");
+  EXPECT_EQ(callback_entries.at(0).rule_name, "simple_properties_identifiers");
+  EXPECT_EQ(callback_entries.at(0).message,
+            "Set `properties` to identifier names that can be easily mapped to "
+            "programming languages (matching [A-Za-z_][A-Za-z0-9_]*)");
+  EXPECT_TRUE(callback_entries.at(0).applies);
+  EXPECT_EQ(callback_entries.at(0).locations.size(), 1);
+  EXPECT_AS_STRING(callback_entries.at(0).locations.at(0), "/properties/$!@");
+  EXPECT_FALSE(callback_entries.at(0).description.has_value());
+
+  EXPECT_AS_STRING(callback_entries.at(1).pointer, "");
+  EXPECT_EQ(callback_entries.at(1).rule_name, "simple_properties_identifiers");
+  EXPECT_EQ(callback_entries.at(1).message,
+            "Set `properties` to identifier names that can be easily mapped to "
+            "programming languages (matching [A-Za-z_][A-Za-z0-9_]*)");
+  EXPECT_TRUE(callback_entries.at(1).applies);
+  EXPECT_EQ(callback_entries.at(1).locations.size(), 1);
+  EXPECT_AS_STRING(callback_entries.at(1).locations.at(0), "/properties/$!@");
+  EXPECT_FALSE(callback_entries.at(1).description.has_value());
+
+  EXPECT_AS_STRING(callback_entries.at(2).pointer, "");
+  EXPECT_EQ(callback_entries.at(2).rule_name, "simple_properties_identifiers");
+  EXPECT_EQ(callback_entries.at(2).message,
+            "Set `properties` to identifier names that can be easily mapped to "
+            "programming languages (matching [A-Za-z_][A-Za-z0-9_]*)");
+  EXPECT_TRUE(callback_entries.at(2).applies);
+  EXPECT_EQ(callback_entries.at(2).locations.size(), 1);
+  EXPECT_AS_STRING(callback_entries.at(2).locations.at(0), "/properties/$!@");
+  EXPECT_FALSE(callback_entries.at(2).description.has_value());
+}
