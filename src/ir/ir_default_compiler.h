@@ -27,8 +27,9 @@
 namespace sourcemeta::codegen {
 
 auto handle_impossible(
-    const sourcemeta::core::JSON &, const sourcemeta::core::Vocabularies &,
-    const sourcemeta::core::JSON &, const sourcemeta::core::Pointer &pointer,
+    const sourcemeta::core::JSON &, const sourcemeta::core::SchemaFrame &,
+    const sourcemeta::core::Vocabularies &, const sourcemeta::core::JSON &,
+    const sourcemeta::core::Pointer &pointer,
     const sourcemeta::core::PointerTemplate &instance_location)
     -> IRImpossible {
   return IRImpossible{
@@ -36,6 +37,7 @@ auto handle_impossible(
 }
 
 auto handle_string(const sourcemeta::core::JSON &schema,
+                   const sourcemeta::core::SchemaFrame &,
                    const sourcemeta::core::Vocabularies &,
                    const sourcemeta::core::JSON &subschema,
                    const sourcemeta::core::Pointer &pointer,
@@ -49,6 +51,7 @@ auto handle_string(const sourcemeta::core::JSON &schema,
 }
 
 auto handle_object(const sourcemeta::core::JSON &schema,
+                   const sourcemeta::core::SchemaFrame &,
                    const sourcemeta::core::Vocabularies &,
                    const sourcemeta::core::JSON &subschema,
                    const sourcemeta::core::Pointer &pointer,
@@ -124,6 +127,7 @@ auto handle_object(const sourcemeta::core::JSON &schema,
 }
 
 auto handle_integer(const sourcemeta::core::JSON &schema,
+                    const sourcemeta::core::SchemaFrame &,
                     const sourcemeta::core::Vocabularies &,
                     const sourcemeta::core::JSON &subschema,
                     const sourcemeta::core::Pointer &pointer,
@@ -138,6 +142,7 @@ auto handle_integer(const sourcemeta::core::JSON &schema,
 }
 
 auto handle_number(const sourcemeta::core::JSON &schema,
+                   const sourcemeta::core::SchemaFrame &,
                    const sourcemeta::core::Vocabularies &,
                    const sourcemeta::core::JSON &subschema,
                    const sourcemeta::core::Pointer &pointer,
@@ -152,6 +157,7 @@ auto handle_number(const sourcemeta::core::JSON &schema,
 }
 
 auto handle_array(const sourcemeta::core::JSON &schema,
+                  const sourcemeta::core::SchemaFrame &,
                   const sourcemeta::core::Vocabularies &vocabularies,
                   const sourcemeta::core::JSON &subschema,
                   const sourcemeta::core::Pointer &pointer,
@@ -266,6 +272,7 @@ auto handle_array(const sourcemeta::core::JSON &schema,
 }
 
 auto handle_enum(const sourcemeta::core::JSON &schema,
+                 const sourcemeta::core::SchemaFrame &,
                  const sourcemeta::core::Vocabularies &,
                  const sourcemeta::core::JSON &subschema,
                  const sourcemeta::core::Pointer &pointer,
@@ -299,6 +306,7 @@ auto handle_enum(const sourcemeta::core::JSON &schema,
 }
 
 auto handle_anyof(const sourcemeta::core::JSON &schema,
+                  const sourcemeta::core::SchemaFrame &,
                   const sourcemeta::core::Vocabularies &,
                   const sourcemeta::core::JSON &subschema,
                   const sourcemeta::core::Pointer &pointer,
@@ -333,6 +341,7 @@ auto handle_anyof(const sourcemeta::core::JSON &schema,
 }
 
 auto handle_ref(const sourcemeta::core::JSON &schema,
+                const sourcemeta::core::SchemaFrame &,
                 const sourcemeta::core::Vocabularies &,
                 const sourcemeta::core::JSON &,
                 const sourcemeta::core::Pointer &pointer,
@@ -343,6 +352,7 @@ auto handle_ref(const sourcemeta::core::JSON &schema,
 
 auto default_compiler(
     const sourcemeta::core::JSON &schema,
+    const sourcemeta::core::SchemaFrame &frame,
     const sourcemeta::core::Vocabularies &vocabularies,
     const sourcemeta::core::JSON &subschema,
     const sourcemeta::core::Pointer &pointer,
@@ -352,7 +362,7 @@ auto default_compiler(
 
   if (subschema.is_boolean()) {
     assert(!subschema.to_boolean());
-    return handle_impossible(schema, vocabularies, subschema, pointer,
+    return handle_impossible(schema, frame, vocabularies, subschema, pointer,
                              instance_location);
   } else if (subschema.defines("type")) {
     const auto &type_value{subschema.at("type")};
@@ -365,33 +375,33 @@ auto default_compiler(
 
     // The canonicaliser transforms any other type
     if (type_string == "string") {
-      return handle_string(schema, vocabularies, subschema, pointer,
+      return handle_string(schema, frame, vocabularies, subschema, pointer,
                            instance_location);
     } else if (type_string == "object") {
-      return handle_object(schema, vocabularies, subschema, pointer,
+      return handle_object(schema, frame, vocabularies, subschema, pointer,
                            instance_location);
     } else if (type_string == "integer") {
-      return handle_integer(schema, vocabularies, subschema, pointer,
+      return handle_integer(schema, frame, vocabularies, subschema, pointer,
                             instance_location);
     } else if (type_string == "number") {
-      return handle_number(schema, vocabularies, subschema, pointer,
+      return handle_number(schema, frame, vocabularies, subschema, pointer,
                            instance_location);
     } else if (type_string == "array") {
-      return handle_array(schema, vocabularies, subschema, pointer,
+      return handle_array(schema, frame, vocabularies, subschema, pointer,
                           instance_location);
     } else {
       throw UnsupportedKeywordValue(schema, pointer, "type",
                                     "Unsupported type value");
     }
   } else if (subschema.defines("enum")) {
-    return handle_enum(schema, vocabularies, subschema, pointer,
+    return handle_enum(schema, frame, vocabularies, subschema, pointer,
                        instance_location);
   } else if (subschema.defines("anyOf")) {
-    return handle_anyof(schema, vocabularies, subschema, pointer,
+    return handle_anyof(schema, frame, vocabularies, subschema, pointer,
                         instance_location);
     // Only the recursive case
   } else if (subschema.defines("$ref")) {
-    return handle_ref(schema, vocabularies, subschema, pointer,
+    return handle_ref(schema, frame, vocabularies, subschema, pointer,
                       instance_location);
   } else {
     throw UnexpectedSchema(schema, pointer, "Unsupported subschema");

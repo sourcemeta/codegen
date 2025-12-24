@@ -93,8 +93,8 @@ auto compile(
     vocabularies.throw_if_any_unsupported(
         SUPPORTED_VOCABULARIES, "Cannot analyse unsupported vocabulary");
 
-    result.push_back(compiler(schema, vocabularies, subschema, location.pointer,
-                              instance_locations.front()));
+    result.push_back(compiler(schema, frame, vocabularies, subschema,
+                              location.pointer, instance_locations.front()));
   }
 
   // --------------------------------------------------------------------------
