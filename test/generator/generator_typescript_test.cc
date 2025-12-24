@@ -226,3 +226,38 @@ export type MyTuple = [MyTuple_0, ...MyTuple_1[]];
 
   EXPECT_EQ(output.str(), expected);
 }
+
+TEST(Generator_typescript, reference_property_to_root) {
+  using namespace sourcemeta::codegen;
+
+  IRResult result;
+
+  result.emplace_back(IRReference{
+      {sourcemeta::core::Pointer{"properties", "child", "$ref"},
+       sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"child"}}},
+      {{}, sourcemeta::core::PointerTemplate{}}});
+
+  IRObject object;
+  object.pointer = {};
+  object.instance_location = {};
+  object.members.emplace(
+      "child",
+      IRObjectValue{{sourcemeta::core::Pointer{"properties", "child", "$ref"},
+                     sourcemeta::core::PointerTemplate{
+                         sourcemeta::core::Pointer{"child"}}},
+                    false,
+                    false});
+  result.emplace_back(std::move(object));
+
+  std::ostringstream output;
+  typescript(output, result, "Node");
+
+  const auto expected{R"TS(export type Node_Child = Node;
+
+export interface Node {
+  child?: Node_Child;
+}
+)TS"};
+
+  EXPECT_EQ(output.str(), expected);
+}

@@ -60,6 +60,14 @@ static auto handle_ir_array(std::ostream &output, const IRArray &entry,
          << "[];\n";
 }
 
+static auto handle_ir_reference(std::ostream &output, const IRReference &entry,
+                                const std::string &default_namespace) -> void {
+  output << "export type "
+         << to_pascal_case(entry.instance_location, default_namespace) << " = "
+         << to_pascal_case(entry.target.instance_location, default_namespace)
+         << ";\n";
+}
+
 static auto handle_ir_tuple(std::ostream &output, const IRTuple &entry,
                             const std::string &default_namespace) -> void {
   output << "export type "
@@ -102,6 +110,8 @@ auto typescript(std::ostream &output, const IRResult &result,
       handle_ir_array(output, *array, ns);
     } else if (const auto *tuple = std::get_if<IRTuple>(&entity)) {
       handle_ir_tuple(output, *tuple, ns);
+    } else if (const auto *reference = std::get_if<IRReference>(&entity)) {
+      handle_ir_reference(output, *reference, ns);
     }
   }
 }
