@@ -1,5 +1,7 @@
 #include <sourcemeta/codegen/generator.h>
 
+#include <variant> // std::visit
+
 namespace sourcemeta::codegen {
 
 static auto scalar_type_to_typescript(IRScalarType type) -> std::string {
@@ -11,118 +13,114 @@ static auto scalar_type_to_typescript(IRScalarType type) -> std::string {
   }
 }
 
-static auto handle_ir_scalar(std::ostream &output, const IRScalar &entry,
-                             const std::string &default_namespace) -> void {
-  output << "export type "
-         << to_pascal_case(entry.instance_location, default_namespace) << " = "
-         << scalar_type_to_typescript(entry.value) << ";\n";
-}
+class TypeScriptGenerator {
+public:
+  TypeScriptGenerator(std::ostream &stream, const std::string &type_prefix)
+      : output{stream}, prefix{type_prefix} {}
 
-static auto handle_ir_enumeration(std::ostream &output,
-                                  const IREnumeration &entry,
-                                  const std::string &default_namespace)
-    -> void {
-  output << "export type "
-         << to_pascal_case(entry.instance_location, default_namespace) << " = ";
-
-  const char *separator{""};
-  for (const auto &value : entry.values) {
-    output << separator;
-    sourcemeta::core::prettify(value, output);
-    separator = " | ";
+  auto operator()(const IRScalar &entry) const -> void {
+    this->output << "export type "
+                 << to_pascal_case(entry.instance_location, this->prefix)
+                 << " = " << scalar_type_to_typescript(entry.value) << ";\n";
   }
 
-  output << ";\n";
-}
+  auto operator()(const IREnumeration &entry) const -> void {
+    this->output << "export type "
+                 << to_pascal_case(entry.instance_location, this->prefix)
+                 << " = ";
 
-static auto handle_ir_object(std::ostream &output, const IRObject &entry,
-                             const std::string &default_namespace) -> void {
-  output << "export interface "
-         << to_pascal_case(entry.instance_location, default_namespace)
-         << " {\n";
-  for (const auto &[member_name, member_value] : entry.members) {
-    const auto optional_marker{member_value.required ? "" : "?"};
-    const auto readonly_marker{member_value.immutable ? "readonly " : ""};
-    output << "  "
-           << readonly_marker
-           // TODO: Throw an error if this member name cannot be represented
-           << member_name << optional_marker << ": "
-           << to_pascal_case(member_value.instance_location, default_namespace)
-           << ";\n";
+    const char *separator{""};
+    for (const auto &value : entry.values) {
+      this->output << separator;
+      sourcemeta::core::prettify(value, this->output);
+      separator = " | ";
+    }
+
+    this->output << ";\n";
   }
 
-  output << "}\n";
-}
+  auto operator()(const IRObject &entry) const -> void {
+    this->output << "export interface "
+                 << to_pascal_case(entry.instance_location, this->prefix)
+                 << " {\n";
+    for (const auto &[member_name, member_value] : entry.members) {
+      const auto optional_marker{member_value.required ? "" : "?"};
+      const auto readonly_marker{member_value.immutable ? "readonly " : ""};
+      // TODO: Throw an error if this member name cannot be represented
+      this->output << "  " << readonly_marker << member_name << optional_marker
+                   << ": "
+                   << to_pascal_case(member_value.instance_location,
+                                     this->prefix)
+                   << ";\n";
+    }
 
-static auto handle_ir_impossible(std::ostream &output,
-                                 const IRImpossible &entry,
-                                 const std::string &default_namespace) -> void {
-  output << "export type "
-         << to_pascal_case(entry.instance_location, default_namespace)
-         << " = never;\n";
-}
-
-static auto handle_ir_array(std::ostream &output, const IRArray &entry,
-                            const std::string &default_namespace) -> void {
-  output << "export type "
-         << to_pascal_case(entry.instance_location, default_namespace) << " = "
-         << to_pascal_case(entry.items.instance_location, default_namespace)
-         << "[];\n";
-}
-
-static auto handle_ir_reference(std::ostream &output, const IRReference &entry,
-                                const std::string &default_namespace) -> void {
-  output << "export type "
-         << to_pascal_case(entry.instance_location, default_namespace) << " = "
-         << to_pascal_case(entry.target.instance_location, default_namespace)
-         << ";\n";
-}
-
-static auto handle_ir_tuple(std::ostream &output, const IRTuple &entry,
-                            const std::string &default_namespace) -> void {
-  output << "export type "
-         << to_pascal_case(entry.instance_location, default_namespace)
-         << " = [";
-
-  const char *separator{""};
-  for (const auto &item : entry.items) {
-    output << separator
-           << to_pascal_case(item.instance_location, default_namespace);
-    separator = ", ";
+    this->output << "}\n";
   }
 
-  if (entry.additional.has_value()) {
-    output << separator << "..."
-           << to_pascal_case(entry.additional->instance_location,
-                             default_namespace)
-           << "[]";
+  auto operator()(const IRImpossible &entry) const -> void {
+    this->output << "export type "
+                 << to_pascal_case(entry.instance_location, this->prefix)
+                 << " = never;\n";
   }
 
-  output << "];\n";
-}
+  auto operator()(const IRArray &entry) const -> void {
+    this->output << "export type "
+                 << to_pascal_case(entry.instance_location, this->prefix)
+                 << " = "
+                 << to_pascal_case(entry.items.instance_location, this->prefix)
+                 << "[];\n";
+  }
+
+  auto operator()(const IRReference &entry) const -> void {
+    this->output << "export type "
+                 << to_pascal_case(entry.instance_location, this->prefix)
+                 << " = "
+                 << to_pascal_case(entry.target.instance_location, this->prefix)
+                 << ";\n";
+  }
+
+  auto operator()(const IRTuple &entry) const -> void {
+    this->output << "export type "
+                 << to_pascal_case(entry.instance_location, this->prefix)
+                 << " = [";
+
+    const char *separator{""};
+    for (const auto &item : entry.items) {
+      this->output << separator
+                   << to_pascal_case(item.instance_location, this->prefix);
+      separator = ", ";
+    }
+
+    if (entry.additional.has_value()) {
+      this->output << separator << "..."
+                   << to_pascal_case(entry.additional->instance_location,
+                                     this->prefix)
+                   << "[]";
+    }
+
+    this->output << "];\n";
+  }
+
+  auto operator()(const IRUnion &) const -> void {
+    // TODO: Implement IRUnion support
+  }
+
+private:
+  // NOLINTNEXTLINE(cppcoreguidelines-avoid-const-or-ref-data-members)
+  std::ostream &output;
+  // NOLINTNEXTLINE(cppcoreguidelines-avoid-const-or-ref-data-members)
+  const std::string &prefix;
+};
 
 auto typescript(std::ostream &output, const IRResult &result,
-                const std::optional<std::string> &default_namespace) -> void {
-  const std::string ns{default_namespace.value_or("Schema")};
+                const std::optional<std::string> &default_prefix) -> void {
+  const std::string prefix{default_prefix.value_or("Schema")};
+  const TypeScriptGenerator visitor{output, prefix};
   const char *separator{""};
   for (const auto &entity : result) {
     output << separator;
     separator = "\n";
-    if (const auto *scalar = std::get_if<IRScalar>(&entity)) {
-      handle_ir_scalar(output, *scalar, ns);
-    } else if (const auto *enumeration = std::get_if<IREnumeration>(&entity)) {
-      handle_ir_enumeration(output, *enumeration, ns);
-    } else if (const auto *object = std::get_if<IRObject>(&entity)) {
-      handle_ir_object(output, *object, ns);
-    } else if (const auto *impossible = std::get_if<IRImpossible>(&entity)) {
-      handle_ir_impossible(output, *impossible, ns);
-    } else if (const auto *array = std::get_if<IRArray>(&entity)) {
-      handle_ir_array(output, *array, ns);
-    } else if (const auto *tuple = std::get_if<IRTuple>(&entity)) {
-      handle_ir_tuple(output, *tuple, ns);
-    } else if (const auto *reference = std::get_if<IRReference>(&entity)) {
-      handle_ir_reference(output, *reference, ns);
-    }
+    std::visit(visitor, entity);
   }
 }
 

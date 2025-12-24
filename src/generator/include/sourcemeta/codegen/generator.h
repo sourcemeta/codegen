@@ -21,13 +21,13 @@ namespace sourcemeta::codegen {
 /// @ingroup generator
 SOURCEMETA_CODEGEN_GENERATOR_EXPORT
 auto to_pascal_case(const sourcemeta::core::PointerTemplate &instance_location,
-                    const std::string &default_namespace) -> std::string;
+                    const std::string &prefix) -> std::string;
 
 /// @ingroup generator
 SOURCEMETA_CODEGEN_GENERATOR_EXPORT
-auto typescript(
-    std::ostream &output, const IRResult &result,
-    const std::optional<std::string> &default_namespace = std::nullopt) -> void;
+auto typescript(std::ostream &output, const IRResult &result,
+                const std::optional<std::string> &default_prefix = std::nullopt)
+    -> void;
 
 } // namespace sourcemeta::codegen
 

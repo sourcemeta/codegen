@@ -13,7 +13,7 @@
 
 auto main(int argc, char *argv[]) -> int {
   sourcemeta::core::Options options;
-  options.option("default-namespace", {"n"});
+  options.option("default-prefix", {"p"});
   options.parse(argc, argv);
 
   const auto &positional_arguments{options.positional()};
@@ -30,11 +30,11 @@ auto main(int argc, char *argv[]) -> int {
                                    sourcemeta::core::schema_resolver,
                                    sourcemeta::codegen::default_compiler)};
 
-  std::optional<std::string> default_namespace{std::nullopt};
-  if (options.contains("default-namespace")) {
-    default_namespace = std::string{options.at("default-namespace").front()};
+  std::optional<std::string> default_prefix{std::nullopt};
+  if (options.contains("default-prefix")) {
+    default_prefix = std::string{options.at("default-prefix").front()};
   }
 
-  sourcemeta::codegen::typescript(std::cout, result, default_namespace);
+  sourcemeta::codegen::typescript(std::cout, result, default_prefix);
   return EXIT_SUCCESS;
 }

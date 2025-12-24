@@ -35,9 +35,9 @@ public:
     const std::string expected{std::istreambuf_iterator<char>(expected_stream),
                                std::istreambuf_iterator<char>()};
 
-    std::optional<std::string> default_namespace{std::nullopt};
-    if (options.defines("defaultNamespace")) {
-      default_namespace = options.at("defaultNamespace").to_string();
+    std::optional<std::string> default_prefix{std::nullopt};
+    if (options.defines("defaultPrefix")) {
+      default_prefix = options.at("defaultPrefix").to_string();
     }
 
     const auto result{
@@ -46,7 +46,7 @@ public:
                                      sourcemeta::codegen::default_compiler)};
 
     std::ostringstream output;
-    sourcemeta::codegen::typescript(output, result, default_namespace);
+    sourcemeta::codegen::typescript(output, result, default_prefix);
 
     EXPECT_EQ(output.str(), expected)
         << "Generated TypeScript does not match expected output";

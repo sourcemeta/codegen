@@ -66,9 +66,9 @@ static auto encode_string(const std::string &input) -> std::string {
 }
 
 auto to_pascal_case(const sourcemeta::core::PointerTemplate &instance_location,
-                    const std::string &default_namespace) -> std::string {
-  assert(!default_namespace.empty());
-  std::string result{default_namespace};
+                    const std::string &prefix) -> std::string {
+  assert(!prefix.empty());
+  std::string result{prefix};
   const auto first_char{static_cast<unsigned char>(result[0])};
   if (std::islower(first_char) != 0) {
     result[0] = static_cast<char>(std::toupper(first_char));
