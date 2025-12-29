@@ -69,27 +69,24 @@ TEST(Generator_typescript, object_with_optional_string_property) {
 
   IRResult result;
 
-  result.emplace_back(IRScalar{
-      {{}, sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"foo"}}},
-      IRScalarType::String});
+  result.emplace_back(IRScalar{{sourcemeta::core::Pointer{"properties", "foo"}},
+                               IRScalarType::String});
 
   IRObject object;
-  object.instance_location = {};
-  object.members.emplace("foo",
-                         IRObjectValue{{{},
-                                        sourcemeta::core::PointerTemplate{
-                                            sourcemeta::core::Pointer{"foo"}}},
-                                       false,
-                                       false});
+  object.pointer = {};
+  object.members.emplace(
+      "foo", IRObjectValue{{sourcemeta::core::Pointer{"properties", "foo"}},
+                           false,
+                           false});
   result.emplace_back(std::move(object));
 
   std::ostringstream output;
   generate<TypeScript>(output, result, "MyObject");
 
-  const auto expected{R"TS(export type MyObject_Foo = string;
+  const auto expected{R"TS(export type MyObject_Properties_Foo = string;
 
 export interface MyObject {
-  "foo"?: MyObject_Foo;
+  "foo"?: MyObject_Properties_Foo;
 }
 )TS"};
 
@@ -102,18 +99,14 @@ TEST(Generator_typescript, object_property_with_quotes) {
   IRResult result;
 
   result.emplace_back(
-      IRScalar{{{},
-                sourcemeta::core::PointerTemplate{
-                    sourcemeta::core::Pointer{"say \"hello\""}}},
+      IRScalar{{sourcemeta::core::Pointer{"properties", "say \"hello\""}},
                IRScalarType::String});
 
   IRObject object;
-  object.instance_location = {};
+  object.pointer = {};
   object.members.emplace(
       "say \"hello\"",
-      IRObjectValue{{{},
-                     sourcemeta::core::PointerTemplate{
-                         sourcemeta::core::Pointer{"say \"hello\""}}},
+      IRObjectValue{{sourcemeta::core::Pointer{"properties", "say \"hello\""}},
                     false,
                     false});
   result.emplace_back(std::move(object));
@@ -121,10 +114,11 @@ TEST(Generator_typescript, object_property_with_quotes) {
   std::ostringstream output;
   generate<TypeScript>(output, result, "MyObject");
 
-  const auto expected{R"TS(export type MyObject_SayX20X22HelloX22 = string;
+  const auto expected{
+      R"TS(export type MyObject_Properties_SayX20X22HelloX22 = string;
 
 export interface MyObject {
-  "say \"hello\""?: MyObject_SayX20X22HelloX22;
+  "say \"hello\""?: MyObject_Properties_SayX20X22HelloX22;
 }
 )TS"};
 
@@ -137,18 +131,14 @@ TEST(Generator_typescript, object_property_with_backslash) {
   IRResult result;
 
   result.emplace_back(
-      IRScalar{{{},
-                sourcemeta::core::PointerTemplate{
-                    sourcemeta::core::Pointer{"path\\to\\file"}}},
+      IRScalar{{sourcemeta::core::Pointer{"properties", "path\\to\\file"}},
                IRScalarType::String});
 
   IRObject object;
-  object.instance_location = {};
+  object.pointer = {};
   object.members.emplace(
       "path\\to\\file",
-      IRObjectValue{{{},
-                     sourcemeta::core::PointerTemplate{
-                         sourcemeta::core::Pointer{"path\\to\\file"}}},
+      IRObjectValue{{sourcemeta::core::Pointer{"properties", "path\\to\\file"}},
                     false,
                     false});
   result.emplace_back(std::move(object));
@@ -156,10 +146,11 @@ TEST(Generator_typescript, object_property_with_backslash) {
   std::ostringstream output;
   generate<TypeScript>(output, result, "MyObject");
 
-  const auto expected{R"TS(export type MyObject_PathX5CToX5CFile = string;
+  const auto expected{
+      R"TS(export type MyObject_Properties_PathX5CToX5CFile = string;
 
 export interface MyObject {
-  "path\\to\\file"?: MyObject_PathX5CToX5CFile;
+  "path\\to\\file"?: MyObject_Properties_PathX5CToX5CFile;
 }
 )TS"};
 
@@ -171,18 +162,15 @@ TEST(Generator_typescript, object_property_with_newline) {
 
   IRResult result;
 
-  result.emplace_back(IRScalar{{{},
-                                sourcemeta::core::PointerTemplate{
-                                    sourcemeta::core::Pointer{"line1\nline2"}}},
-                               IRScalarType::String});
+  result.emplace_back(
+      IRScalar{{sourcemeta::core::Pointer{"properties", "line1\nline2"}},
+               IRScalarType::String});
 
   IRObject object;
-  object.instance_location = {};
+  object.pointer = {};
   object.members.emplace(
       "line1\nline2",
-      IRObjectValue{{{},
-                     sourcemeta::core::PointerTemplate{
-                         sourcemeta::core::Pointer{"line1\nline2"}}},
+      IRObjectValue{{sourcemeta::core::Pointer{"properties", "line1\nline2"}},
                     false,
                     false});
   result.emplace_back(std::move(object));
@@ -190,10 +178,11 @@ TEST(Generator_typescript, object_property_with_newline) {
   std::ostringstream output;
   generate<TypeScript>(output, result, "MyObject");
 
-  EXPECT_EQ(output.str(), "export type MyObject_Line1X0ALine2 = string;\n\n"
-                          "export interface MyObject {\n"
-                          "  \"line1\\nline2\"?: MyObject_Line1X0ALine2;\n"
-                          "}\n");
+  EXPECT_EQ(output.str(),
+            "export type MyObject_Properties_Line1X0ALine2 = string;\n\n"
+            "export interface MyObject {\n"
+            "  \"line1\\nline2\"?: MyObject_Properties_Line1X0ALine2;\n"
+            "}\n");
 }
 
 TEST(Generator_typescript, object_property_with_tab) {
@@ -201,18 +190,15 @@ TEST(Generator_typescript, object_property_with_tab) {
 
   IRResult result;
 
-  result.emplace_back(IRScalar{{{},
-                                sourcemeta::core::PointerTemplate{
-                                    sourcemeta::core::Pointer{"col1\tcol2"}}},
-                               IRScalarType::String});
+  result.emplace_back(
+      IRScalar{{sourcemeta::core::Pointer{"properties", "col1\tcol2"}},
+               IRScalarType::String});
 
   IRObject object;
-  object.instance_location = {};
+  object.pointer = {};
   object.members.emplace(
       "col1\tcol2",
-      IRObjectValue{{{},
-                     sourcemeta::core::PointerTemplate{
-                         sourcemeta::core::Pointer{"col1\tcol2"}}},
+      IRObjectValue{{sourcemeta::core::Pointer{"properties", "col1\tcol2"}},
                     false,
                     false});
   result.emplace_back(std::move(object));
@@ -220,10 +206,11 @@ TEST(Generator_typescript, object_property_with_tab) {
   std::ostringstream output;
   generate<TypeScript>(output, result, "MyObject");
 
-  EXPECT_EQ(output.str(), "export type MyObject_Col1X09Col2 = string;\n\n"
-                          "export interface MyObject {\n"
-                          "  \"col1\\tcol2\"?: MyObject_Col1X09Col2;\n"
-                          "}\n");
+  EXPECT_EQ(output.str(),
+            "export type MyObject_Properties_Col1X09Col2 = string;\n\n"
+            "export interface MyObject {\n"
+            "  \"col1\\tcol2\"?: MyObject_Properties_Col1X09Col2;\n"
+            "}\n");
 }
 
 TEST(Generator_typescript, object_property_with_carriage_return) {
@@ -231,18 +218,15 @@ TEST(Generator_typescript, object_property_with_carriage_return) {
 
   IRResult result;
 
-  result.emplace_back(IRScalar{{{},
-                                sourcemeta::core::PointerTemplate{
-                                    sourcemeta::core::Pointer{"line1\rline2"}}},
-                               IRScalarType::String});
+  result.emplace_back(
+      IRScalar{{sourcemeta::core::Pointer{"properties", "line1\rline2"}},
+               IRScalarType::String});
 
   IRObject object;
-  object.instance_location = {};
+  object.pointer = {};
   object.members.emplace(
       "line1\rline2",
-      IRObjectValue{{{},
-                     sourcemeta::core::PointerTemplate{
-                         sourcemeta::core::Pointer{"line1\rline2"}}},
+      IRObjectValue{{sourcemeta::core::Pointer{"properties", "line1\rline2"}},
                     false,
                     false});
   result.emplace_back(std::move(object));
@@ -250,10 +234,11 @@ TEST(Generator_typescript, object_property_with_carriage_return) {
   std::ostringstream output;
   generate<TypeScript>(output, result, "MyObject");
 
-  EXPECT_EQ(output.str(), "export type MyObject_Line1X0DLine2 = string;\n\n"
-                          "export interface MyObject {\n"
-                          "  \"line1\\rline2\"?: MyObject_Line1X0DLine2;\n"
-                          "}\n");
+  EXPECT_EQ(output.str(),
+            "export type MyObject_Properties_Line1X0DLine2 = string;\n\n"
+            "export interface MyObject {\n"
+            "  \"line1\\rline2\"?: MyObject_Properties_Line1X0DLine2;\n"
+            "}\n");
 }
 
 TEST(Generator_typescript, object_property_with_special_characters) {
@@ -261,28 +246,26 @@ TEST(Generator_typescript, object_property_with_special_characters) {
 
   IRResult result;
 
-  result.emplace_back(IRScalar{{{},
-                                sourcemeta::core::PointerTemplate{
-                                    sourcemeta::core::Pointer{"$foo@bar"}}},
-                               IRScalarType::String});
+  result.emplace_back(
+      IRScalar{{sourcemeta::core::Pointer{"properties", "$foo@bar"}},
+               IRScalarType::String});
 
   IRObject object;
-  object.instance_location = {};
+  object.pointer = {};
   object.members.emplace(
-      "$foo@bar", IRObjectValue{{{},
-                                 sourcemeta::core::PointerTemplate{
-                                     sourcemeta::core::Pointer{"$foo@bar"}}},
-                                false,
-                                false});
+      "$foo@bar",
+      IRObjectValue{
+          {sourcemeta::core::Pointer{"properties", "$foo@bar"}}, false, false});
   result.emplace_back(std::move(object));
 
   std::ostringstream output;
   generate<TypeScript>(output, result, "MyObject");
 
-  const auto expected{R"TS(export type MyObject_X24FooX40Bar = string;
+  const auto expected{
+      R"TS(export type MyObject_Properties_X24FooX40Bar = string;
 
 export interface MyObject {
-  "$foo@bar"?: MyObject_X24FooX40Bar;
+  "$foo@bar"?: MyObject_Properties_X24FooX40Bar;
 }
 )TS"};
 
@@ -295,29 +278,26 @@ TEST(Generator_typescript, object_property_with_spaces) {
   IRResult result;
 
   result.emplace_back(
-      IRScalar{{{},
-                sourcemeta::core::PointerTemplate{
-                    sourcemeta::core::Pointer{"my property name"}}},
+      IRScalar{{sourcemeta::core::Pointer{"properties", "my property name"}},
                IRScalarType::String});
 
   IRObject object;
-  object.instance_location = {};
-  object.members.emplace(
-      "my property name",
-      IRObjectValue{{{},
-                     sourcemeta::core::PointerTemplate{
-                         sourcemeta::core::Pointer{"my property name"}}},
-                    false,
-                    false});
+  object.pointer = {};
+  object.members.emplace("my property name",
+                         IRObjectValue{{sourcemeta::core::Pointer{
+                                           "properties", "my property name"}},
+                                       false,
+                                       false});
   result.emplace_back(std::move(object));
 
   std::ostringstream output;
   generate<TypeScript>(output, result, "MyObject");
 
-  const auto expected{R"TS(export type MyObject_MyX20PropertyX20Name = string;
+  const auto expected{
+      R"TS(export type MyObject_Properties_MyX20PropertyX20Name = string;
 
 export interface MyObject {
-  "my property name"?: MyObject_MyX20PropertyX20Name;
+  "my property name"?: MyObject_Properties_MyX20PropertyX20Name;
 }
 )TS"};
 
@@ -329,28 +309,25 @@ TEST(Generator_typescript, object_property_starting_with_number) {
 
   IRResult result;
 
-  result.emplace_back(IRScalar{
-      {{},
-       sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"123abc"}}},
-      IRScalarType::String});
+  result.emplace_back(
+      IRScalar{{sourcemeta::core::Pointer{"properties", "123abc"}},
+               IRScalarType::String});
 
   IRObject object;
-  object.instance_location = {};
+  object.pointer = {};
   object.members.emplace(
-      "123abc", IRObjectValue{{{},
-                               sourcemeta::core::PointerTemplate{
-                                   sourcemeta::core::Pointer{"123abc"}}},
-                              false,
-                              false});
+      "123abc",
+      IRObjectValue{
+          {sourcemeta::core::Pointer{"properties", "123abc"}}, false, false});
   result.emplace_back(std::move(object));
 
   std::ostringstream output;
   generate<TypeScript>(output, result, "MyObject");
 
-  const auto expected{R"TS(export type MyObject_123abc = string;
+  const auto expected{R"TS(export type MyObject_Properties_123abc = string;
 
 export interface MyObject {
-  "123abc"?: MyObject_123abc;
+  "123abc"?: MyObject_Properties_123abc;
 }
 )TS"};
 
@@ -362,17 +339,14 @@ TEST(Generator_typescript, object_property_reserved_word) {
 
   IRResult result;
 
-  result.emplace_back(IRScalar{
-      {{},
-       sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"class"}}},
-      IRScalarType::String});
+  result.emplace_back(
+      IRScalar{{sourcemeta::core::Pointer{"properties", "class"}},
+               IRScalarType::String});
 
   IRObject object;
-  object.instance_location = {};
+  object.pointer = {};
   object.members.emplace(
-      "class", IRObjectValue{{{},
-                              sourcemeta::core::PointerTemplate{
-                                  sourcemeta::core::Pointer{"class"}}},
+      "class", IRObjectValue{{sourcemeta::core::Pointer{"properties", "class"}},
                              false,
                              false});
   result.emplace_back(std::move(object));
@@ -380,10 +354,10 @@ TEST(Generator_typescript, object_property_reserved_word) {
   std::ostringstream output;
   generate<TypeScript>(output, result, "MyObject");
 
-  const auto expected{R"TS(export type MyObject_Class = string;
+  const auto expected{R"TS(export type MyObject_Properties_Class = string;
 
 export interface MyObject {
-  "class"?: MyObject_Class;
+  "class"?: MyObject_Properties_Class;
 }
 )TS"};
 
@@ -395,32 +369,30 @@ TEST(Generator_typescript, object_property_mixed_escapes) {
 
   IRResult result;
 
-  result.emplace_back(
-      IRScalar{{{},
-                sourcemeta::core::PointerTemplate{
-                    sourcemeta::core::Pointer{"path\\to\\\"file\"\n"}}},
-               IRScalarType::String});
+  result.emplace_back(IRScalar{
+      {sourcemeta::core::Pointer{"properties", "path\\to\\\"file\"\n"}},
+      IRScalarType::String});
 
   IRObject object;
-  object.instance_location = {};
+  object.pointer = {};
   object.members.emplace(
       "path\\to\\\"file\"\n",
-      IRObjectValue{{{},
-                     sourcemeta::core::PointerTemplate{
-                         sourcemeta::core::Pointer{"path\\to\\\"file\"\n"}}},
-                    false,
-                    false});
+      IRObjectValue{
+          {sourcemeta::core::Pointer{"properties", "path\\to\\\"file\"\n"}},
+          false,
+          false});
   result.emplace_back(std::move(object));
 
   std::ostringstream output;
   generate<TypeScript>(output, result, "MyObject");
 
-  EXPECT_EQ(output.str(),
-            "export type MyObject_PathX5CToX5CX22FileX22X0A = string;\n\n"
-            "export interface MyObject {\n"
-            "  \"path\\\\to\\\\\\\"file\\\"\\n\"?: "
-            "MyObject_PathX5CToX5CX22FileX22X0A;\n"
-            "}\n");
+  EXPECT_EQ(
+      output.str(),
+      "export type MyObject_Properties_PathX5CToX5CX22FileX22X0A = string;\n\n"
+      "export interface MyObject {\n"
+      "  \"path\\\\to\\\\\\\"file\\\"\\n\"?: "
+      "MyObject_Properties_PathX5CToX5CX22FileX22X0A;\n"
+      "}\n");
 }
 
 TEST(Generator_typescript, object_property_empty_string) {
@@ -428,26 +400,23 @@ TEST(Generator_typescript, object_property_empty_string) {
 
   IRResult result;
 
-  result.emplace_back(IRScalar{
-      {{}, sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{""}}},
-      IRScalarType::String});
+  result.emplace_back(IRScalar{{sourcemeta::core::Pointer{"properties", ""}},
+                               IRScalarType::String});
 
   IRObject object;
-  object.instance_location = {};
-  object.members.emplace("", IRObjectValue{{{},
-                                            sourcemeta::core::PointerTemplate{
-                                                sourcemeta::core::Pointer{""}}},
-                                           false,
-                                           false});
+  object.pointer = {};
+  object.members.emplace(
+      "", IRObjectValue{
+              {sourcemeta::core::Pointer{"properties", ""}}, false, false});
   result.emplace_back(std::move(object));
 
   std::ostringstream output;
   generate<TypeScript>(output, result, "MyObject");
 
-  const auto expected{R"TS(export type MyObject_ZEmpty = string;
+  const auto expected{R"TS(export type MyObject_Properties_ZEmpty = string;
 
 export interface MyObject {
-  ""?: MyObject_ZEmpty;
+  ""?: MyObject_Properties_ZEmpty;
 }
 )TS"};
 
@@ -470,9 +439,7 @@ TEST(Generator_typescript, impossible_nested) {
   using namespace sourcemeta::codegen;
 
   IRResult result;
-  result.emplace_back(IRImpossible{
-      {sourcemeta::core::Pointer{"foo"},
-       sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"foo"}}}});
+  result.emplace_back(IRImpossible{{sourcemeta::core::Pointer{"foo"}}});
 
   std::ostringstream output;
   generate<TypeScript>(output, result, "MyType");
@@ -485,25 +452,20 @@ TEST(Generator_typescript, array_at_root) {
 
   IRResult result;
 
-  result.emplace_back(IRScalar{
-      {sourcemeta::core::Pointer{"items"},
-       sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"0"}}},
-      IRScalarType::String});
+  result.emplace_back(
+      IRScalar{{sourcemeta::core::Pointer{"items"}}, IRScalarType::String});
 
   IRArray array;
   array.pointer = {};
-  array.instance_location = {};
   array.items.pointer = sourcemeta::core::Pointer{"items"};
-  array.items.instance_location =
-      sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"0"}};
   result.emplace_back(std::move(array));
 
   std::ostringstream output;
   generate<TypeScript>(output, result, "MyArray");
 
-  const auto expected{R"TS(export type MyArray_0 = string;
+  const auto expected{R"TS(export type MyArray_Items = string;
 
-export type MyArray = MyArray_0[];
+export type MyArray = MyArray_Items[];
 )TS"};
 
   EXPECT_EQ(output.str(), expected);
@@ -515,27 +477,19 @@ TEST(Generator_typescript, array_nested_in_object) {
   IRResult result;
 
   result.emplace_back(
-      IRScalar{{sourcemeta::core::Pointer{"properties", "tags", "items"},
-                sourcemeta::core::PointerTemplate{
-                    sourcemeta::core::Pointer{"tags", "0"}}},
+      IRScalar{{sourcemeta::core::Pointer{"properties", "tags", "items"}},
                IRScalarType::String});
 
   IRArray array;
   array.pointer = sourcemeta::core::Pointer{"properties", "tags"};
-  array.instance_location =
-      sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"tags"}};
   array.items.pointer =
       sourcemeta::core::Pointer{"properties", "tags", "items"};
-  array.items.instance_location =
-      sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"tags", "0"}};
   result.emplace_back(std::move(array));
 
   IRObject object;
-  object.instance_location = {};
+  object.pointer = {};
   object.members.emplace(
-      "tags", IRObjectValue{{sourcemeta::core::Pointer{"properties", "tags"},
-                             sourcemeta::core::PointerTemplate{
-                                 sourcemeta::core::Pointer{"tags"}}},
+      "tags", IRObjectValue{{sourcemeta::core::Pointer{"properties", "tags"}},
                             false,
                             false});
   result.emplace_back(std::move(object));
@@ -543,12 +497,12 @@ TEST(Generator_typescript, array_nested_in_object) {
   std::ostringstream output;
   generate<TypeScript>(output, result, "MyObject");
 
-  const auto expected{R"TS(export type MyObject_Tags_0 = string;
+  const auto expected{R"TS(export type MyObject_Properties_Tags_Items = string;
 
-export type MyObject_Tags = MyObject_Tags_0[];
+export type MyObject_Properties_Tags = MyObject_Properties_Tags_Items[];
 
 export interface MyObject {
-  "tags"?: MyObject_Tags;
+  "tags"?: MyObject_Properties_Tags;
 }
 )TS"};
 
@@ -560,35 +514,26 @@ TEST(Generator_typescript, tuple_without_additional) {
 
   IRResult result;
 
-  result.emplace_back(IRScalar{
-      {sourcemeta::core::Pointer{"prefixItems", "0"},
-       sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"0"}}},
-      IRScalarType::String});
+  result.emplace_back(IRScalar{{sourcemeta::core::Pointer{"prefixItems", "0"}},
+                               IRScalarType::String});
 
-  result.emplace_back(IRScalar{
-      {sourcemeta::core::Pointer{"prefixItems", "1"},
-       sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"1"}}},
-      IRScalarType::String});
+  result.emplace_back(IRScalar{{sourcemeta::core::Pointer{"prefixItems", "1"}},
+                               IRScalarType::String});
 
   IRTuple tuple;
   tuple.pointer = {};
-  tuple.instance_location = {};
-  tuple.items.push_back(
-      {sourcemeta::core::Pointer{"prefixItems", "0"},
-       sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"0"}}});
-  tuple.items.push_back(
-      {sourcemeta::core::Pointer{"prefixItems", "1"},
-       sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"1"}}});
+  tuple.items.push_back({sourcemeta::core::Pointer{"prefixItems", "0"}});
+  tuple.items.push_back({sourcemeta::core::Pointer{"prefixItems", "1"}});
   result.emplace_back(std::move(tuple));
 
   std::ostringstream output;
   generate<TypeScript>(output, result, "MyTuple");
 
-  const auto expected{R"TS(export type MyTuple_0 = string;
+  const auto expected{R"TS(export type MyTuple_PrefixItems_0 = string;
 
-export type MyTuple_1 = string;
+export type MyTuple_PrefixItems_1 = string;
 
-export type MyTuple = [MyTuple_0, MyTuple_1];
+export type MyTuple = [MyTuple_PrefixItems_0, MyTuple_PrefixItems_1];
 )TS"};
 
   EXPECT_EQ(output.str(), expected);
@@ -599,35 +544,26 @@ TEST(Generator_typescript, tuple_with_additional) {
 
   IRResult result;
 
-  result.emplace_back(IRScalar{
-      {sourcemeta::core::Pointer{"prefixItems", "0"},
-       sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"0"}}},
-      IRScalarType::String});
+  result.emplace_back(IRScalar{{sourcemeta::core::Pointer{"prefixItems", "0"}},
+                               IRScalarType::String});
 
-  result.emplace_back(IRScalar{
-      {sourcemeta::core::Pointer{"items"},
-       sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"1"}}},
-      IRScalarType::String});
+  result.emplace_back(
+      IRScalar{{sourcemeta::core::Pointer{"items"}}, IRScalarType::String});
 
   IRTuple tuple;
   tuple.pointer = {};
-  tuple.instance_location = {};
-  tuple.items.push_back(
-      {sourcemeta::core::Pointer{"prefixItems", "0"},
-       sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"0"}}});
-  tuple.additional =
-      IRType{sourcemeta::core::Pointer{"items"},
-             sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"1"}}};
+  tuple.items.push_back({sourcemeta::core::Pointer{"prefixItems", "0"}});
+  tuple.additional = IRType{sourcemeta::core::Pointer{"items"}};
   result.emplace_back(std::move(tuple));
 
   std::ostringstream output;
   generate<TypeScript>(output, result, "MyTuple");
 
-  const auto expected{R"TS(export type MyTuple_0 = string;
+  const auto expected{R"TS(export type MyTuple_PrefixItems_0 = string;
 
-export type MyTuple_1 = string;
+export type MyTuple_Items = string;
 
-export type MyTuple = [MyTuple_0, ...MyTuple_1[]];
+export type MyTuple = [MyTuple_PrefixItems_0, ...MyTuple_Items[]];
 )TS"};
 
   EXPECT_EQ(output.str(), expected);
@@ -638,30 +574,24 @@ TEST(Generator_typescript, reference_property_to_root) {
 
   IRResult result;
 
-  result.emplace_back(IRReference{
-      {sourcemeta::core::Pointer{"properties", "child", "$ref"},
-       sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"child"}}},
-      {{}, sourcemeta::core::PointerTemplate{}}});
+  result.emplace_back(
+      IRReference{{sourcemeta::core::Pointer{"properties", "child"}}, {{}}});
 
   IRObject object;
   object.pointer = {};
-  object.instance_location = {};
   object.members.emplace(
-      "child",
-      IRObjectValue{{sourcemeta::core::Pointer{"properties", "child", "$ref"},
-                     sourcemeta::core::PointerTemplate{
-                         sourcemeta::core::Pointer{"child"}}},
-                    false,
-                    false});
+      "child", IRObjectValue{{sourcemeta::core::Pointer{"properties", "child"}},
+                             false,
+                             false});
   result.emplace_back(std::move(object));
 
   std::ostringstream output;
   generate<TypeScript>(output, result, "Node");
 
-  const auto expected{R"TS(export type Node_Child = Node;
+  const auto expected{R"TS(export type Node_Properties_Child = Node;
 
 export interface Node {
-  "child"?: Node_Child;
+  "child"?: Node_Properties_Child;
 }
 )TS"};
 
@@ -675,7 +605,6 @@ TEST(Generator_typescript, enumeration_strings) {
 
   IREnumeration enumeration;
   enumeration.pointer = {};
-  enumeration.instance_location = {};
   enumeration.values.push_back(sourcemeta::core::JSON{"foo"});
   enumeration.values.push_back(sourcemeta::core::JSON{"bar"});
   enumeration.values.push_back(sourcemeta::core::JSON{"baz"});
@@ -695,7 +624,6 @@ TEST(Generator_typescript, enumeration_mixed_primitives) {
 
   IREnumeration enumeration;
   enumeration.pointer = {};
-  enumeration.instance_location = {};
   enumeration.values.push_back(sourcemeta::core::JSON{"active"});
   enumeration.values.push_back(sourcemeta::core::JSON{42});
   enumeration.values.push_back(sourcemeta::core::JSON{true});
@@ -716,7 +644,6 @@ TEST(Generator_typescript, enumeration_with_object) {
 
   IREnumeration enumeration;
   enumeration.pointer = {};
-  enumeration.instance_location = {};
   enumeration.values.push_back(sourcemeta::core::JSON{"simple"});
   enumeration.values.push_back(
       sourcemeta::core::parse_json("{\"type\":\"complex\"}"));
@@ -740,7 +667,6 @@ TEST(Generator_typescript, enumeration_with_array) {
 
   IREnumeration enumeration;
   enumeration.pointer = {};
-  enumeration.instance_location = {};
   enumeration.values.push_back(sourcemeta::core::JSON{1});
   enumeration.values.push_back(sourcemeta::core::parse_json("[1,2,3]"));
   result.emplace_back(std::move(enumeration));
@@ -756,35 +682,26 @@ TEST(Generator_typescript, union_at_root) {
 
   IRResult result;
 
-  result.emplace_back(IRScalar{
-      {sourcemeta::core::Pointer{"anyOf", "0"},
-       sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"0"}}},
-      IRScalarType::String});
+  result.emplace_back(IRScalar{{sourcemeta::core::Pointer{"anyOf", "0"}},
+                               IRScalarType::String});
 
-  result.emplace_back(IRScalar{
-      {sourcemeta::core::Pointer{"anyOf", "1"},
-       sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"1"}}},
-      IRScalarType::String});
+  result.emplace_back(IRScalar{{sourcemeta::core::Pointer{"anyOf", "1"}},
+                               IRScalarType::String});
 
   IRUnion my_union;
   my_union.pointer = {};
-  my_union.instance_location = {};
-  my_union.values.push_back(
-      {sourcemeta::core::Pointer{"anyOf", "0"},
-       sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"0"}}});
-  my_union.values.push_back(
-      {sourcemeta::core::Pointer{"anyOf", "1"},
-       sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"1"}}});
+  my_union.values.push_back({sourcemeta::core::Pointer{"anyOf", "0"}});
+  my_union.values.push_back({sourcemeta::core::Pointer{"anyOf", "1"}});
   result.emplace_back(std::move(my_union));
 
   std::ostringstream output;
   generate<TypeScript>(output, result, "MyUnion");
 
-  const auto expected{R"TS(export type MyUnion_0 = string;
+  const auto expected{R"TS(export type MyUnion_AnyOf_0 = string;
 
-export type MyUnion_1 = string;
+export type MyUnion_AnyOf_1 = string;
 
-export type MyUnion = MyUnion_0 | MyUnion_1;
+export type MyUnion = MyUnion_AnyOf_0 | MyUnion_AnyOf_1;
 )TS"};
 
   EXPECT_EQ(output.str(), expected);
@@ -796,38 +713,25 @@ TEST(Generator_typescript, union_nested_in_object) {
   IRResult result;
 
   result.emplace_back(
-      IRScalar{{sourcemeta::core::Pointer{"properties", "value", "anyOf", "0"},
-                sourcemeta::core::PointerTemplate{
-                    sourcemeta::core::Pointer{"value", "0"}}},
+      IRScalar{{sourcemeta::core::Pointer{"properties", "value", "anyOf", "0"}},
                IRScalarType::String});
 
   result.emplace_back(
-      IRScalar{{sourcemeta::core::Pointer{"properties", "value", "anyOf", "1"},
-                sourcemeta::core::PointerTemplate{
-                    sourcemeta::core::Pointer{"value", "1"}}},
+      IRScalar{{sourcemeta::core::Pointer{"properties", "value", "anyOf", "1"}},
                IRScalarType::String});
 
   IRUnion my_union;
   my_union.pointer = sourcemeta::core::Pointer{"properties", "value"};
-  my_union.instance_location =
-      sourcemeta::core::PointerTemplate{sourcemeta::core::Pointer{"value"}};
   my_union.values.push_back(
-      {sourcemeta::core::Pointer{"properties", "value", "anyOf", "0"},
-       sourcemeta::core::PointerTemplate{
-           sourcemeta::core::Pointer{"value", "0"}}});
+      {sourcemeta::core::Pointer{"properties", "value", "anyOf", "0"}});
   my_union.values.push_back(
-      {sourcemeta::core::Pointer{"properties", "value", "anyOf", "1"},
-       sourcemeta::core::PointerTemplate{
-           sourcemeta::core::Pointer{"value", "1"}}});
+      {sourcemeta::core::Pointer{"properties", "value", "anyOf", "1"}});
   result.emplace_back(std::move(my_union));
 
   IRObject object;
   object.pointer = {};
-  object.instance_location = {};
   object.members.emplace(
-      "value", IRObjectValue{{sourcemeta::core::Pointer{"properties", "value"},
-                              sourcemeta::core::PointerTemplate{
-                                  sourcemeta::core::Pointer{"value"}}},
+      "value", IRObjectValue{{sourcemeta::core::Pointer{"properties", "value"}},
                              false,
                              false});
   result.emplace_back(std::move(object));
@@ -835,14 +739,15 @@ TEST(Generator_typescript, union_nested_in_object) {
   std::ostringstream output;
   generate<TypeScript>(output, result, "MyObject");
 
-  const auto expected{R"TS(export type MyObject_Value_0 = string;
+  const auto expected{
+      R"TS(export type MyObject_Properties_Value_AnyOf_0 = string;
 
-export type MyObject_Value_1 = string;
+export type MyObject_Properties_Value_AnyOf_1 = string;
 
-export type MyObject_Value = MyObject_Value_0 | MyObject_Value_1;
+export type MyObject_Properties_Value = MyObject_Properties_Value_AnyOf_0 | MyObject_Properties_Value_AnyOf_1;
 
 export interface MyObject {
-  "value"?: MyObject_Value;
+  "value"?: MyObject_Properties_Value;
 }
 )TS"};
 

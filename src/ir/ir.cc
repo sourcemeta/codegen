@@ -42,7 +42,7 @@ auto compile(
   // --------------------------------------------------------------------------
 
   sourcemeta::core::SchemaFrame frame{
-      sourcemeta::core::SchemaFrame::Mode::Instances};
+      sourcemeta::core::SchemaFrame::Mode::References};
   frame.analyse(schema, walker, resolver);
 
   // --------------------------------------------------------------------------
@@ -59,12 +59,7 @@ auto compile(
     }
 
     const auto &subschema{sourcemeta::core::get(schema, location.pointer)};
-    const auto &instance_locations{frame.instance_locations(location)};
-    // Canonicalisation is expected to take care of this
-    assert(!instance_locations.empty());
-
-    result.push_back(compiler(schema, frame, location, resolver, subschema,
-                              instance_locations.front()));
+    result.push_back(compiler(schema, frame, location, resolver, subschema));
   }
 
   // --------------------------------------------------------------------------
@@ -73,12 +68,10 @@ auto compile(
 
   std::ranges::sort(
       result, [](const IREntity &left, const IREntity &right) -> bool {
-        return std::visit(
-                   [](const auto &entry) { return entry.instance_location; },
-                   right) <
-               std::visit(
-                   [](const auto &entry) { return entry.instance_location; },
-                   left);
+        return std::visit([](const auto &entry) { return entry.pointer; },
+                          right) <
+               std::visit([](const auto &entry) { return entry.pointer; },
+                          left);
       });
 
   return result;

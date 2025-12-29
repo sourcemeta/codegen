@@ -26,15 +26,13 @@
 
 namespace sourcemeta::codegen {
 
-auto handle_impossible(
-    const sourcemeta::core::JSON &, const sourcemeta::core::SchemaFrame &,
-    const sourcemeta::core::SchemaFrame::Location &location,
-    const sourcemeta::core::Vocabularies &,
-    const sourcemeta::core::SchemaResolver &, const sourcemeta::core::JSON &,
-    const sourcemeta::core::PointerTemplate &instance_location)
-    -> IRImpossible {
-  return IRImpossible{
-      {.pointer = location.pointer, .instance_location = instance_location}};
+auto handle_impossible(const sourcemeta::core::JSON &,
+                       const sourcemeta::core::SchemaFrame &,
+                       const sourcemeta::core::SchemaFrame::Location &location,
+                       const sourcemeta::core::Vocabularies &,
+                       const sourcemeta::core::SchemaResolver &,
+                       const sourcemeta::core::JSON &) -> IRImpossible {
+  return IRImpossible{{.pointer = location.pointer}};
 }
 
 auto handle_string(const sourcemeta::core::JSON &schema,
@@ -42,15 +40,11 @@ auto handle_string(const sourcemeta::core::JSON &schema,
                    const sourcemeta::core::SchemaFrame::Location &location,
                    const sourcemeta::core::Vocabularies &,
                    const sourcemeta::core::SchemaResolver &,
-                   const sourcemeta::core::JSON &subschema,
-                   const sourcemeta::core::PointerTemplate &instance_location)
-    -> IRScalar {
+                   const sourcemeta::core::JSON &subschema) -> IRScalar {
   ONLY_WHITELIST_KEYWORDS(
       schema, subschema, location.pointer,
       {"$schema", "$id", "type", "minLength", "maxLength", "pattern"});
-  return IRScalar{
-      {.pointer = location.pointer, .instance_location = instance_location},
-      IRScalarType::String};
+  return IRScalar{{.pointer = location.pointer}, IRScalarType::String};
 }
 
 auto handle_object(const sourcemeta::core::JSON &schema,
@@ -58,9 +52,7 @@ auto handle_object(const sourcemeta::core::JSON &schema,
                    const sourcemeta::core::SchemaFrame::Location &location,
                    const sourcemeta::core::Vocabularies &,
                    const sourcemeta::core::SchemaResolver &,
-                   const sourcemeta::core::JSON &subschema,
-                   const sourcemeta::core::PointerTemplate &instance_location)
-    -> IRObject {
+                   const sourcemeta::core::JSON &subschema) -> IRObject {
   ONLY_WHITELIST_KEYWORDS(
       schema, subschema, location.pointer,
       {"$schema", "$id", "type", "properties", "required",
@@ -93,15 +85,9 @@ auto handle_object(const sourcemeta::core::JSON &schema,
     property_pointer.push_back("properties");
     property_pointer.push_back(entry.first);
 
-    auto property_instance_location{instance_location};
-    property_instance_location.emplace_back(
-        sourcemeta::core::Pointer::Token{entry.first});
-
-    IRObjectValue member_value{
-        {.pointer = property_pointer,
-         .instance_location = property_instance_location},
-        required_set.contains(entry.first),
-        false};
+    IRObjectValue member_value{{.pointer = property_pointer},
+                               required_set.contains(entry.first),
+                               false};
 
     members.emplace(entry.first, std::move(member_value));
   }
@@ -111,24 +97,11 @@ auto handle_object(const sourcemeta::core::JSON &schema,
     auto additional_pointer{location.pointer};
     additional_pointer.push_back("additionalProperties");
 
-    auto additional_instance_location{instance_location};
-    additional_instance_location.emplace_back(
-        sourcemeta::core::PointerTemplate::Condition{
-            .suffix = "additionalProperties"});
-    additional_instance_location.emplace_back(
-        sourcemeta::core::PointerTemplate::Wildcard::Property);
-
-    additional =
-        IRObjectValue{{.pointer = additional_pointer,
-                       .instance_location = additional_instance_location},
-                      false,
-                      false};
+    additional = IRObjectValue{{.pointer = additional_pointer}, false, false};
   }
 
   return IRObject{
-      {.pointer = location.pointer, .instance_location = instance_location},
-      std::move(members),
-      std::move(additional)};
+      {.pointer = location.pointer}, std::move(members), std::move(additional)};
 }
 
 auto handle_integer(const sourcemeta::core::JSON &schema,
@@ -136,16 +109,12 @@ auto handle_integer(const sourcemeta::core::JSON &schema,
                     const sourcemeta::core::SchemaFrame::Location &location,
                     const sourcemeta::core::Vocabularies &,
                     const sourcemeta::core::SchemaResolver &,
-                    const sourcemeta::core::JSON &subschema,
-                    const sourcemeta::core::PointerTemplate &instance_location)
-    -> IRScalar {
+                    const sourcemeta::core::JSON &subschema) -> IRScalar {
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
                           {"$schema", "$id", "type", "minimum", "maximum",
                            "exclusiveMinimum", "exclusiveMaximum",
                            "multipleOf"});
-  return IRScalar{
-      {.pointer = location.pointer, .instance_location = instance_location},
-      IRScalarType::Integer};
+  return IRScalar{{.pointer = location.pointer}, IRScalarType::Integer};
 }
 
 auto handle_number(const sourcemeta::core::JSON &schema,
@@ -153,16 +122,12 @@ auto handle_number(const sourcemeta::core::JSON &schema,
                    const sourcemeta::core::SchemaFrame::Location &location,
                    const sourcemeta::core::Vocabularies &,
                    const sourcemeta::core::SchemaResolver &,
-                   const sourcemeta::core::JSON &subschema,
-                   const sourcemeta::core::PointerTemplate &instance_location)
-    -> IRScalar {
+                   const sourcemeta::core::JSON &subschema) -> IRScalar {
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
                           {"$schema", "$id", "type", "minimum", "maximum",
                            "exclusiveMinimum", "exclusiveMaximum",
                            "multipleOf"});
-  return IRScalar{
-      {.pointer = location.pointer, .instance_location = instance_location},
-      IRScalarType::Number};
+  return IRScalar{{.pointer = location.pointer}, IRScalarType::Number};
 }
 
 auto handle_array(const sourcemeta::core::JSON &schema,
@@ -170,9 +135,7 @@ auto handle_array(const sourcemeta::core::JSON &schema,
                   const sourcemeta::core::SchemaFrame::Location &location,
                   const sourcemeta::core::Vocabularies &vocabularies,
                   const sourcemeta::core::SchemaResolver &,
-                  const sourcemeta::core::JSON &subschema,
-                  const sourcemeta::core::PointerTemplate &instance_location)
-    -> IREntity {
+                  const sourcemeta::core::JSON &subschema) -> IREntity {
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
                           {"$schema", "$id", "type", "items", "minItems",
                            "maxItems", "uniqueItems", "contains", "minContains",
@@ -192,14 +155,7 @@ auto handle_array(const sourcemeta::core::JSON &schema,
       item_pointer.push_back("prefixItems");
       item_pointer.push_back(index);
 
-      auto item_instance_location{instance_location};
-      item_instance_location.emplace_back(
-          sourcemeta::core::PointerTemplate::Condition{.suffix =
-                                                           "prefixItems"});
-      item_instance_location.emplace_back(index);
-
-      tuple_items.push_back({.pointer = item_pointer,
-                             .instance_location = item_instance_location});
+      tuple_items.push_back({.pointer = item_pointer});
     }
 
     std::optional<IRType> additional{std::nullopt};
@@ -207,20 +163,12 @@ auto handle_array(const sourcemeta::core::JSON &schema,
       auto additional_pointer{location.pointer};
       additional_pointer.push_back("items");
 
-      auto additional_instance_location{instance_location};
-      additional_instance_location.emplace_back(
-          sourcemeta::core::PointerTemplate::Condition{.suffix = "items"});
-      additional_instance_location.emplace_back(
-          sourcemeta::core::PointerTemplate::Wildcard::Item);
-
-      additional = IRType{.pointer = additional_pointer,
-                          .instance_location = additional_instance_location};
+      additional = IRType{.pointer = additional_pointer};
     }
 
-    return IRTuple{
-        {.pointer = location.pointer, .instance_location = instance_location},
-        std::move(tuple_items),
-        std::move(additional)};
+    return IRTuple{{.pointer = location.pointer},
+                   std::move(tuple_items),
+                   std::move(additional)};
   }
 
   if (vocabularies.contains_any(
@@ -238,13 +186,7 @@ auto handle_array(const sourcemeta::core::JSON &schema,
       item_pointer.push_back("items");
       item_pointer.push_back(index);
 
-      auto item_instance_location{instance_location};
-      item_instance_location.emplace_back(
-          sourcemeta::core::PointerTemplate::Condition{.suffix = "items"});
-      item_instance_location.emplace_back(index);
-
-      tuple_items.push_back({.pointer = item_pointer,
-                             .instance_location = item_instance_location});
+      tuple_items.push_back({.pointer = item_pointer});
     }
 
     std::optional<IRType> additional{std::nullopt};
@@ -252,35 +194,19 @@ auto handle_array(const sourcemeta::core::JSON &schema,
       auto additional_pointer{location.pointer};
       additional_pointer.push_back("additionalItems");
 
-      auto additional_instance_location{instance_location};
-      additional_instance_location.emplace_back(
-          sourcemeta::core::PointerTemplate::Condition{.suffix =
-                                                           "additionalItems"});
-      additional_instance_location.emplace_back(
-          sourcemeta::core::PointerTemplate::Wildcard::Item);
-
-      additional = IRType{.pointer = additional_pointer,
-                          .instance_location = additional_instance_location};
+      additional = IRType{.pointer = additional_pointer};
     }
 
-    return IRTuple{
-        {.pointer = location.pointer, .instance_location = instance_location},
-        std::move(tuple_items),
-        std::move(additional)};
+    return IRTuple{{.pointer = location.pointer},
+                   std::move(tuple_items),
+                   std::move(additional)};
   }
 
   assert(subschema.defines("items"));
   auto items_pointer{location.pointer};
   items_pointer.push_back("items");
-  auto items_instance_location{instance_location};
-  items_instance_location.emplace_back(
-      sourcemeta::core::PointerTemplate::Condition{.suffix = "items"});
-  items_instance_location.emplace_back(
-      sourcemeta::core::PointerTemplate::Wildcard::Item);
 
-  return IRArray{
-      {.pointer = location.pointer, .instance_location = instance_location},
-      {.pointer = items_pointer, .instance_location = items_instance_location}};
+  return IRArray{{.pointer = location.pointer}, {.pointer = items_pointer}};
 }
 
 auto handle_enum(const sourcemeta::core::JSON &schema,
@@ -288,34 +214,26 @@ auto handle_enum(const sourcemeta::core::JSON &schema,
                  const sourcemeta::core::SchemaFrame::Location &location,
                  const sourcemeta::core::Vocabularies &,
                  const sourcemeta::core::SchemaResolver &,
-                 const sourcemeta::core::JSON &subschema,
-                 const sourcemeta::core::PointerTemplate &instance_location)
-    -> IREntity {
+                 const sourcemeta::core::JSON &subschema) -> IREntity {
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
                           {"$schema", "$id", "enum"});
   const auto &enum_json{subschema.at("enum")};
 
   // Boolean and null special cases
   if (enum_json.size() == 1 && enum_json.at(0).is_null()) {
-    return IRScalar{
-        {.pointer = location.pointer, .instance_location = instance_location},
-        IRScalarType::Null};
+    return IRScalar{{.pointer = location.pointer}, IRScalarType::Null};
   } else if (enum_json.size() == 2) {
     const auto &first{enum_json.at(0)};
     const auto &second{enum_json.at(1)};
     if ((first.is_boolean() && second.is_boolean()) &&
         (first.to_boolean() != second.to_boolean())) {
-      return IRScalar{
-          {.pointer = location.pointer, .instance_location = instance_location},
-          IRScalarType::Boolean};
+      return IRScalar{{.pointer = location.pointer}, IRScalarType::Boolean};
     }
   }
 
   std::vector<sourcemeta::core::JSON> values{enum_json.as_array().cbegin(),
                                              enum_json.as_array().cend()};
-  return IREnumeration{
-      {.pointer = location.pointer, .instance_location = instance_location},
-      std::move(values)};
+  return IREnumeration{{.pointer = location.pointer}, std::move(values)};
 }
 
 auto handle_anyof(const sourcemeta::core::JSON &schema,
@@ -323,9 +241,7 @@ auto handle_anyof(const sourcemeta::core::JSON &schema,
                   const sourcemeta::core::SchemaFrame::Location &location,
                   const sourcemeta::core::Vocabularies &,
                   const sourcemeta::core::SchemaResolver &,
-                  const sourcemeta::core::JSON &subschema,
-                  const sourcemeta::core::PointerTemplate &instance_location)
-    -> IREntity {
+                  const sourcemeta::core::JSON &subschema) -> IREntity {
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
                           {"$schema", "$id", "anyOf"});
 
@@ -339,20 +255,10 @@ auto handle_anyof(const sourcemeta::core::JSON &schema,
     branch_pointer.push_back("anyOf");
     branch_pointer.push_back(index);
 
-    auto branch_instance_location{instance_location};
-    branch_instance_location.emplace_back(
-        sourcemeta::core::PointerTemplate::Condition{.suffix = "anyOf"});
-    branch_instance_location.emplace_back(
-        sourcemeta::core::PointerTemplate::Condition{
-            .suffix = std::to_string(index)});
-
-    branches.push_back({.pointer = branch_pointer,
-                        .instance_location = branch_instance_location});
+    branches.push_back({.pointer = branch_pointer});
   }
 
-  return IRUnion{
-      {.pointer = location.pointer, .instance_location = instance_location},
-      std::move(branches)};
+  return IRUnion{{.pointer = location.pointer}, std::move(branches)};
 }
 
 auto handle_ref(const sourcemeta::core::JSON &schema,
@@ -360,9 +266,7 @@ auto handle_ref(const sourcemeta::core::JSON &schema,
                 const sourcemeta::core::SchemaFrame::Location &location,
                 const sourcemeta::core::Vocabularies &,
                 const sourcemeta::core::SchemaResolver &,
-                const sourcemeta::core::JSON &subschema,
-                const sourcemeta::core::PointerTemplate &instance_location)
-    -> IREntity {
+                const sourcemeta::core::JSON &subschema) -> IREntity {
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
                           {"$schema", "$id", "$ref"});
 
@@ -380,23 +284,16 @@ auto handle_ref(const sourcemeta::core::JSON &schema,
   }
 
   const auto &target_location{target.value().get()};
-  const auto &target_instance_locations{
-      frame.instance_locations(target_location)};
-  assert(!target_instance_locations.empty());
 
-  return IRReference{
-      {.pointer = location.pointer, .instance_location = instance_location},
-      {.pointer = target_location.pointer,
-       .instance_location = target_instance_locations.front()}};
+  return IRReference{{.pointer = location.pointer},
+                     {.pointer = target_location.pointer}};
 }
 
-auto default_compiler(
-    const sourcemeta::core::JSON &schema,
-    const sourcemeta::core::SchemaFrame &frame,
-    const sourcemeta::core::SchemaFrame::Location &location,
-    const sourcemeta::core::SchemaResolver &resolver,
-    const sourcemeta::core::JSON &subschema,
-    const sourcemeta::core::PointerTemplate &instance_location) -> IREntity {
+auto default_compiler(const sourcemeta::core::JSON &schema,
+                      const sourcemeta::core::SchemaFrame &frame,
+                      const sourcemeta::core::SchemaFrame::Location &location,
+                      const sourcemeta::core::SchemaResolver &resolver,
+                      const sourcemeta::core::JSON &subschema) -> IREntity {
   const auto vocabularies{frame.vocabularies(location, resolver)};
   assert(!vocabularies.empty());
 
@@ -428,7 +325,7 @@ auto default_compiler(
   if (subschema.is_boolean()) {
     assert(!subschema.to_boolean());
     return handle_impossible(schema, frame, location, vocabularies, resolver,
-                             subschema, instance_location);
+                             subschema);
   } else if (subschema.defines("type")) {
     const auto &type_value{subschema.at("type")};
     if (!type_value.is_string()) {
@@ -441,33 +338,33 @@ auto default_compiler(
     // The canonicaliser transforms any other type
     if (type_string == "string") {
       return handle_string(schema, frame, location, vocabularies, resolver,
-                           subschema, instance_location);
+                           subschema);
     } else if (type_string == "object") {
       return handle_object(schema, frame, location, vocabularies, resolver,
-                           subschema, instance_location);
+                           subschema);
     } else if (type_string == "integer") {
       return handle_integer(schema, frame, location, vocabularies, resolver,
-                            subschema, instance_location);
+                            subschema);
     } else if (type_string == "number") {
       return handle_number(schema, frame, location, vocabularies, resolver,
-                           subschema, instance_location);
+                           subschema);
     } else if (type_string == "array") {
       return handle_array(schema, frame, location, vocabularies, resolver,
-                          subschema, instance_location);
+                          subschema);
     } else {
       throw UnsupportedKeywordValue(schema, location.pointer, "type",
                                     "Unsupported type value");
     }
   } else if (subschema.defines("enum")) {
     return handle_enum(schema, frame, location, vocabularies, resolver,
-                       subschema, instance_location);
+                       subschema);
   } else if (subschema.defines("anyOf")) {
     return handle_anyof(schema, frame, location, vocabularies, resolver,
-                        subschema, instance_location);
+                        subschema);
     // Only the recursive case
   } else if (subschema.defines("$ref")) {
     return handle_ref(schema, frame, location, vocabularies, resolver,
-                      subschema, instance_location);
+                      subschema);
   } else {
     throw UnexpectedSchema(schema, location.pointer, "Unsupported subschema");
   }

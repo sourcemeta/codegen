@@ -42,8 +42,7 @@ TypeScript::TypeScript(std::ostream &stream, const std::string &type_prefix)
 
 auto TypeScript::operator()(const IRScalar &entry) const -> void {
   this->output << "export type "
-               << sourcemeta::core::mangle(entry.instance_location,
-                                           this->prefix)
+               << sourcemeta::core::mangle(entry.pointer, this->prefix)
                << " = ";
 
   switch (entry.value) {
@@ -67,8 +66,7 @@ auto TypeScript::operator()(const IRScalar &entry) const -> void {
 
 auto TypeScript::operator()(const IREnumeration &entry) const -> void {
   this->output << "export type "
-               << sourcemeta::core::mangle(entry.instance_location,
-                                           this->prefix)
+               << sourcemeta::core::mangle(entry.pointer, this->prefix)
                << " = ";
 
   const char *separator{""};
@@ -83,8 +81,7 @@ auto TypeScript::operator()(const IREnumeration &entry) const -> void {
 
 auto TypeScript::operator()(const IRObject &entry) const -> void {
   this->output << "export interface "
-               << sourcemeta::core::mangle(entry.instance_location,
-                                           this->prefix)
+               << sourcemeta::core::mangle(entry.pointer, this->prefix)
                << " {\n";
   for (const auto &[member_name, member_value] : entry.members) {
     const auto optional_marker{member_value.required ? "" : "?"};
@@ -98,8 +95,7 @@ auto TypeScript::operator()(const IRObject &entry) const -> void {
     this->output << "  " << readonly_marker << "\""
                  << escape_string(member_name) << "\"" << optional_marker
                  << ": "
-                 << sourcemeta::core::mangle(member_value.instance_location,
-                                             this->prefix)
+                 << sourcemeta::core::mangle(member_value.pointer, this->prefix)
                  << ";\n";
   }
 
@@ -108,49 +104,40 @@ auto TypeScript::operator()(const IRObject &entry) const -> void {
 
 auto TypeScript::operator()(const IRImpossible &entry) const -> void {
   this->output << "export type "
-               << sourcemeta::core::mangle(entry.instance_location,
-                                           this->prefix)
+               << sourcemeta::core::mangle(entry.pointer, this->prefix)
                << " = never;\n";
 }
 
 auto TypeScript::operator()(const IRArray &entry) const -> void {
   this->output << "export type "
-               << sourcemeta::core::mangle(entry.instance_location,
-                                           this->prefix)
-               << " = "
-               << sourcemeta::core::mangle(entry.items.instance_location,
-                                           this->prefix)
+               << sourcemeta::core::mangle(entry.pointer, this->prefix) << " = "
+               << sourcemeta::core::mangle(entry.items.pointer, this->prefix)
                << "[];\n";
 }
 
 auto TypeScript::operator()(const IRReference &entry) const -> void {
   this->output << "export type "
-               << sourcemeta::core::mangle(entry.instance_location,
-                                           this->prefix)
-               << " = "
-               << sourcemeta::core::mangle(entry.target.instance_location,
-                                           this->prefix)
+               << sourcemeta::core::mangle(entry.pointer, this->prefix) << " = "
+               << sourcemeta::core::mangle(entry.target.pointer, this->prefix)
                << ";\n";
 }
 
 auto TypeScript::operator()(const IRTuple &entry) const -> void {
   this->output << "export type "
-               << sourcemeta::core::mangle(entry.instance_location,
-                                           this->prefix)
+               << sourcemeta::core::mangle(entry.pointer, this->prefix)
                << " = [";
 
   const char *separator{""};
   for (const auto &item : entry.items) {
     this->output << separator
-                 << sourcemeta::core::mangle(item.instance_location,
-                                             this->prefix);
+                 << sourcemeta::core::mangle(item.pointer, this->prefix);
     separator = ", ";
   }
 
   if (entry.additional.has_value()) {
     this->output << separator << "..."
-                 << sourcemeta::core::mangle(
-                        entry.additional->instance_location, this->prefix)
+                 << sourcemeta::core::mangle(entry.additional->pointer,
+                                             this->prefix)
                  << "[]";
   }
 
@@ -159,15 +146,13 @@ auto TypeScript::operator()(const IRTuple &entry) const -> void {
 
 auto TypeScript::operator()(const IRUnion &entry) const -> void {
   this->output << "export type "
-               << sourcemeta::core::mangle(entry.instance_location,
-                                           this->prefix)
+               << sourcemeta::core::mangle(entry.pointer, this->prefix)
                << " = ";
 
   const char *separator{""};
   for (const auto &value : entry.values) {
     this->output << separator
-                 << sourcemeta::core::mangle(value.instance_location,
-                                             this->prefix);
+                 << sourcemeta::core::mangle(value.pointer, this->prefix);
     separator = " | ";
   }
 

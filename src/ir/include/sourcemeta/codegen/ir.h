@@ -37,7 +37,6 @@ enum class IRScalarType : std::uint8_t {
 /// @ingroup ir
 struct IRType {
   sourcemeta::core::Pointer pointer;
-  sourcemeta::core::PointerTemplate instance_location;
 };
 
 /// @ingroup ir
@@ -97,18 +96,15 @@ using IRResult = std::vector<IREntity>;
 using Compiler = std::function<IREntity(
     const sourcemeta::core::JSON &, const sourcemeta::core::SchemaFrame &,
     const sourcemeta::core::SchemaFrame::Location &,
-    const sourcemeta::core::SchemaResolver &, const sourcemeta::core::JSON &,
-    const sourcemeta::core::PointerTemplate &)>;
+    const sourcemeta::core::SchemaResolver &, const sourcemeta::core::JSON &)>;
 
 /// @ingroup ir
 SOURCEMETA_CODEGEN_IR_EXPORT
-auto default_compiler(
-    const sourcemeta::core::JSON &schema,
-    const sourcemeta::core::SchemaFrame &frame,
-    const sourcemeta::core::SchemaFrame::Location &location,
-    const sourcemeta::core::SchemaResolver &resolver,
-    const sourcemeta::core::JSON &subschema,
-    const sourcemeta::core::PointerTemplate &instance_location) -> IREntity;
+auto default_compiler(const sourcemeta::core::JSON &schema,
+                      const sourcemeta::core::SchemaFrame &frame,
+                      const sourcemeta::core::SchemaFrame::Location &location,
+                      const sourcemeta::core::SchemaResolver &resolver,
+                      const sourcemeta::core::JSON &subschema) -> IREntity;
 
 /// @ingroup ir
 SOURCEMETA_CODEGEN_IR_EXPORT
