@@ -55,7 +55,7 @@ auto handle_object(const sourcemeta::core::JSON &schema,
                    const sourcemeta::core::JSON &subschema) -> IRObject {
   ONLY_WHITELIST_KEYWORDS(
       schema, subschema, location.pointer,
-      {"$schema", "$id", "type", "properties", "required",
+      {"$defs", "$schema", "$id", "type", "properties", "required",
        // Note that most programming languages CANNOT represent the idea
        // of additional properties, mainly if they differ from the types of the
        // other properties. Therefore, we whitelist this, but we consider it to
@@ -72,7 +72,7 @@ auto handle_object(const sourcemeta::core::JSON &schema,
 
   std::unordered_set<std::string_view> required_set;
   if (subschema.defines("required")) {
-    const auto &required{schema.at("required")};
+    const auto &required{subschema.at("required")};
     for (const auto &item : required.as_array()) {
       // Guaranteed by canonicalisation
       assert(properties.defines(item.to_string()));
