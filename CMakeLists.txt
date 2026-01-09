@@ -71,7 +71,6 @@ endif()
 # Testing
 if(CODEGEN_TESTS)
   enable_testing()
-  find_program(JSONSCHEMA_BIN NAMES jsonschema REQUIRED)
 
   if(CODEGEN_IR)
     add_subdirectory(test/ir)
@@ -91,6 +90,7 @@ if(CODEGEN_TESTS)
   endif()
 
   add_custom_target(jsonschema_metaschema
-    COMMAND "${JSONSCHEMA_BIN}" metaschema ${E2E_SCHEMAS}
+    COMMAND "${PROJECT_SOURCE_DIR}/node_modules/.bin/jsonschema"
+      metaschema ${E2E_SCHEMAS}
     VERBATIM)
 endif()

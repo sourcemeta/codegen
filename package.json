@@ -5,6 +5,7 @@
   "author": "Sourcemeta",
   "license": "AGPL-3.0",
   "devDependencies": {
+    "@sourcemeta/jsonschema": "^14.0.3",
     "typescript": "^5.9.3"
   }
 }
