@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
-project(codegen VERSION 0.0.1 LANGUAGES CXX
+project(codegen VERSION 0.0.0 LANGUAGES CXX
   DESCRIPTION "The JSON Schema code generator"
-  HOMEPAGE_URL "https://github.com/sourcemeta-research/codegen")
+  HOMEPAGE_URL "https://github.com/sourcemeta/codegen")
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 # Options

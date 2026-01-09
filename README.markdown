@@ -7,6 +7,9 @@ with varying compliance levels. This project, maintained by a member of the
 [JSON Schema Technical Steering Committee](https://github.com/jviotti),
 prioritizes specification compliance and comprehensive keyword coverage.
 
+**We currently only support TypeScript (given demand) but we will extend
+support to other programming languages once we make the foundations stable.**
+
 ## Keyword Support
 
 Not every JSON Schema keyword maps directly to type system constructs. This
