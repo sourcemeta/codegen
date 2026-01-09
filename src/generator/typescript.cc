@@ -92,7 +92,7 @@ auto TypeScript::operator()(const IRObject &entry) const -> void {
   }
 
   if (has_additional) {
-    this->output << "type " << type_name << " = {\n";
+    this->output << "export type " << type_name << " = {\n";
   } else {
     this->output << "export interface " << type_name << " {\n";
   }

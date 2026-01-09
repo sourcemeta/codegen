@@ -4,7 +4,7 @@ export type Person_Properties_Age = number;
 
 export type Person_AdditionalProperties = string;
 
-type Person = {
+export type Person = {
   "age"?: Person_Properties_Age;
   "name": Person_Properties_Name
 } & {

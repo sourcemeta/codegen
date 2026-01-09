@@ -14,7 +14,7 @@ export type Record_Properties_Meta_Properties_Origin = string;
 
 export type Record_Properties_Meta_AdditionalProperties = never;
 
-type Record_Properties_Meta = {
+export type Record_Properties_Meta = {
   "originId"?: Record_Properties_Meta_Properties_OriginId;
   "origin"?: Record_Properties_Meta_Properties_Origin
 } & {
@@ -30,7 +30,7 @@ export type Record_Properties_LocationInfo_Properties_AreaCode = string;
 
 export type Record_Properties_LocationInfo_AdditionalProperties = never;
 
-type Record_Properties_LocationInfo = {
+export type Record_Properties_LocationInfo = {
   "areaCode"?: Record_Properties_LocationInfo_Properties_AreaCode;
   "stateCode"?: Record_Properties_LocationInfo_Properties_StateCode
 } & {
@@ -80,7 +80,7 @@ export type Record_Properties_Items_Items_Properties_Meta_Properties_Origin = st
 
 export type Record_Properties_Items_Items_Properties_Meta_AdditionalProperties = never;
 
-type Record_Properties_Items_Items_Properties_Meta = {
+export type Record_Properties_Items_Items_Properties_Meta = {
   "originId"?: Record_Properties_Items_Items_Properties_Meta_Properties_OriginId;
   "origin"?: Record_Properties_Items_Items_Properties_Meta_Properties_Origin
 } & {
@@ -106,7 +106,7 @@ export type Record_Properties_Items_Items_Properties_Category = string;
 
 export type Record_Properties_Items_Items_AdditionalProperties = never;
 
-type Record_Properties_Items_Items = {
+export type Record_Properties_Items_Items = {
   "subCategory"?: Record_Properties_Items_Items_Properties_SubCategory;
   "remarks"?: Record_Properties_Items_Items_Properties_Remarks;
   "category"?: Record_Properties_Items_Items_Properties_Category;
@@ -154,7 +154,7 @@ export type Record_Properties_Entity_Properties_BirthDate = Record_X24Defs_UTime
 
 export type Record_Properties_Entity_AdditionalProperties = never;
 
-type Record_Properties_Entity = {
+export type Record_Properties_Entity = {
   "category"?: Record_Properties_Entity_Properties_Category;
   "classification"?: Record_Properties_Entity_Properties_Classification;
   "birthDate": Record_Properties_Entity_Properties_BirthDate;
@@ -186,7 +186,7 @@ export type Record_X24Defs_UTimestamp_Properties_Day = number;
 
 export type Record_X24Defs_UTimestamp_AdditionalProperties = never;
 
-type Record_X24Defs_UTimestamp = {
+export type Record_X24Defs_UTimestamp = {
   "day": Record_X24Defs_UTimestamp_Properties_Day;
   "month": Record_X24Defs_UTimestamp_Properties_Month;
   "isoFormat"?: Record_X24Defs_UTimestamp_Properties_IsoFormat;
@@ -226,7 +226,7 @@ export type Record_X24Defs_ULocation_Properties_City = string;
 
 export type Record_X24Defs_ULocation_AdditionalProperties = never;
 
-type Record_X24Defs_ULocation = {
+export type Record_X24Defs_ULocation = {
   "country": Record_X24Defs_ULocation_Properties_Country;
   "city": Record_X24Defs_ULocation_Properties_City;
   "district"?: Record_X24Defs_ULocation_Properties_District;
@@ -280,7 +280,7 @@ export type Record_X24Defs_UFullName_Properties_FamilyName = string;
 
 export type Record_X24Defs_UFullName_AdditionalProperties = never;
 
-type Record_X24Defs_UFullName = {
+export type Record_X24Defs_UFullName = {
   "middleName"?: Record_X24Defs_UFullName_Properties_MiddleName;
   "suffix"?: Record_X24Defs_UFullName_Properties_Suffix;
   "familyName": Record_X24Defs_UFullName_Properties_FamilyName;
@@ -298,7 +298,7 @@ type Record_X24Defs_UFullName = {
   ? never : K]: Record_X24Defs_UFullName_AdditionalProperties;
 };
 
-type Record = {
+export type Record = {
   "items": Record_Properties_Items;
   "entity": Record_Properties_Entity;
   "region": Record_Properties_Region;
