@@ -40,7 +40,7 @@ auto main(int argc, char *argv[]) -> int {
 
     sourcemeta::codegen::generate<sourcemeta::codegen::TypeScript>(
         std::cout, result, prefix);
-  } catch (const sourcemeta::codegen::UnsupportedKeyword &error) {
+  } catch (const sourcemeta::codegen::UnsupportedKeywordError &error) {
     std::ostringstream pointer;
     sourcemeta::core::stringify(error.pointer(), pointer);
     std::cerr << "error: " << error.what() << "\n";
@@ -50,7 +50,7 @@ auto main(int argc, char *argv[]) -> int {
     sourcemeta::core::prettify(error.json(), std::cerr);
     std::cerr << "\n";
     return EXIT_FAILURE;
-  } catch (const sourcemeta::codegen::UnsupportedKeywordValue &error) {
+  } catch (const sourcemeta::codegen::UnsupportedKeywordValueError &error) {
     std::ostringstream pointer;
     sourcemeta::core::stringify(error.pointer(), pointer);
     std::cerr << "error: " << error.what() << "\n";
@@ -60,7 +60,7 @@ auto main(int argc, char *argv[]) -> int {
     sourcemeta::core::prettify(error.json(), std::cerr);
     std::cerr << "\n";
     return EXIT_FAILURE;
-  } catch (const sourcemeta::codegen::UnexpectedSchema &error) {
+  } catch (const sourcemeta::codegen::UnexpectedSchemaError &error) {
     std::ostringstream pointer;
     sourcemeta::core::stringify(error.pointer(), pointer);
     std::cerr << "error: " << error.what() << "\n";

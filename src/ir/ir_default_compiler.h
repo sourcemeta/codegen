@@ -17,7 +17,7 @@
     static const std::unordered_set<std::string_view> allowed{__VA_ARGS__};    \
     for (const auto &entry : (subschema).as_object()) {                        \
       if (!allowed.contains(entry.first)) {                                    \
-        throw sourcemeta::codegen::UnsupportedKeyword(                         \
+        throw sourcemeta::codegen::UnsupportedKeywordError(                    \
             (schema), (pointer), entry.first,                                  \
             "Unexpected keyword in subschema");                                \
       }                                                                        \
@@ -304,8 +304,8 @@ auto handle_ref(const sourcemeta::core::JSON &schema,
   const auto &destination{reference->second.destination};
   const auto target{frame.traverse(destination)};
   if (!target.has_value()) {
-    throw UnexpectedSchema(schema, location.pointer,
-                           "Could not resolve reference destination");
+    throw UnexpectedSchemaError(schema, location.pointer,
+                                "Could not resolve reference destination");
   }
 
   const auto &target_location{target.value().get()};
@@ -356,8 +356,8 @@ auto default_compiler(const sourcemeta::core::JSON &schema,
   } else if (subschema.defines("type")) {
     const auto &type_value{subschema.at("type")};
     if (!type_value.is_string()) {
-      throw UnsupportedKeywordValue(schema, location.pointer, "type",
-                                    "Expected a string value");
+      throw UnsupportedKeywordValueError(schema, location.pointer, "type",
+                                         "Expected a string value");
     }
 
     const auto &type_string{type_value.to_string()};
@@ -379,8 +379,8 @@ auto default_compiler(const sourcemeta::core::JSON &schema,
       return handle_array(schema, frame, location, vocabularies, resolver,
                           subschema);
     } else {
-      throw UnsupportedKeywordValue(schema, location.pointer, "type",
-                                    "Unsupported type value");
+      throw UnsupportedKeywordValueError(schema, location.pointer, "type",
+                                         "Unsupported type value");
     }
   } else if (subschema.defines("enum")) {
     return handle_enum(schema, frame, location, vocabularies, resolver,
@@ -392,7 +392,8 @@ auto default_compiler(const sourcemeta::core::JSON &schema,
     return handle_ref(schema, frame, location, vocabularies, resolver,
                       subschema);
   } else {
-    throw UnexpectedSchema(schema, location.pointer, "Unsupported subschema");
+    throw UnexpectedSchemaError(schema, location.pointer,
+                                "Unsupported subschema");
   }
 }
 
