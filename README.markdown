@@ -12,8 +12,8 @@ Codegen
 | Core | `$ref` | Yes |
 | Core | `$defs` | Yes |
 | Core | `$anchor` | No |
-| Core | `$dynamicAnchor` | No |
-| Core | `$dynamicRef` | No |
+| Core | `$dynamicAnchor` | No (TODO: Simplify in canonicalisation) |
+| Core | `$dynamicRef` | No (TODO: Simplify in canonicalisation) |
 | Core | `$vocabulary` | Ignored |
 | Core | `$comment` | Ignored |
 | Applicator | `properties` | Yes |
@@ -23,14 +23,14 @@ Codegen
 | Applicator | `anyOf` | Yes |
 | Applicator | `patternProperties` | CANNOT SUPPORT IN MOST LANGUAGES |
 | Applicator | `propertyNames` | Ignored |
-| Applicator | `dependentSchemas` | No |
+| Applicator | `dependentSchemas` | No (TODO: Simplify in canonicalisation) |
 | Applicator | `contains` | Ignored |
-| Applicator | `allOf` | No |
+| Applicator | `allOf` | No (TODO: Simplify in canonicalisation) |
 | Applicator | `oneOf` | CANNOT SUPPORT IN MOST LANGUAGES |
 | Applicator | `not` | CANNOT SUPPORT IN MOST LANGUAGES |
-| Applicator | `if` | No |
-| Applicator | `then` | No |
-| Applicator | `else` | No |
+| Applicator | `if` | No (TODO: Simplify in canonicalisation) |
+| Applicator | `then` | No (TODO: Simplify in canonicalisation) |
+| Applicator | `else` | No (TODO: Simplify in canonicalisation) |
 | Validation | `type` | Yes |
 | Validation | `enum` | Yes |
 | Validation | `required` | Yes |
@@ -45,14 +45,14 @@ Codegen
 | Validation | `multipleOf` | Ignored |
 | Validation | `minProperties` | Ignored |
 | Validation | `maxProperties` | Ignored |
-| Validation | `dependentRequired` | No |
+| Validation | `dependentRequired` | No (TODO: Simplify in canonicalisation) |
 | Validation | `minItems` | Ignored |
 | Validation | `maxItems` | Ignored |
 | Validation | `minContains` | Ignored |
 | Validation | `maxContains` | Ignored |
 | Validation | `uniqueItems` | Ignored |
-| Unevaluated | `unevaluatedItems` | No |
-| Unevaluated | `unevaluatedProperties` | No |
+| Unevaluated | `unevaluatedItems` | No (TODO: Simplify in canonicalisation) |
+| Unevaluated | `unevaluatedProperties` | No (TODO: Simplify in canonicalisation) |
 | Meta-Data | `title` | Ignored |
 | Meta-Data | `description` | Ignored |
 | Meta-Data | `default` | Ignored |
