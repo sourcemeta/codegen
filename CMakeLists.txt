@@ -92,6 +92,5 @@ if(CODEGEN_TESTS)
 
   add_custom_target(jsonschema_metaschema
     COMMAND "${JSONSCHEMA_BIN}" metaschema ${E2E_SCHEMAS}
-    COMMENT "Validating e2e test schemas against metaschema"
     VERBATIM)
 endif()
