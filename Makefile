@@ -38,6 +38,9 @@ test: .always
 		$(CTEST) --test-dir ./build --build-config $(PRESET) \
 			--output-on-failure --parallel
 
+lint: .always
+	$(CMAKE) --build ./build --config $(PRESET) --target jsonschema_metaschema
+
 clean: .always
 	$(CMAKE) -E rm -R -f build
 

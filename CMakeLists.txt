@@ -71,6 +71,7 @@ endif()
 # Testing
 if(CODEGEN_TESTS)
   enable_testing()
+  find_program(JSONSCHEMA_BIN NAMES jsonschema REQUIRED)
 
   if(CODEGEN_IR)
     add_subdirectory(test/ir)
@@ -88,4 +89,9 @@ if(CODEGEN_TESTS)
       add_subdirectory(test/packaging)
     endif()
   endif()
+
+  add_custom_target(jsonschema_metaschema
+    COMMAND "${JSONSCHEMA_BIN}" metaschema ${E2E_SCHEMAS}
+    COMMENT "Validating e2e test schemas against metaschema"
+    VERBATIM)
 endif()
