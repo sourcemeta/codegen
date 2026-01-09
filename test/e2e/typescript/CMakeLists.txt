@@ -9,6 +9,12 @@ target_link_libraries(sourcemeta_codegen_e2e_typescript_unit
 target_compile_definitions(sourcemeta_codegen_e2e_typescript_unit
   PRIVATE E2E_TYPESCRIPT_PATH="${CMAKE_CURRENT_SOURCE_DIR}")
 
+if(WIN32)
+  set(TSC_BIN "${PROJECT_SOURCE_DIR}/node_modules/.bin/tsc.cmd")
+else()
+  set(TSC_BIN "${PROJECT_SOURCE_DIR}/node_modules/.bin/tsc")
+endif()
+
 set(E2E_SCHEMAS "")
 file(GLOB TYPESCRIPT_DIALECT_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/*")
 foreach(DIALECT_DIRECTORY ${TYPESCRIPT_DIALECT_DIRECTORIES})
@@ -20,8 +26,7 @@ foreach(DIALECT_DIRECTORY ${TYPESCRIPT_DIALECT_DIRECTORIES})
         get_filename_component(CASE_NAME ${CASE_DIRECTORY} NAME)
         list(APPEND E2E_SCHEMAS "${CASE_DIRECTORY}/schema.json")
         add_test(NAME "e2e.typescript.tsc.${DIALECT_NAME}.${CASE_NAME}/expected.d.ts"
-          COMMAND "${PROJECT_SOURCE_DIR}/node_modules/.bin/tsc" --noEmit
-            "${CASE_DIRECTORY}/expected.d.ts")
+          COMMAND "${TSC_BIN}" --noEmit "${CASE_DIRECTORY}/expected.d.ts")
       endif()
     endforeach()
   endif()
