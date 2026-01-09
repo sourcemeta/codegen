@@ -1,80 +1,77 @@
 # JSON Schema Codegen
 
-> Convert JSON Schema to the type systems of a growing amount of programming
-languages.
+> Generate type definitions from JSON Schema for multiple programming languages
 
-While this idea is not new, most community driven projects support only a basic
-subset of JSON Schema, and often have various compliance issues.  In
-comparison, this project is maintained by a member of the JSON Schema Technical
-Steering Committee and aims for strict compliance and high coverage of the
-specification.
+Existing tools in this space typically support limited subsets of JSON Schema
+with varying compliance levels. This project, maintained by a member of the
+[JSON Schema Technical Steering Committee](https://github.com/jviotti),
+prioritizes specification compliance and comprehensive keyword coverage.
 
 ## Keyword Support
 
-Note that not every keyword can be directly mapped into a type system. We aims
-for 100% structural coverage while you are expected to still validate the
-instance against the schema using traditional JSON Schema evaluator to fully
-apply any remaining assertions.
+Not every JSON Schema keyword maps directly to type system constructs. This
+implementation aims to provide complete structural typing, and you are expected
+to use a JSON Schema validator at runtime to enforce remaining constraints.
 
 | Vocabulary | Keyword | TypeScript |
 |------------|---------|------------|
-| JSON Schema 2020-12 Core | `$schema` | Yes |
-| JSON Schema 2020-12 Core | `$id` | Yes |
-| JSON Schema 2020-12 Core | `$ref` | Yes |
-| JSON Schema 2020-12 Core | `$defs` | Yes |
-| JSON Schema 2020-12 Core | `$anchor` | Yes |
-| JSON Schema 2020-12 Core | `$dynamicAnchor` | Pending |
-| JSON Schema 2020-12 Core | `$dynamicRef` | Pending |
-| JSON Schema 2020-12 Core | `$vocabulary` | Ignored |
-| JSON Schema 2020-12 Core | `$comment` | Ignored |
-| JSON Schema 2020-12 Applicator | `properties` | Yes |
-| JSON Schema 2020-12 Applicator | `additionalProperties` | Yes |
-| JSON Schema 2020-12 Applicator | `items` | Yes |
-| JSON Schema 2020-12 Applicator | `prefixItems` | Yes |
-| JSON Schema 2020-12 Applicator | `anyOf` | Yes |
-| JSON Schema 2020-12 Applicator | `patternProperties` | **CANNOT SUPPORT** |
-| JSON Schema 2020-12 Applicator | `propertyNames` | Ignored |
-| JSON Schema 2020-12 Applicator | `dependentSchemas` | Pending |
-| JSON Schema 2020-12 Applicator | `contains` | Ignored |
-| JSON Schema 2020-12 Applicator | `allOf` | Pending |
-| JSON Schema 2020-12 Applicator | `oneOf` | **CANNOT SUPPORT** |
-| JSON Schema 2020-12 Applicator | `not` | **CANNOT SUPPORT** |
-| JSON Schema 2020-12 Applicator | `if` | Pending |
-| JSON Schema 2020-12 Applicator | `then` | Pending |
-| JSON Schema 2020-12 Applicator | `else` | Pending |
-| JSON Schema 2020-12 Validation | `type` | Yes |
-| JSON Schema 2020-12 Validation | `enum` | Yes |
-| JSON Schema 2020-12 Validation | `required` | Yes |
-| JSON Schema 2020-12 Validation | `const` | Yes |
-| JSON Schema 2020-12 Validation | `minLength` | Ignored |
-| JSON Schema 2020-12 Validation | `maxLength` | Ignored |
-| JSON Schema 2020-12 Validation | `pattern` | Ignored |
-| JSON Schema 2020-12 Validation | `minimum` | Ignored |
-| JSON Schema 2020-12 Validation | `maximum` | Ignored |
-| JSON Schema 2020-12 Validation | `exclusiveMinimum` | Ignored |
-| JSON Schema 2020-12 Validation | `exclusiveMaximum` | Ignored |
-| JSON Schema 2020-12 Validation | `multipleOf` | Ignored |
-| JSON Schema 2020-12 Validation | `minProperties` | Ignored |
-| JSON Schema 2020-12 Validation | `maxProperties` | Ignored |
-| JSON Schema 2020-12 Validation | `dependentRequired` | Pending |
-| JSON Schema 2020-12 Validation | `minItems` | Ignored |
-| JSON Schema 2020-12 Validation | `maxItems` | Ignored |
-| JSON Schema 2020-12 Validation | `minContains` | Ignored |
-| JSON Schema 2020-12 Validation | `maxContains` | Ignored |
-| JSON Schema 2020-12 Validation | `uniqueItems` | Ignored |
-| JSON Schema 2020-12 Unevaluated | `unevaluatedItems` | Pending |
-| JSON Schema 2020-12 Unevaluated | `unevaluatedProperties` | Pending |
-| JSON Schema 2020-12 Meta-Data | `title` | Ignored |
-| JSON Schema 2020-12 Meta-Data | `description` | Ignored |
-| JSON Schema 2020-12 Meta-Data | `default` | Ignored |
-| JSON Schema 2020-12 Meta-Data | `deprecated` | Ignored |
-| JSON Schema 2020-12 Meta-Data | `examples` | Ignored |
-| JSON Schema 2020-12 Meta-Data | `readOnly` | Ignored |
-| JSON Schema 2020-12 Meta-Data | `writeOnly` | Ignored |
-| JSON Schema 2020-12 Format Annotation | `format` | Ignored |
-| JSON Schema 2020-12 Format Assertion | `format` | Ignored |
-| JSON Schema 2020-12 Content | `contentEncoding` | Ignored |
-| JSON Schema 2020-12 Content | `contentMediaType` | Ignored |
-| JSON Schema 2020-12 Content | `contentSchema` | Ignored |
+| Core (2020-12) | `$schema` | Yes |
+| Core (2020-12) | `$id` | Yes |
+| Core (2020-12) | `$ref` | Yes |
+| Core (2020-12) | `$defs` | Yes |
+| Core (2020-12) | `$anchor` | Yes |
+| Core (2020-12) | `$dynamicAnchor` | Pending |
+| Core (2020-12) | `$dynamicRef` | Pending |
+| Core (2020-12) | `$vocabulary` | Ignored |
+| Core (2020-12) | `$comment` | Ignored |
+| Applicator (2020-12) | `properties` | Yes |
+| Applicator (2020-12) | `additionalProperties` | Yes |
+| Applicator (2020-12) | `items` | Yes |
+| Applicator (2020-12) | `prefixItems` | Yes |
+| Applicator (2020-12) | `anyOf` | Yes |
+| Applicator (2020-12) | `patternProperties` | **CANNOT SUPPORT** |
+| Applicator (2020-12) | `propertyNames` | Ignored |
+| Applicator (2020-12) | `dependentSchemas` | Pending |
+| Applicator (2020-12) | `contains` | Ignored |
+| Applicator (2020-12) | `allOf` | Pending |
+| Applicator (2020-12) | `oneOf` | **CANNOT SUPPORT** |
+| Applicator (2020-12) | `not` | **CANNOT SUPPORT** |
+| Applicator (2020-12) | `if` | Pending |
+| Applicator (2020-12) | `then` | Pending |
+| Applicator (2020-12) | `else` | Pending |
+| Validation (2020-12) | `type` | Yes |
+| Validation (2020-12) | `enum` | Yes |
+| Validation (2020-12) | `required` | Yes |
+| Validation (2020-12) | `const` | Yes |
+| Validation (2020-12) | `minLength` | Ignored |
+| Validation (2020-12) | `maxLength` | Ignored |
+| Validation (2020-12) | `pattern` | Ignored |
+| Validation (2020-12) | `minimum` | Ignored |
+| Validation (2020-12) | `maximum` | Ignored |
+| Validation (2020-12) | `exclusiveMinimum` | Ignored |
+| Validation (2020-12) | `exclusiveMaximum` | Ignored |
+| Validation (2020-12) | `multipleOf` | Ignored |
+| Validation (2020-12) | `minProperties` | Ignored |
+| Validation (2020-12) | `maxProperties` | Ignored |
+| Validation (2020-12) | `dependentRequired` | Pending |
+| Validation (2020-12) | `minItems` | Ignored |
+| Validation (2020-12) | `maxItems` | Ignored |
+| Validation (2020-12) | `minContains` | Ignored |
+| Validation (2020-12) | `maxContains` | Ignored |
+| Validation (2020-12) | `uniqueItems` | Ignored |
+| Unevaluated (2020-12) | `unevaluatedItems` | Pending |
+| Unevaluated (2020-12) | `unevaluatedProperties` | Pending |
+| Meta-Data (2020-12) | `title` | Ignored |
+| Meta-Data (2020-12) | `description` | Ignored |
+| Meta-Data (2020-12) | `default` | Ignored |
+| Meta-Data (2020-12) | `deprecated` | Ignored |
+| Meta-Data (2020-12) | `examples` | Ignored |
+| Meta-Data (2020-12) | `readOnly` | Ignored |
+| Meta-Data (2020-12) | `writeOnly` | Ignored |
+| Format Annotation (2020-12) | `format` | Ignored |
+| Format Assertion (2020-12) | `format` | Ignored |
+| Content (2020-12) | `contentEncoding` | Ignored |
+| Content (2020-12) | `contentMediaType` | Ignored |
+| Content (2020-12) | `contentSchema` | Ignored |
 
 Support for other JSON Schema dialects coming soon.
