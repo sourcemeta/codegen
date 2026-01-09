@@ -61,7 +61,7 @@ Codegen
 | Meta-Data | `readOnly` | Ignored |
 | Meta-Data | `writeOnly` | Ignored |
 | Format Annotation | `format` | Ignored |
-| Format Assertion | `format` | No |
+| Format Assertion | `format` | Ignored |
 | Content | `contentEncoding` | Ignored |
 | Content | `contentMediaType` | Ignored |
 | Content | `contentSchema` | Ignored |

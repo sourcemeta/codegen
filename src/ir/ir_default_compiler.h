@@ -44,7 +44,7 @@ auto handle_string(const sourcemeta::core::JSON &schema,
                    const sourcemeta::core::JSON &subschema) -> IRScalar {
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
                           {"$schema", "$id", "$vocabulary", "type", "minLength",
-                           "maxLength", "pattern"});
+                           "maxLength", "pattern", "format"});
   return IRScalar{{.pointer = sourcemeta::core::to_pointer(location.pointer)},
                   IRScalarType::String};
 }
@@ -329,6 +329,7 @@ auto default_compiler(const sourcemeta::core::JSON &schema,
       Vocabularies::Known::JSON_Schema_2020_12_Content,
       Vocabularies::Known::JSON_Schema_2020_12_Meta_Data,
       Vocabularies::Known::JSON_Schema_2020_12_Format_Annotation,
+      Vocabularies::Known::JSON_Schema_2020_12_Format_Assertion,
       Vocabularies::Known::JSON_Schema_2019_09_Core,
       Vocabularies::Known::JSON_Schema_2019_09_Applicator,
       Vocabularies::Known::JSON_Schema_2019_09_Validation,
