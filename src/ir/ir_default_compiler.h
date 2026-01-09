@@ -43,8 +43,8 @@ auto handle_string(const sourcemeta::core::JSON &schema,
                    const sourcemeta::core::SchemaResolver &,
                    const sourcemeta::core::JSON &subschema) -> IRScalar {
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
-                          {"$schema", "$id", "$vocabulary", "type", "minLength",
-                           "maxLength", "pattern", "format"});
+                          {"$schema", "$id", "$defs", "$vocabulary", "type",
+                           "minLength", "maxLength", "pattern", "format"});
   return IRScalar{{.pointer = sourcemeta::core::to_pointer(location.pointer)},
                   IRScalarType::String};
 }
@@ -116,9 +116,9 @@ auto handle_integer(const sourcemeta::core::JSON &schema,
                     const sourcemeta::core::SchemaResolver &,
                     const sourcemeta::core::JSON &subschema) -> IRScalar {
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
-                          {"$schema", "$id", "$vocabulary", "type", "minimum",
-                           "maximum", "exclusiveMinimum", "exclusiveMaximum",
-                           "multipleOf"});
+                          {"$schema", "$id", "$defs", "$vocabulary", "type",
+                           "minimum", "maximum", "exclusiveMinimum",
+                           "exclusiveMaximum", "multipleOf"});
   return IRScalar{{.pointer = sourcemeta::core::to_pointer(location.pointer)},
                   IRScalarType::Integer};
 }
@@ -130,9 +130,9 @@ auto handle_number(const sourcemeta::core::JSON &schema,
                    const sourcemeta::core::SchemaResolver &,
                    const sourcemeta::core::JSON &subschema) -> IRScalar {
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
-                          {"$schema", "$id", "$vocabulary", "type", "minimum",
-                           "maximum", "exclusiveMinimum", "exclusiveMaximum",
-                           "multipleOf"});
+                          {"$schema", "$id", "$defs", "$vocabulary", "type",
+                           "minimum", "maximum", "exclusiveMinimum",
+                           "exclusiveMaximum", "multipleOf"});
   return IRScalar{{.pointer = sourcemeta::core::to_pointer(location.pointer)},
                   IRScalarType::Number};
 }
@@ -144,10 +144,10 @@ auto handle_array(const sourcemeta::core::JSON &schema,
                   const sourcemeta::core::SchemaResolver &,
                   const sourcemeta::core::JSON &subschema) -> IREntity {
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
-                          {"$schema", "$id", "$vocabulary", "type", "items",
-                           "minItems", "maxItems", "uniqueItems", "contains",
-                           "minContains", "maxContains", "additionalItems",
-                           "prefixItems"});
+                          {"$schema", "$id", "$defs", "$vocabulary", "type",
+                           "items", "minItems", "maxItems", "uniqueItems",
+                           "contains", "minContains", "maxContains",
+                           "additionalItems", "prefixItems"});
 
   using Vocabularies = sourcemeta::core::Vocabularies;
 
@@ -228,7 +228,7 @@ auto handle_enum(const sourcemeta::core::JSON &schema,
                  const sourcemeta::core::SchemaResolver &,
                  const sourcemeta::core::JSON &subschema) -> IREntity {
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
-                          {"$schema", "$id", "$vocabulary", "enum"});
+                          {"$schema", "$id", "$defs", "$vocabulary", "enum"});
   const auto &enum_json{subschema.at("enum")};
 
   // Boolean and null special cases
@@ -260,7 +260,7 @@ auto handle_anyof(const sourcemeta::core::JSON &schema,
                   const sourcemeta::core::SchemaResolver &,
                   const sourcemeta::core::JSON &subschema) -> IREntity {
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
-                          {"$schema", "$id", "$vocabulary", "anyOf"});
+                          {"$schema", "$id", "$defs", "$vocabulary", "anyOf"});
 
   const auto &any_of{subschema.at("anyOf")};
   assert(any_of.is_array());
@@ -286,7 +286,7 @@ auto handle_ref(const sourcemeta::core::JSON &schema,
                 const sourcemeta::core::SchemaResolver &,
                 const sourcemeta::core::JSON &subschema) -> IREntity {
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
-                          {"$schema", "$id", "$vocabulary", "$ref"});
+                          {"$schema", "$id", "$defs", "$vocabulary", "$ref"});
 
   auto ref_pointer{sourcemeta::core::to_pointer(location.pointer)};
   ref_pointer.push_back("$ref");
@@ -384,7 +384,6 @@ auto default_compiler(const sourcemeta::core::JSON &schema,
   } else if (subschema.defines("anyOf")) {
     return handle_anyof(schema, frame, location, vocabularies, resolver,
                         subschema);
-    // Only the recursive case
   } else if (subschema.defines("$ref")) {
     return handle_ref(schema, frame, location, vocabularies, resolver,
                       subschema);
