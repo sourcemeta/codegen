@@ -856,23 +856,37 @@ TEST(IR_2020_12, embedded_resource_with_nested_id_no_duplicates) {
 
   using namespace sourcemeta::codegen;
 
-  EXPECT_EQ(result.size(), 4);
+  EXPECT_EQ(result.size(), 6);
 
   EXPECT_IR_REFERENCE(result, 0, "/properties/item", "/$defs/Item");
 
-  EXPECT_IR_SCALAR(result, 1, String, "/$defs/Item/properties/name");
+  EXPECT_IR_IMPOSSIBLE(result, 1, "/additionalProperties");
 
-  EXPECT_IR_IMPOSSIBLE(result, 2, "/$defs/Item/additionalProperties");
+  EXPECT_IR_SCALAR(result, 2, String, "/$defs/Item/properties/name");
 
-  EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(3)));
-  EXPECT_AS_STRING(std::get<IRObject>(result.at(3)).pointer, "/$defs/Item");
-  EXPECT_EQ(std::get<IRObject>(result.at(3)).members.size(), 1);
-  EXPECT_EQ(std::get<IRObject>(result.at(3)).members.at(0).first, "name");
-  EXPECT_TRUE(std::get<IRObject>(result.at(3)).members.at(0).second.required);
+  EXPECT_IR_IMPOSSIBLE(result, 3, "/$defs/Item/additionalProperties");
+
+  EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(4)));
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(4)).pointer, "/$defs/Item");
+  EXPECT_EQ(std::get<IRObject>(result.at(4)).members.size(), 1);
+  EXPECT_EQ(std::get<IRObject>(result.at(4)).members.at(0).first, "name");
+  EXPECT_TRUE(std::get<IRObject>(result.at(4)).members.at(0).second.required);
   EXPECT_AS_STRING(
-      std::get<IRObject>(result.at(3)).members.at(0).second.pointer,
+      std::get<IRObject>(result.at(4)).members.at(0).second.pointer,
       "/$defs/Item/properties/name");
-  EXPECT_TRUE(std::get<IRObject>(result.at(3)).additional.has_value());
-  EXPECT_AS_STRING(std::get<IRObject>(result.at(3)).additional->pointer,
+  EXPECT_TRUE(std::get<IRObject>(result.at(4)).additional.has_value());
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(4)).additional->pointer,
                    "/$defs/Item/additionalProperties");
+
+  EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(5)));
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(5)).pointer, "");
+  EXPECT_EQ(std::get<IRObject>(result.at(5)).members.size(), 1);
+  EXPECT_EQ(std::get<IRObject>(result.at(5)).members.at(0).first, "item");
+  EXPECT_TRUE(std::get<IRObject>(result.at(5)).members.at(0).second.required);
+  EXPECT_AS_STRING(
+      std::get<IRObject>(result.at(5)).members.at(0).second.pointer,
+      "/properties/item");
+  EXPECT_TRUE(std::get<IRObject>(result.at(5)).additional.has_value());
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(5)).additional->pointer,
+                   "/additionalProperties");
 }
