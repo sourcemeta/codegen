@@ -655,3 +655,52 @@ TEST(IR_2020_12, ref_recursive_to_root) {
                    "/properties/child");
   EXPECT_FALSE(std::get<IRObject>(result.at(1)).additional.has_value());
 }
+
+TEST(IR_2020_12, nested_object_with_required_property) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "nested": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" }
+        },
+        "required": [ "name" ]
+      }
+    }
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
+
+  using namespace sourcemeta::codegen;
+
+  EXPECT_EQ(result.size(), 3);
+
+  EXPECT_IR_SCALAR(result, 0, String, "/properties/nested/properties/name");
+
+  EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(1)));
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(1)).pointer,
+                   "/properties/nested");
+  EXPECT_EQ(std::get<IRObject>(result.at(1)).members.size(), 1);
+  EXPECT_TRUE(std::get<IRObject>(result.at(1)).members.contains("name"));
+  EXPECT_TRUE(std::get<IRObject>(result.at(1)).members.at("name").required);
+  EXPECT_FALSE(std::get<IRObject>(result.at(1)).members.at("name").immutable);
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(1)).members.at("name").pointer,
+                   "/properties/nested/properties/name");
+  EXPECT_FALSE(std::get<IRObject>(result.at(1)).additional.has_value());
+
+  EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(2)));
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(2)).pointer, "");
+  EXPECT_EQ(std::get<IRObject>(result.at(2)).members.size(), 1);
+  EXPECT_TRUE(std::get<IRObject>(result.at(2)).members.contains("nested"));
+  EXPECT_FALSE(std::get<IRObject>(result.at(2)).members.at("nested").required);
+  EXPECT_FALSE(std::get<IRObject>(result.at(2)).members.at("nested").immutable);
+  EXPECT_AS_STRING(
+      std::get<IRObject>(result.at(2)).members.at("nested").pointer,
+      "/properties/nested");
+  EXPECT_FALSE(std::get<IRObject>(result.at(2)).additional.has_value());
+}
