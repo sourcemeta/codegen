@@ -825,3 +825,54 @@ TEST(IR_2020_12, object_only_additional_properties) {
   EXPECT_AS_STRING(std::get<IRObject>(result.at(1)).additional->pointer,
                    "/additionalProperties");
 }
+
+TEST(IR_2020_12, embedded_resource_with_nested_id_no_duplicates) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://example.com/main",
+    "type": "object",
+    "required": [ "item" ],
+    "properties": {
+      "item": { "$ref": "https://example.com/item" }
+    },
+    "additionalProperties": false,
+    "$defs": {
+      "Item": {
+        "$id": "https://example.com/item",
+        "type": "object",
+        "required": [ "name" ],
+        "properties": {
+          "name": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
+
+  using namespace sourcemeta::codegen;
+
+  EXPECT_EQ(result.size(), 4);
+
+  EXPECT_IR_REFERENCE(result, 0, "/properties/item", "/$defs/Item");
+
+  EXPECT_IR_SCALAR(result, 1, String, "/$defs/Item/properties/name");
+
+  EXPECT_IR_IMPOSSIBLE(result, 2, "/$defs/Item/additionalProperties");
+
+  EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(3)));
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(3)).pointer, "/$defs/Item");
+  EXPECT_EQ(std::get<IRObject>(result.at(3)).members.size(), 1);
+  EXPECT_EQ(std::get<IRObject>(result.at(3)).members.at(0).first, "name");
+  EXPECT_TRUE(std::get<IRObject>(result.at(3)).members.at(0).second.required);
+  EXPECT_AS_STRING(
+      std::get<IRObject>(result.at(3)).members.at(0).second.pointer,
+      "/$defs/Item/properties/name");
+  EXPECT_TRUE(std::get<IRObject>(result.at(3)).additional.has_value());
+  EXPECT_AS_STRING(std::get<IRObject>(result.at(3)).additional->pointer,
+                   "/$defs/Item/additionalProperties");
+}

@@ -47,12 +47,20 @@ auto compile(const sourcemeta::core::JSON &input,
   // (4) Convert every subschema into a code generation object
   // --------------------------------------------------------------------------
 
+  std::unordered_set<sourcemeta::core::WeakPointer> visited;
   IRResult result;
   for (const auto &[key, location] : frame.locations()) {
     if (location.type !=
             sourcemeta::core::SchemaFrame::LocationType::Resource &&
         location.type !=
             sourcemeta::core::SchemaFrame::LocationType::Subschema) {
+      continue;
+    }
+
+    // Framing may report resource twice or more given default identifiers and
+    // nested resources
+    const auto [visited_iterator, inserted] = visited.insert(location.pointer);
+    if (!inserted) {
       continue;
     }
 
