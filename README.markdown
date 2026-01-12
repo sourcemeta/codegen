@@ -28,7 +28,7 @@ to use a JSON Schema validator at runtime to enforce remaining constraints.
 | Core (2020-12) | `$vocabulary` | Ignored |
 | Core (2020-12) | `$comment` | Ignored |
 | Applicator (2020-12) | `properties` | Yes |
-| Applicator (2020-12) | `additionalProperties` | Yes |
+| Applicator (2020-12) | `additionalProperties` | **PARTIAL GIVEN LANGUAGE LIMITATIONS** |
 | Applicator (2020-12) | `items` | Yes |
 | Applicator (2020-12) | `prefixItems` | Yes |
 | Applicator (2020-12) | `anyOf` | Yes |
