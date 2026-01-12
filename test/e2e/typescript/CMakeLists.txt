@@ -27,6 +27,12 @@ foreach(DIALECT_DIRECTORY ${TYPESCRIPT_DIALECT_DIRECTORIES})
         list(APPEND E2E_SCHEMAS "${CASE_DIRECTORY}/schema.json")
         add_test(NAME "e2e.typescript.tsc.${DIALECT_NAME}.${CASE_NAME}/expected.d.ts"
           COMMAND "${TSC_BIN}" --noEmit "${CASE_DIRECTORY}/expected.d.ts")
+
+        # TODO: Make this required for every case
+        if(EXISTS "${CASE_DIRECTORY}/test.ts")
+          add_test(NAME "e2e.typescript.tsc.${DIALECT_NAME}.${CASE_NAME}/test.ts"
+            COMMAND "${TSC_BIN}" --noEmit "${CASE_DIRECTORY}/test.ts")
+        endif()
       endif()
     endforeach()
   endif()
