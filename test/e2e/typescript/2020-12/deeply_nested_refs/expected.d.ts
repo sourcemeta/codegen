@@ -163,6 +163,9 @@ export interface ApiResponse_X24Defs_UEntity_Properties_Relationships {
   "parent"?: ApiResponse_X24Defs_UEntity_Properties_Relationships_Properties_Parent;
   "children"?: ApiResponse_X24Defs_UEntity_Properties_Relationships_Properties_Children;
   [key: string]:
+    // As a notable limitation, TypeScript requires index signatures
+    // to also include the types of all of its properties, so we must
+    // match a superset of what JSON Schema allows
     ApiResponse_X24Defs_UEntity_Properties_Relationships_Properties_Parent |
     ApiResponse_X24Defs_UEntity_Properties_Relationships_Properties_Children |
     ApiResponse_X24Defs_UEntity_Properties_Relationships_AdditionalProperties |

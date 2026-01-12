@@ -81,13 +81,24 @@ auto TypeScript::operator()(const IREnumeration &entry) const -> void {
 
 auto TypeScript::operator()(const IRObject &entry) const -> void {
   const auto type_name{sourcemeta::core::mangle(entry.pointer, this->prefix)};
-  const auto has_additional{entry.additional.has_value()};
+  const auto has_typed_additional{
+      std::holds_alternative<IRType>(entry.additional)};
+  const auto allows_any_additional{
+      std::holds_alternative<bool>(entry.additional) &&
+      std::get<bool>(entry.additional)};
 
-  if (has_additional && entry.members.empty()) {
+  if (has_typed_additional && entry.members.empty()) {
     this->output << "export type " << type_name << " = Record<string, "
-                 << sourcemeta::core::mangle(entry.additional->pointer,
-                                             this->prefix)
+                 << sourcemeta::core::mangle(
+                        std::get<IRType>(entry.additional).pointer,
+                        this->prefix)
                  << ">;\n";
+    return;
+  }
+
+  if (allows_any_additional && entry.members.empty()) {
+    this->output << "export type " << type_name
+                 << " = Record<string, unknown>;\n";
     return;
   }
 
@@ -110,20 +121,29 @@ auto TypeScript::operator()(const IRObject &entry) const -> void {
                  << ";\n";
   }
 
-  if (has_additional) {
+  if (allows_any_additional) {
+    this->output << "  [key: string]: unknown | undefined;\n";
+  } else if (has_typed_additional) {
     // TypeScript index signatures must be a supertype of all property value
     // types. We use a union of all member types plus the additional properties
     // type plus undefined (for optional properties).
     this->output << "  [key: string]:\n";
+    this->output << "    // As a notable limitation, TypeScript requires index "
+                    "signatures\n";
+    this->output << "    // to also include the types of all of its "
+                    "properties, so we must\n";
+    this->output << "    // match a superset of what JSON Schema allows\n";
     for (const auto &[member_name, member_value] : entry.members) {
       this->output << "    "
                    << sourcemeta::core::mangle(member_value.pointer,
                                                this->prefix)
                    << " |\n";
     }
+
     this->output << "    "
-                 << sourcemeta::core::mangle(entry.additional->pointer,
-                                             this->prefix)
+                 << sourcemeta::core::mangle(
+                        std::get<IRType>(entry.additional).pointer,
+                        this->prefix)
                  << " |\n";
     this->output << "    undefined;\n";
   }

@@ -96,12 +96,12 @@ auto handle_object(const sourcemeta::core::JSON &schema,
     members.emplace_back(entry.first, std::move(member_value));
   }
 
-  std::optional<IRType> additional{std::nullopt};
+  std::variant<bool, IRType> additional{true};
   if (subschema.defines("additionalProperties")) {
     const auto &additional_schema{subschema.at("additionalProperties")};
-    const auto is_false{additional_schema.is_boolean() &&
-                        !additional_schema.to_boolean()};
-    if (!is_false) {
+    if (additional_schema.is_boolean()) {
+      additional = additional_schema.to_boolean();
+    } else {
       auto additional_pointer{sourcemeta::core::to_pointer(location.pointer)};
       additional_pointer.push_back("additionalProperties");
       additional = IRType{.pointer = std::move(additional_pointer)};

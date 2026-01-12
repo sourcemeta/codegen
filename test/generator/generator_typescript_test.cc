@@ -800,6 +800,9 @@ export interface Person {
   "name": Person_Properties_Name;
   "age"?: Person_Properties_Age;
   [key: string]:
+    // As a notable limitation, TypeScript requires index signatures
+    // to also include the types of all of its properties, so we must
+    // match a superset of what JSON Schema allows
     Person_Properties_Name |
     Person_Properties_Age |
     Person_AdditionalProperties |
@@ -842,6 +845,9 @@ export type Item_AdditionalProperties = string;
 export interface Item {
   "id": Item_Properties_Id;
   [key: string]:
+    // As a notable limitation, TypeScript requires index signatures
+    // to also include the types of all of its properties, so we must
+    // match a superset of what JSON Schema allows
     Item_Properties_Id |
     Item_AdditionalProperties |
     undefined;
@@ -901,6 +907,9 @@ export type MyObject_AdditionalProperties = never;
 export interface MyObject {
   "foo"?: MyObject_Properties_Foo;
   [key: string]:
+    // As a notable limitation, TypeScript requires index signatures
+    // to also include the types of all of its properties, so we must
+    // match a superset of what JSON Schema allows
     MyObject_Properties_Foo |
     MyObject_AdditionalProperties |
     undefined;
@@ -989,6 +998,9 @@ export type Test_AdditionalProperties =
 export interface Test {
   "name"?: Test_Properties_Name;
   [key: string]:
+    // As a notable limitation, TypeScript requires index signatures
+    // to also include the types of all of its properties, so we must
+    // match a superset of what JSON Schema allows
     Test_Properties_Name |
     Test_AdditionalProperties |
     undefined;

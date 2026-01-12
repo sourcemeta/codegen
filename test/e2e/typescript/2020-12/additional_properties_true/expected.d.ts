@@ -8,8 +8,7 @@ export type FlexibleRecord_AdditionalProperties_AnyOf_ZIndex4 = string;
 
 export type FlexibleRecord_AdditionalProperties_AnyOf_ZIndex3 = unknown[];
 
-export interface FlexibleRecord_AdditionalProperties_AnyOf_ZIndex2 {
-}
+export type FlexibleRecord_AdditionalProperties_AnyOf_ZIndex2 = Record<string, unknown>;
 
 export type FlexibleRecord_AdditionalProperties_AnyOf_ZIndex1 = boolean;
 
@@ -27,6 +26,9 @@ export interface FlexibleRecord {
   "name": FlexibleRecord_Properties_Name;
   "count"?: FlexibleRecord_Properties_Count;
   [key: string]:
+    // As a notable limitation, TypeScript requires index signatures
+    // to also include the types of all of its properties, so we must
+    // match a superset of what JSON Schema allows
     FlexibleRecord_Properties_Name |
     FlexibleRecord_Properties_Count |
     FlexibleRecord_AdditionalProperties |

@@ -64,7 +64,7 @@ struct IRObjectValue : IRType {
 struct IRObject : IRType {
   // To preserve the user's ordering
   std::vector<std::pair<sourcemeta::core::JSON::String, IRObjectValue>> members;
-  std::optional<IRType> additional;
+  std::variant<bool, IRType> additional;
 };
 
 /// @ingroup ir

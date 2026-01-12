@@ -53,7 +53,9 @@ TEST(IR_2020_12, test_2) {
   EXPECT_AS_STRING(
       std::get<IRObject>(result.at(1)).members.at(0).second.pointer,
       "/properties/foo");
-  EXPECT_FALSE(std::get<IRObject>(result.at(1)).additional.has_value());
+  EXPECT_TRUE(std::holds_alternative<bool>(
+      std::get<IRObject>(result.at(1)).additional));
+  EXPECT_TRUE(std::get<bool>(std::get<IRObject>(result.at(1)).additional));
 }
 
 TEST(IR_2020_12, test_3) {
@@ -315,7 +317,9 @@ TEST(IR_2020_12, object_type_only) {
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(0)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(0)).pointer, "");
   EXPECT_TRUE(std::get<IRObject>(result.at(0)).members.empty());
-  EXPECT_FALSE(std::get<IRObject>(result.at(0)).additional.has_value());
+  EXPECT_TRUE(std::holds_alternative<bool>(
+      std::get<IRObject>(result.at(0)).additional));
+  EXPECT_TRUE(std::get<bool>(std::get<IRObject>(result.at(0)).additional));
 }
 
 TEST(IR_2020_12, object_empty_properties) {
@@ -337,7 +341,9 @@ TEST(IR_2020_12, object_empty_properties) {
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(0)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(0)).pointer, "");
   EXPECT_TRUE(std::get<IRObject>(result.at(0)).members.empty());
-  EXPECT_FALSE(std::get<IRObject>(result.at(0)).additional.has_value());
+  EXPECT_TRUE(std::holds_alternative<bool>(
+      std::get<IRObject>(result.at(0)).additional));
+  EXPECT_TRUE(std::get<bool>(std::get<IRObject>(result.at(0)).additional));
 }
 
 TEST(IR_2020_12, object_with_additional_properties) {
@@ -372,9 +378,11 @@ TEST(IR_2020_12, object_with_additional_properties) {
       std::get<IRObject>(result.at(2)).members.at(0).second.pointer,
       "/properties/foo");
 
-  EXPECT_TRUE(std::get<IRObject>(result.at(2)).additional.has_value());
-  EXPECT_AS_STRING(std::get<IRObject>(result.at(2)).additional->pointer,
-                   "/additionalProperties");
+  EXPECT_TRUE(std::holds_alternative<IRType>(
+      std::get<IRObject>(result.at(2)).additional));
+  EXPECT_AS_STRING(
+      std::get<IRType>(std::get<IRObject>(result.at(2)).additional).pointer,
+      "/additionalProperties");
 }
 
 TEST(IR_2020_12, object_with_impossible_property) {
@@ -406,7 +414,9 @@ TEST(IR_2020_12, object_with_impossible_property) {
   EXPECT_AS_STRING(
       std::get<IRObject>(result.at(1)).members.at(0).second.pointer,
       "/properties/foo");
-  EXPECT_FALSE(std::get<IRObject>(result.at(1)).additional.has_value());
+  EXPECT_TRUE(std::holds_alternative<bool>(
+      std::get<IRObject>(result.at(1)).additional));
+  EXPECT_TRUE(std::get<bool>(std::get<IRObject>(result.at(1)).additional));
 }
 
 TEST(IR_2020_12, object_with_impossible_additional_properties) {
@@ -442,7 +452,9 @@ TEST(IR_2020_12, object_with_impossible_additional_properties) {
       std::get<IRObject>(result.at(2)).members.at(0).second.pointer,
       "/properties/foo");
 
-  EXPECT_FALSE(std::get<IRObject>(result.at(2)).additional.has_value());
+  EXPECT_TRUE(std::holds_alternative<bool>(
+      std::get<IRObject>(result.at(2)).additional));
+  EXPECT_FALSE(std::get<bool>(std::get<IRObject>(result.at(2)).additional));
 }
 
 TEST(IR_2020_12, array_with_items) {
@@ -652,7 +664,9 @@ TEST(IR_2020_12, ref_recursive_to_root) {
   EXPECT_AS_STRING(
       std::get<IRObject>(result.at(1)).members.at(0).second.pointer,
       "/properties/child");
-  EXPECT_FALSE(std::get<IRObject>(result.at(1)).additional.has_value());
+  EXPECT_TRUE(std::holds_alternative<bool>(
+      std::get<IRObject>(result.at(1)).additional));
+  EXPECT_TRUE(std::get<bool>(std::get<IRObject>(result.at(1)).additional));
 }
 
 TEST(IR_2020_12, nested_object_with_required_property) {
@@ -691,7 +705,9 @@ TEST(IR_2020_12, nested_object_with_required_property) {
   EXPECT_AS_STRING(
       std::get<IRObject>(result.at(1)).members.at(0).second.pointer,
       "/properties/nested/properties/name");
-  EXPECT_FALSE(std::get<IRObject>(result.at(1)).additional.has_value());
+  EXPECT_TRUE(std::holds_alternative<bool>(
+      std::get<IRObject>(result.at(1)).additional));
+  EXPECT_TRUE(std::get<bool>(std::get<IRObject>(result.at(1)).additional));
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(2)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(2)).pointer, "");
@@ -702,7 +718,9 @@ TEST(IR_2020_12, nested_object_with_required_property) {
   EXPECT_AS_STRING(
       std::get<IRObject>(result.at(2)).members.at(0).second.pointer,
       "/properties/nested");
-  EXPECT_FALSE(std::get<IRObject>(result.at(2)).additional.has_value());
+  EXPECT_TRUE(std::holds_alternative<bool>(
+      std::get<IRObject>(result.at(2)).additional));
+  EXPECT_TRUE(std::get<bool>(std::get<IRObject>(result.at(2)).additional));
 }
 
 TEST(IR_2020_12, array_without_items) {
@@ -758,7 +776,9 @@ TEST(IR_2020_12, object_with_additional_properties_true) {
   EXPECT_AS_STRING(std::get<IRObject>(result.at(4)).pointer,
                    "/additionalProperties/anyOf/2");
   EXPECT_EQ(std::get<IRObject>(result.at(4)).members.size(), 0);
-  EXPECT_FALSE(std::get<IRObject>(result.at(4)).additional.has_value());
+  EXPECT_TRUE(std::holds_alternative<bool>(
+      std::get<IRObject>(result.at(4)).additional));
+  EXPECT_TRUE(std::get<bool>(std::get<IRObject>(result.at(4)).additional));
 
   EXPECT_IR_SCALAR(result, 5, Boolean, "/additionalProperties/anyOf/1");
   EXPECT_IR_SCALAR(result, 6, Null, "/additionalProperties/anyOf/0");
@@ -789,9 +809,11 @@ TEST(IR_2020_12, object_with_additional_properties_true) {
   EXPECT_AS_STRING(
       std::get<IRObject>(result.at(8)).members.at(0).second.pointer,
       "/properties/name");
-  EXPECT_TRUE(std::get<IRObject>(result.at(8)).additional.has_value());
-  EXPECT_AS_STRING(std::get<IRObject>(result.at(8)).additional->pointer,
-                   "/additionalProperties");
+  EXPECT_TRUE(std::holds_alternative<IRType>(
+      std::get<IRObject>(result.at(8)).additional));
+  EXPECT_AS_STRING(
+      std::get<IRType>(std::get<IRObject>(result.at(8)).additional).pointer,
+      "/additionalProperties");
 }
 
 TEST(IR_2020_12, object_only_additional_properties) {
@@ -815,9 +837,11 @@ TEST(IR_2020_12, object_only_additional_properties) {
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(1)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(1)).pointer, "");
   EXPECT_EQ(std::get<IRObject>(result.at(1)).members.size(), 0);
-  EXPECT_TRUE(std::get<IRObject>(result.at(1)).additional.has_value());
-  EXPECT_AS_STRING(std::get<IRObject>(result.at(1)).additional->pointer,
-                   "/additionalProperties");
+  EXPECT_TRUE(std::holds_alternative<IRType>(
+      std::get<IRObject>(result.at(1)).additional));
+  EXPECT_AS_STRING(
+      std::get<IRType>(std::get<IRObject>(result.at(1)).additional).pointer,
+      "/additionalProperties");
 }
 
 TEST(IR_2020_12, embedded_resource_with_nested_id_no_duplicates) {
@@ -868,7 +892,9 @@ TEST(IR_2020_12, embedded_resource_with_nested_id_no_duplicates) {
   EXPECT_AS_STRING(
       std::get<IRObject>(result.at(4)).members.at(0).second.pointer,
       "/$defs/Item/properties/name");
-  EXPECT_FALSE(std::get<IRObject>(result.at(4)).additional.has_value());
+  EXPECT_TRUE(std::holds_alternative<bool>(
+      std::get<IRObject>(result.at(4)).additional));
+  EXPECT_FALSE(std::get<bool>(std::get<IRObject>(result.at(4)).additional));
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(5)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(5)).pointer, "");
@@ -878,5 +904,7 @@ TEST(IR_2020_12, embedded_resource_with_nested_id_no_duplicates) {
   EXPECT_AS_STRING(
       std::get<IRObject>(result.at(5)).members.at(0).second.pointer,
       "/properties/item");
-  EXPECT_FALSE(std::get<IRObject>(result.at(5)).additional.has_value());
+  EXPECT_TRUE(std::holds_alternative<bool>(
+      std::get<IRObject>(result.at(5)).additional));
+  EXPECT_FALSE(std::get<bool>(std::get<IRObject>(result.at(5)).additional));
 }
