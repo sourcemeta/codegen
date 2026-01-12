@@ -12,17 +12,11 @@ export type DocSystem_Properties_RelatedDocuments_Items_Properties_Id = DocSyste
 
 export type DocSystem_Properties_RelatedDocuments_Items_AdditionalProperties = never;
 
-export type DocSystem_Properties_RelatedDocuments_Items = {
+export interface DocSystem_Properties_RelatedDocuments_Items {
   "id": DocSystem_Properties_RelatedDocuments_Items_Properties_Id;
   "relationship": DocSystem_Properties_RelatedDocuments_Items_Properties_Relationship;
   "title"?: DocSystem_Properties_RelatedDocuments_Items_Properties_Title;
-} & {
-  [K in string as K extends
-    "id" |
-    "relationship" |
-    "title"
-  ? never : K]: DocSystem_Properties_RelatedDocuments_Items_AdditionalProperties;
-};
+}
 
 export type DocSystem_Properties_RelatedDocuments = DocSystem_Properties_RelatedDocuments_Items[];
 
@@ -48,21 +42,13 @@ export type DocSystem_Properties_Permissions_Properties_Editors = DocSystem_Prop
 
 export type DocSystem_Properties_Permissions_AdditionalProperties = never;
 
-export type DocSystem_Properties_Permissions = {
+export interface DocSystem_Properties_Permissions {
   "owner": DocSystem_Properties_Permissions_Properties_Owner;
   "readers": DocSystem_Properties_Permissions_Properties_Readers;
   "editors": DocSystem_Properties_Permissions_Properties_Editors;
   "isPublic"?: DocSystem_Properties_Permissions_Properties_IsPublic;
   "expiresAt"?: DocSystem_Properties_Permissions_Properties_ExpiresAt;
-} & {
-  [K in string as K extends
-    "owner" |
-    "readers" |
-    "editors" |
-    "isPublic" |
-    "expiresAt"
-  ? never : K]: DocSystem_Properties_Permissions_AdditionalProperties;
-};
+}
 
 export type DocSystem_Properties_History_Items_Properties_Timestamp = DocSystem_X24Defs_UTimestamp;
 
@@ -94,17 +80,11 @@ export type DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_
 
 export type DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_AdditionalProperties = never;
 
-export type DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0 = {
+export interface DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0 {
   "field"?: DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_Field;
   "oldValue"?: DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_OldValue;
   "newValue"?: DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_NewValue;
-} & {
-  [K in string as K extends
-    "field" |
-    "oldValue" |
-    "newValue"
-  ? never : K]: DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_AdditionalProperties;
-};
+}
 
 export type DocSystem_Properties_History_Items_Properties_Details =
   DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0 |
@@ -116,19 +96,12 @@ export type DocSystem_Properties_History_Items_Properties_Action = "created" | "
 
 export type DocSystem_Properties_History_Items_AdditionalProperties = never;
 
-export type DocSystem_Properties_History_Items = {
+export interface DocSystem_Properties_History_Items {
   "action": DocSystem_Properties_History_Items_Properties_Action;
   "actor": DocSystem_Properties_History_Items_Properties_Actor;
   "timestamp": DocSystem_Properties_History_Items_Properties_Timestamp;
   "details"?: DocSystem_Properties_History_Items_Properties_Details;
-} & {
-  [K in string as K extends
-    "action" |
-    "actor" |
-    "timestamp" |
-    "details"
-  ? never : K]: DocSystem_Properties_History_Items_AdditionalProperties;
-};
+}
 
 export type DocSystem_Properties_History = DocSystem_Properties_History_Items[];
 
@@ -146,15 +119,10 @@ export type DocSystem_Properties_Document_Properties_Tags_Items_Properties_Color
 
 export type DocSystem_Properties_Document_Properties_Tags_Items_AdditionalProperties = never;
 
-export type DocSystem_Properties_Document_Properties_Tags_Items = {
+export interface DocSystem_Properties_Document_Properties_Tags_Items {
   "name": DocSystem_Properties_Document_Properties_Tags_Items_Properties_Name;
   "color"?: DocSystem_Properties_Document_Properties_Tags_Items_Properties_Color;
-} & {
-  [K in string as K extends
-    "name" |
-    "color"
-  ? never : K]: DocSystem_Properties_Document_Properties_Tags_Items_AdditionalProperties;
-};
+}
 
 export type DocSystem_Properties_Document_Properties_Tags = DocSystem_Properties_Document_Properties_Tags_Items[];
 
@@ -170,17 +138,11 @@ export type DocSystem_Properties_Document_Properties_Metadata_Properties_Created
 
 export type DocSystem_Properties_Document_Properties_Metadata_AdditionalProperties = never;
 
-export type DocSystem_Properties_Document_Properties_Metadata = {
+export interface DocSystem_Properties_Document_Properties_Metadata {
   "createdAt"?: DocSystem_Properties_Document_Properties_Metadata_Properties_CreatedAt;
   "updatedAt"?: DocSystem_Properties_Document_Properties_Metadata_Properties_X75pdatedAt;
   "version"?: DocSystem_Properties_Document_Properties_Metadata_Properties_Version;
-} & {
-  [K in string as K extends
-    "createdAt" |
-    "updatedAt" |
-    "version"
-  ? never : K]: DocSystem_Properties_Document_Properties_Metadata_AdditionalProperties;
-};
+}
 
 export type DocSystem_Properties_Document_Properties_Id = DocSystem_X24Defs_X55X55ID;
 
@@ -198,23 +160,17 @@ export type DocSystem_Properties_Document_Properties_Content_Properties_Body = s
 
 export type DocSystem_Properties_Document_Properties_Content_AdditionalProperties = never;
 
-export type DocSystem_Properties_Document_Properties_Content = {
+export interface DocSystem_Properties_Document_Properties_Content {
   "format": DocSystem_Properties_Document_Properties_Content_Properties_Format;
   "body": DocSystem_Properties_Document_Properties_Content_Properties_Body;
   "summary"?: DocSystem_Properties_Document_Properties_Content_Properties_Summary;
-} & {
-  [K in string as K extends
-    "format" |
-    "body" |
-    "summary"
-  ? never : K]: DocSystem_Properties_Document_Properties_Content_AdditionalProperties;
-};
+}
 
 export type DocSystem_Properties_Document_Properties_Author = DocSystem_X24Defs_X55ser;
 
 export type DocSystem_Properties_Document_AdditionalProperties = never;
 
-export type DocSystem_Properties_Document = {
+export interface DocSystem_Properties_Document {
   "id": DocSystem_Properties_Document_Properties_Id;
   "title": DocSystem_Properties_Document_Properties_Title;
   "content": DocSystem_Properties_Document_Properties_Content;
@@ -222,17 +178,7 @@ export type DocSystem_Properties_Document = {
   "reviewers"?: DocSystem_Properties_Document_Properties_Reviewers;
   "tags"?: DocSystem_Properties_Document_Properties_Tags;
   "metadata"?: DocSystem_Properties_Document_Properties_Metadata;
-} & {
-  [K in string as K extends
-    "id" |
-    "title" |
-    "content" |
-    "author" |
-    "reviewers" |
-    "tags" |
-    "metadata"
-  ? never : K]: DocSystem_Properties_Document_AdditionalProperties;
-};
+}
 
 export type DocSystem_AdditionalProperties = never;
 
@@ -252,19 +198,12 @@ export type DocSystem_X24Defs_X55ser_Properties_DisplayName =
 
 export type DocSystem_X24Defs_X55ser_AdditionalProperties = never;
 
-export type DocSystem_X24Defs_X55ser = {
+export interface DocSystem_X24Defs_X55ser {
   "id": DocSystem_X24Defs_X55ser_Properties_Id;
   "email": DocSystem_X24Defs_X55ser_Properties_Email;
   "displayName"?: DocSystem_X24Defs_X55ser_Properties_DisplayName;
   "role"?: DocSystem_X24Defs_X55ser_Properties_Role;
-} & {
-  [K in string as K extends
-    "id" |
-    "email" |
-    "displayName" |
-    "role"
-  ? never : K]: DocSystem_X24Defs_X55ser_AdditionalProperties;
-};
+}
 
 export type DocSystem_X24Defs_X55X55ID = string;
 
@@ -282,28 +221,15 @@ export type DocSystem_X24Defs_UTimestamp_Properties_Iso = string;
 
 export type DocSystem_X24Defs_UTimestamp_AdditionalProperties = never;
 
-export type DocSystem_X24Defs_UTimestamp = {
+export interface DocSystem_X24Defs_UTimestamp {
   "unix": DocSystem_X24Defs_UTimestamp_Properties_X75nix;
   "iso": DocSystem_X24Defs_UTimestamp_Properties_Iso;
   "timezone"?: DocSystem_X24Defs_UTimestamp_Properties_Timezone;
-} & {
-  [K in string as K extends
-    "unix" |
-    "iso" |
-    "timezone"
-  ? never : K]: DocSystem_X24Defs_UTimestamp_AdditionalProperties;
-};
+}
 
-export type DocSystem = {
+export interface DocSystem {
   "document": DocSystem_Properties_Document;
   "permissions": DocSystem_Properties_Permissions;
   "history": DocSystem_Properties_History;
   "relatedDocuments"?: DocSystem_Properties_RelatedDocuments;
-} & {
-  [K in string as K extends
-    "document" |
-    "permissions" |
-    "history" |
-    "relatedDocuments"
-  ? never : K]: DocSystem_AdditionalProperties;
-};
+}

@@ -10,15 +10,10 @@ export type ConstTest_Properties_Nested_Properties_FixedNumber = 100;
 
 export type ConstTest_Properties_Nested_AdditionalProperties = never;
 
-export type ConstTest_Properties_Nested = {
+export interface ConstTest_Properties_Nested {
   "fixedValue"?: ConstTest_Properties_Nested_Properties_FixedValue;
   "fixedNumber"?: ConstTest_Properties_Nested_Properties_FixedNumber;
-} & {
-  [K in string as K extends
-    "fixedValue" |
-    "fixedNumber"
-  ? never : K]: ConstTest_Properties_Nested_AdditionalProperties;
-};
+}
 
 export type ConstTest_Properties_Mode = "production";
 
@@ -28,7 +23,7 @@ export type ConstTest_Properties_Count = 42;
 
 export type ConstTest_AdditionalProperties = never;
 
-export type ConstTest = {
+export interface ConstTest {
   "version": ConstTest_Properties_Version;
   "enabled": ConstTest_Properties_Enabled;
   "mode": ConstTest_Properties_Mode;
@@ -36,14 +31,4 @@ export type ConstTest = {
   "nothing": ConstTest_Properties_Nothing;
   "optionalFlag"?: ConstTest_Properties_OptionalFlag;
   "nested"?: ConstTest_Properties_Nested;
-} & {
-  [K in string as K extends
-    "version" |
-    "enabled" |
-    "mode" |
-    "count" |
-    "nothing" |
-    "optionalFlag" |
-    "nested"
-  ? never : K]: ConstTest_AdditionalProperties;
-};
+}

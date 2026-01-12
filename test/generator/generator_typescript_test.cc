@@ -783,8 +783,8 @@ TEST(Generator_typescript, object_with_additional_properties_typed) {
       "age", IRObjectValue{{sourcemeta::core::Pointer{"properties", "age"}},
                            false,
                            false});
-  object.additional = IRObjectValue{
-      {sourcemeta::core::Pointer{"additionalProperties"}}, false, false};
+  object.additional =
+      IRType{{sourcemeta::core::Pointer{"additionalProperties"}}};
   result.emplace_back(std::move(object));
 
   std::ostringstream output;
@@ -796,15 +796,15 @@ export type Person_Properties_Age = number;
 
 export type Person_AdditionalProperties = string;
 
-export type Person = {
+export interface Person {
   "name": Person_Properties_Name;
   "age"?: Person_Properties_Age;
-} & {
-  [K in string as K extends
-    "name" |
-    "age"
-  ? never : K]: Person_AdditionalProperties;
-};
+  [key: string]:
+    Person_Properties_Name |
+    Person_Properties_Age |
+    Person_AdditionalProperties |
+    undefined;
+}
 )TS"};
 
   EXPECT_EQ(output.str(), expected);
@@ -828,8 +828,8 @@ TEST(Generator_typescript,
   object.members.emplace_back(
       "id", IRObjectValue{
                 {sourcemeta::core::Pointer{"properties", "id"}}, true, false});
-  object.additional = IRObjectValue{
-      {sourcemeta::core::Pointer{"additionalProperties"}}, false, false};
+  object.additional =
+      IRType{{sourcemeta::core::Pointer{"additionalProperties"}}};
   result.emplace_back(std::move(object));
 
   std::ostringstream output;
@@ -839,13 +839,13 @@ TEST(Generator_typescript,
 
 export type Item_AdditionalProperties = string;
 
-export type Item = {
+export interface Item {
   "id": Item_Properties_Id;
-} & {
-  [K in string as K extends
-    "id"
-  ? never : K]: Item_AdditionalProperties;
-};
+  [key: string]:
+    Item_Properties_Id |
+    Item_AdditionalProperties |
+    undefined;
+}
 )TS"};
 
   EXPECT_EQ(output.str(), expected);
@@ -887,8 +887,8 @@ TEST(Generator_typescript, object_with_additional_properties_false) {
       "foo", IRObjectValue{{sourcemeta::core::Pointer{"properties", "foo"}},
                            false,
                            false});
-  object.additional = IRObjectValue{
-      {sourcemeta::core::Pointer{"additionalProperties"}}, false, false};
+  object.additional =
+      IRType{{sourcemeta::core::Pointer{"additionalProperties"}}};
   result.emplace_back(std::move(object));
 
   std::ostringstream output;
@@ -898,13 +898,13 @@ TEST(Generator_typescript, object_with_additional_properties_false) {
 
 export type MyObject_AdditionalProperties = never;
 
-export type MyObject = {
+export interface MyObject {
   "foo"?: MyObject_Properties_Foo;
-} & {
-  [K in string as K extends
-    "foo"
-  ? never : K]: MyObject_AdditionalProperties;
-};
+  [key: string]:
+    MyObject_Properties_Foo |
+    MyObject_AdditionalProperties |
+    undefined;
+}
 )TS"};
 
   EXPECT_EQ(output.str(), expected);
@@ -960,8 +960,8 @@ TEST(Generator_typescript, object_with_additional_properties_any) {
       "name", IRObjectValue{{sourcemeta::core::Pointer{"properties", "name"}},
                             false,
                             false});
-  object.additional = IRObjectValue{
-      {sourcemeta::core::Pointer{"additionalProperties"}}, false, false};
+  object.additional =
+      IRType{{sourcemeta::core::Pointer{"additionalProperties"}}};
   result.emplace_back(std::move(object));
 
   std::ostringstream output;
@@ -986,13 +986,13 @@ export type Test_AdditionalProperties =
   Test_AdditionalProperties_AnyOf_3 |
   Test_AdditionalProperties_AnyOf_4;
 
-export type Test = {
+export interface Test {
   "name"?: Test_Properties_Name;
-} & {
-  [K in string as K extends
-    "name"
-  ? never : K]: Test_AdditionalProperties;
-};
+  [key: string]:
+    Test_Properties_Name |
+    Test_AdditionalProperties |
+    undefined;
+}
 )TS"};
 
   EXPECT_EQ(output.str(), expected);
@@ -1009,8 +1009,8 @@ TEST(Generator_typescript, object_only_additional_properties) {
 
   IRObject object;
   object.pointer = {};
-  object.additional = IRObjectValue{
-      {sourcemeta::core::Pointer{"additionalProperties"}}, false, false};
+  object.additional =
+      IRType{{sourcemeta::core::Pointer{"additionalProperties"}}};
   result.emplace_back(std::move(object));
 
   std::ostringstream output;
@@ -1086,8 +1086,8 @@ TEST(Generator_typescript, object_only_additional_properties_true) {
 
   IRObject object;
   object.pointer = {};
-  object.additional = IRObjectValue{
-      {sourcemeta::core::Pointer{"additionalProperties"}}, false, false};
+  object.additional =
+      IRType{{sourcemeta::core::Pointer{"additionalProperties"}}};
   result.emplace_back(std::move(object));
 
   std::ostringstream output;

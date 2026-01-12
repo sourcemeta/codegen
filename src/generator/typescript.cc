@@ -91,11 +91,7 @@ auto TypeScript::operator()(const IRObject &entry) const -> void {
     return;
   }
 
-  if (has_additional) {
-    this->output << "export type " << type_name << " = {\n";
-  } else {
-    this->output << "export interface " << type_name << " {\n";
-  }
+  this->output << "export interface " << type_name << " {\n";
 
   // We always quote property names for safety. JSON Schema allows any string
   // as a property name, but unquoted TypeScript/ECMAScript property names
@@ -115,32 +111,24 @@ auto TypeScript::operator()(const IRObject &entry) const -> void {
   }
 
   if (has_additional) {
-    this->output << "} & {\n";
-
-    // While we could do this with the more idiomatic `Record<Exclude<string,
-    // X>, Y>`, we choose the more verbose manner in order to allow users to
-    // declare a type called `Record`
-    this->output << "  [K in string as K extends\n";
-
-    std::size_t index{0};
+    // TypeScript index signatures must be a supertype of all property value
+    // types. We use a union of all member types plus the additional properties
+    // type plus undefined (for optional properties).
+    this->output << "  [key: string]:\n";
     for (const auto &[member_name, member_value] : entry.members) {
-      const auto is_last{index == entry.members.size() - 1};
-      this->output << "    \"" << escape_string(member_name) << "\"";
-      if (!is_last) {
-        this->output << " |";
-      }
-      this->output << "\n";
-      ++index;
+      this->output << "    "
+                   << sourcemeta::core::mangle(member_value.pointer,
+                                               this->prefix)
+                   << " |\n";
     }
-
-    this->output << "  ? never : K]: "
+    this->output << "    "
                  << sourcemeta::core::mangle(entry.additional->pointer,
                                              this->prefix)
-                 << ";\n";
-    this->output << "};\n";
-  } else {
-    this->output << "}\n";
+                 << " |\n";
+    this->output << "    undefined;\n";
   }
+
+  this->output << "}\n";
 }
 
 auto TypeScript::operator()(const IRImpossible &entry) const -> void {
