@@ -20,16 +20,9 @@ export type ComplexEnum_Properties_Coordinates = [ 0, 0 ] | [ 1, 1 ] | [ -1, -1 
 
 export type ComplexEnum_AdditionalProperties = never;
 
-export type ComplexEnum = {
+export interface ComplexEnum {
   "status"?: ComplexEnum_Properties_Status;
   "coordinates"?: ComplexEnum_Properties_Coordinates;
   "fixedConfig"?: ComplexEnum_Properties_FixedConfig;
   "fixedList"?: ComplexEnum_Properties_FixedList;
-} & {
-  [K in string as K extends
-    "status" |
-    "coordinates" |
-    "fixedConfig" |
-    "fixedList"
-  ? never : K]: ComplexEnum_AdditionalProperties;
-};
+}

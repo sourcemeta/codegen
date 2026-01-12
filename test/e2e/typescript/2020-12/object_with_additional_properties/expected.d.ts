@@ -4,12 +4,12 @@ export type Person_Properties_Age = number;
 
 export type Person_AdditionalProperties = string;
 
-export type Person = {
+export interface Person {
   "name": Person_Properties_Name;
   "age"?: Person_Properties_Age;
-} & {
-  [K in string as K extends
-    "name" |
-    "age"
-  ? never : K]: Person_AdditionalProperties;
-};
+  [key: string]:
+    Person_Properties_Name |
+    Person_Properties_Age |
+    Person_AdditionalProperties |
+    undefined;
+}

@@ -34,35 +34,22 @@ export type ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Ite
 
 export type ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items_AdditionalProperties = never;
 
-export type ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items = {
+export interface ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items {
   "message": ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items_Properties_Message;
   "field": ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items_Properties_Field;
   "suggestedAlternative"?: ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items_Properties_SuggestedAlternative;
-} & {
-  [K in string as K extends
-    "message" |
-    "field" |
-    "suggestedAlternative"
-  ? never : K]: ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items_AdditionalProperties;
-};
+}
 
 export type ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings = ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items[];
 
 export type ApiResponse_X24Defs_UResponseMeta_AdditionalProperties = never;
 
-export type ApiResponse_X24Defs_UResponseMeta = {
+export interface ApiResponse_X24Defs_UResponseMeta {
   "requestId": ApiResponse_X24Defs_UResponseMeta_Properties_RequestId;
   "timestamp": ApiResponse_X24Defs_UResponseMeta_Properties_Timestamp;
   "version"?: ApiResponse_X24Defs_UResponseMeta_Properties_Version;
   "deprecationWarnings"?: ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings;
-} & {
-  [K in string as K extends
-    "requestId" |
-    "timestamp" |
-    "version" |
-    "deprecationWarnings"
-  ? never : K]: ApiResponse_X24Defs_UResponseMeta_AdditionalProperties;
-};
+}
 
 export type ApiResponse_X24Defs_UPaginationInfo_Properties_TotalPages = number;
 
@@ -78,23 +65,14 @@ export type ApiResponse_X24Defs_UPaginationInfo_Properties_HasNextPage = boolean
 
 export type ApiResponse_X24Defs_UPaginationInfo_AdditionalProperties = never;
 
-export type ApiResponse_X24Defs_UPaginationInfo = {
+export interface ApiResponse_X24Defs_UPaginationInfo {
   "page": ApiResponse_X24Defs_UPaginationInfo_Properties_Page;
   "pageSize": ApiResponse_X24Defs_UPaginationInfo_Properties_PageSize;
   "totalItems": ApiResponse_X24Defs_UPaginationInfo_Properties_TotalItems;
   "totalPages": ApiResponse_X24Defs_UPaginationInfo_Properties_TotalPages;
   "hasNextPage"?: ApiResponse_X24Defs_UPaginationInfo_Properties_HasNextPage;
   "hasPreviousPage"?: ApiResponse_X24Defs_UPaginationInfo_Properties_HasPreviousPage;
-} & {
-  [K in string as K extends
-    "page" |
-    "pageSize" |
-    "totalItems" |
-    "totalPages" |
-    "hasNextPage" |
-    "hasPreviousPage"
-  ? never : K]: ApiResponse_X24Defs_UPaginationInfo_AdditionalProperties;
-};
+}
 
 export type ApiResponse_X24Defs_UPaginatedResult_Properties_Pagination = ApiResponse_X24Defs_UPaginationInfo;
 
@@ -106,17 +84,11 @@ export type ApiResponse_X24Defs_UPaginatedResult_Properties_Filters = ApiRespons
 
 export type ApiResponse_X24Defs_UPaginatedResult_AdditionalProperties = never;
 
-export type ApiResponse_X24Defs_UPaginatedResult = {
+export interface ApiResponse_X24Defs_UPaginatedResult {
   "items": ApiResponse_X24Defs_UPaginatedResult_Properties_Items;
   "pagination": ApiResponse_X24Defs_UPaginatedResult_Properties_Pagination;
   "filters"?: ApiResponse_X24Defs_UPaginatedResult_Properties_Filters;
-} & {
-  [K in string as K extends
-    "items" |
-    "pagination" |
-    "filters"
-  ? never : K]: ApiResponse_X24Defs_UPaginatedResult_AdditionalProperties;
-};
+}
 
 export type ApiResponse_X24Defs_UEntityReference_Properties_Type = string;
 
@@ -124,15 +96,10 @@ export type ApiResponse_X24Defs_UEntityReference_Properties_Id = string;
 
 export type ApiResponse_X24Defs_UEntityReference_AdditionalProperties = never;
 
-export type ApiResponse_X24Defs_UEntityReference = {
+export interface ApiResponse_X24Defs_UEntityReference {
   "id": ApiResponse_X24Defs_UEntityReference_Properties_Id;
   "type": ApiResponse_X24Defs_UEntityReference_Properties_Type;
-} & {
-  [K in string as K extends
-    "id" |
-    "type"
-  ? never : K]: ApiResponse_X24Defs_UEntityReference_AdditionalProperties;
-};
+}
 
 export type ApiResponse_X24Defs_UEntityAttributes_Properties_X75pdatedAt_AnyOf_ZIndex1 = null;
 
@@ -173,23 +140,14 @@ export type ApiResponse_X24Defs_UEntityAttributes_Properties_CreatedAt = string;
 
 export type ApiResponse_X24Defs_UEntityAttributes_AdditionalProperties = never;
 
-export type ApiResponse_X24Defs_UEntityAttributes = {
+export interface ApiResponse_X24Defs_UEntityAttributes {
   "name": ApiResponse_X24Defs_UEntityAttributes_Properties_Name;
   "description"?: ApiResponse_X24Defs_UEntityAttributes_Properties_Description;
   "createdAt": ApiResponse_X24Defs_UEntityAttributes_Properties_CreatedAt;
   "updatedAt"?: ApiResponse_X24Defs_UEntityAttributes_Properties_X75pdatedAt;
   "tags"?: ApiResponse_X24Defs_UEntityAttributes_Properties_Tags;
   "metadata"?: ApiResponse_X24Defs_UEntityAttributes_Properties_Metadata;
-} & {
-  [K in string as K extends
-    "name" |
-    "description" |
-    "createdAt" |
-    "updatedAt" |
-    "tags" |
-    "metadata"
-  ? never : K]: ApiResponse_X24Defs_UEntityAttributes_AdditionalProperties;
-};
+}
 
 export type ApiResponse_X24Defs_UEntity_Properties_Type = "user" | "organization" | "resource";
 
@@ -201,15 +159,15 @@ export type ApiResponse_X24Defs_UEntity_Properties_Relationships_Properties_Chil
 
 export type ApiResponse_X24Defs_UEntity_Properties_Relationships_AdditionalProperties = ApiResponse_X24Defs_UEntityReference;
 
-export type ApiResponse_X24Defs_UEntity_Properties_Relationships = {
+export interface ApiResponse_X24Defs_UEntity_Properties_Relationships {
   "parent"?: ApiResponse_X24Defs_UEntity_Properties_Relationships_Properties_Parent;
   "children"?: ApiResponse_X24Defs_UEntity_Properties_Relationships_Properties_Children;
-} & {
-  [K in string as K extends
-    "parent" |
-    "children"
-  ? never : K]: ApiResponse_X24Defs_UEntity_Properties_Relationships_AdditionalProperties;
-};
+  [key: string]:
+    ApiResponse_X24Defs_UEntity_Properties_Relationships_Properties_Parent |
+    ApiResponse_X24Defs_UEntity_Properties_Relationships_Properties_Children |
+    ApiResponse_X24Defs_UEntity_Properties_Relationships_AdditionalProperties |
+    undefined;
+}
 
 export type ApiResponse_X24Defs_UEntity_Properties_Id = string;
 
@@ -217,19 +175,12 @@ export type ApiResponse_X24Defs_UEntity_Properties_Attributes = ApiResponse_X24D
 
 export type ApiResponse_X24Defs_UEntity_AdditionalProperties = never;
 
-export type ApiResponse_X24Defs_UEntity = {
+export interface ApiResponse_X24Defs_UEntity {
   "id": ApiResponse_X24Defs_UEntity_Properties_Id;
   "type": ApiResponse_X24Defs_UEntity_Properties_Type;
   "attributes": ApiResponse_X24Defs_UEntity_Properties_Attributes;
   "relationships"?: ApiResponse_X24Defs_UEntity_Properties_Relationships;
-} & {
-  [K in string as K extends
-    "id" |
-    "type" |
-    "attributes" |
-    "relationships"
-  ? never : K]: ApiResponse_X24Defs_UEntity_AdditionalProperties;
-};
+}
 
 export type ApiResponse_X24Defs_UAppliedFilters_Properties_Types_Items = "user" | "organization" | "resource";
 
@@ -253,44 +204,24 @@ export type ApiResponse_X24Defs_UAppliedFilters_Properties_DateRange_Properties_
 
 export type ApiResponse_X24Defs_UAppliedFilters_Properties_DateRange_AdditionalProperties = never;
 
-export type ApiResponse_X24Defs_UAppliedFilters_Properties_DateRange = {
+export interface ApiResponse_X24Defs_UAppliedFilters_Properties_DateRange {
   "start": ApiResponse_X24Defs_UAppliedFilters_Properties_DateRange_Properties_Start;
   "end": ApiResponse_X24Defs_UAppliedFilters_Properties_DateRange_Properties_End;
-} & {
-  [K in string as K extends
-    "start" |
-    "end"
-  ? never : K]: ApiResponse_X24Defs_UAppliedFilters_Properties_DateRange_AdditionalProperties;
-};
+}
 
 export type ApiResponse_X24Defs_UAppliedFilters_AdditionalProperties = never;
 
-export type ApiResponse_X24Defs_UAppliedFilters = {
+export interface ApiResponse_X24Defs_UAppliedFilters {
   "search"?: ApiResponse_X24Defs_UAppliedFilters_Properties_Search;
   "dateRange"?: ApiResponse_X24Defs_UAppliedFilters_Properties_DateRange;
   "types"?: ApiResponse_X24Defs_UAppliedFilters_Properties_Types;
   "sortBy"?: ApiResponse_X24Defs_UAppliedFilters_Properties_SortBy;
   "sortOrder"?: ApiResponse_X24Defs_UAppliedFilters_Properties_SortOrder;
-} & {
-  [K in string as K extends
-    "search" |
-    "dateRange" |
-    "types" |
-    "sortBy" |
-    "sortOrder"
-  ? never : K]: ApiResponse_X24Defs_UAppliedFilters_AdditionalProperties;
-};
+}
 
-export type ApiResponse = {
+export interface ApiResponse {
   "status": ApiResponse_Properties_Status;
   "errorCode"?: ApiResponse_Properties_ErrorCode;
   "data": ApiResponse_Properties_Data;
   "meta": ApiResponse_Properties_Meta;
-} & {
-  [K in string as K extends
-    "status" |
-    "errorCode" |
-    "data" |
-    "meta"
-  ? never : K]: ApiResponse_AdditionalProperties;
-};
+}

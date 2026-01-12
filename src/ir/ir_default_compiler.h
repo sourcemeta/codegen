@@ -96,13 +96,16 @@ auto handle_object(const sourcemeta::core::JSON &schema,
     members.emplace_back(entry.first, std::move(member_value));
   }
 
-  std::optional<IRObjectValue> additional{std::nullopt};
+  std::optional<IRType> additional{std::nullopt};
   if (subschema.defines("additionalProperties")) {
-    auto additional_pointer{sourcemeta::core::to_pointer(location.pointer)};
-    additional_pointer.push_back("additionalProperties");
-
-    additional =
-        IRObjectValue{{.pointer = std::move(additional_pointer)}, false, false};
+    const auto &additional_schema{subschema.at("additionalProperties")};
+    const auto is_false{additional_schema.is_boolean() &&
+                        !additional_schema.to_boolean()};
+    if (!is_false) {
+      auto additional_pointer{sourcemeta::core::to_pointer(location.pointer)};
+      additional_pointer.push_back("additionalProperties");
+      additional = IRType{.pointer = std::move(additional_pointer)};
+    }
   }
 
   return IRObject{{.pointer = sourcemeta::core::to_pointer(location.pointer)},

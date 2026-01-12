@@ -373,8 +373,6 @@ TEST(IR_2020_12, object_with_additional_properties) {
       "/properties/foo");
 
   EXPECT_TRUE(std::get<IRObject>(result.at(2)).additional.has_value());
-  EXPECT_FALSE(std::get<IRObject>(result.at(2)).additional->required);
-  EXPECT_FALSE(std::get<IRObject>(result.at(2)).additional->immutable);
   EXPECT_AS_STRING(std::get<IRObject>(result.at(2)).additional->pointer,
                    "/additionalProperties");
 }
@@ -444,11 +442,7 @@ TEST(IR_2020_12, object_with_impossible_additional_properties) {
       std::get<IRObject>(result.at(2)).members.at(0).second.pointer,
       "/properties/foo");
 
-  EXPECT_TRUE(std::get<IRObject>(result.at(2)).additional.has_value());
-  EXPECT_FALSE(std::get<IRObject>(result.at(2)).additional->required);
-  EXPECT_FALSE(std::get<IRObject>(result.at(2)).additional->immutable);
-  EXPECT_AS_STRING(std::get<IRObject>(result.at(2)).additional->pointer,
-                   "/additionalProperties");
+  EXPECT_FALSE(std::get<IRObject>(result.at(2)).additional.has_value());
 }
 
 TEST(IR_2020_12, array_with_items) {
@@ -874,9 +868,7 @@ TEST(IR_2020_12, embedded_resource_with_nested_id_no_duplicates) {
   EXPECT_AS_STRING(
       std::get<IRObject>(result.at(4)).members.at(0).second.pointer,
       "/$defs/Item/properties/name");
-  EXPECT_TRUE(std::get<IRObject>(result.at(4)).additional.has_value());
-  EXPECT_AS_STRING(std::get<IRObject>(result.at(4)).additional->pointer,
-                   "/$defs/Item/additionalProperties");
+  EXPECT_FALSE(std::get<IRObject>(result.at(4)).additional.has_value());
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(5)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(5)).pointer, "");
@@ -886,7 +878,5 @@ TEST(IR_2020_12, embedded_resource_with_nested_id_no_duplicates) {
   EXPECT_AS_STRING(
       std::get<IRObject>(result.at(5)).members.at(0).second.pointer,
       "/properties/item");
-  EXPECT_TRUE(std::get<IRObject>(result.at(5)).additional.has_value());
-  EXPECT_AS_STRING(std::get<IRObject>(result.at(5)).additional->pointer,
-                   "/additionalProperties");
+  EXPECT_FALSE(std::get<IRObject>(result.at(5)).additional.has_value());
 }
