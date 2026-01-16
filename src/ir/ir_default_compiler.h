@@ -19,7 +19,7 @@
       if (!allowed.contains(entry.first)) {                                    \
         throw sourcemeta::codegen::UnsupportedKeywordError(                    \
             (schema), (pointer), entry.first,                                  \
-            "Unexpected keyword in subschema");                                \
+            "Unsupported keyword in subschema");                               \
       }                                                                        \
     }                                                                          \
   }
@@ -497,8 +497,7 @@ auto default_compiler(const sourcemeta::core::JSON &schema,
     return handle_ref(schema, frame, location, vocabularies, resolver,
                       subschema);
   } else {
-    throw UnexpectedSchemaError(schema, location.pointer,
-                                "Unsupported subschema");
+    throw UnexpectedSchemaError(schema, location.pointer, "Unsupported schema");
   }
 }
 
