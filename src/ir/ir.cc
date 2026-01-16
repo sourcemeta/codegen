@@ -28,10 +28,10 @@ auto compile(const sourcemeta::core::JSON &input,
   sourcemeta::core::SchemaTransformer canonicalizer;
   sourcemeta::core::add(canonicalizer,
                         sourcemeta::core::AlterSchemaMode::Canonicalizer);
-  [[maybe_unused]] const auto canonicalized{
-      canonicalizer.apply(schema, walker, resolver,
-                          [](const auto &, const auto, const auto,
-                             const auto &) { assert(false); })};
+  [[maybe_unused]] const auto canonicalized{canonicalizer.apply(
+      schema, walker, resolver,
+      [](const auto &, const auto, const auto, const auto &) { assert(false); },
+      default_dialect, default_id)};
   assert(canonicalized.first);
 
   // --------------------------------------------------------------------------
