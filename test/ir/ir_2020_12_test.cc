@@ -23,6 +23,24 @@ TEST(IR_2020_12, test_1) {
   EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol);
 }
 
+TEST(IR_2020_12, default_dialect_parameter) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "type": "string"
+  })JSON")};
+
+  const auto result{sourcemeta::codegen::compile(
+      schema, sourcemeta::core::schema_walker,
+      sourcemeta::core::schema_resolver, sourcemeta::codegen::default_compiler,
+      "https://json-schema.org/draft/2020-12/schema")};
+
+  using namespace sourcemeta::codegen;
+
+  EXPECT_EQ(result.size(), 1);
+
+  EXPECT_IR_SCALAR(result, 0, String, "");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol);
+}
+
 TEST(IR_2020_12, test_2) {
   const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
     "$schema": "https://json-schema.org/draft/2020-12/schema",
