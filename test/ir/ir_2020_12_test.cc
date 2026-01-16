@@ -20,6 +20,7 @@ TEST(IR_2020_12, test_1) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_IR_SCALAR(result, 0, String, "");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol);
 }
 
 TEST(IR_2020_12, test_2) {
@@ -43,9 +44,11 @@ TEST(IR_2020_12, test_2) {
   EXPECT_EQ(result.size(), 2);
 
   EXPECT_IR_SCALAR(result, 0, String, "/properties/foo");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol, "foo");
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(1)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(1)).pointer, "");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(1)).symbol);
   EXPECT_EQ(std::get<IRObject>(result.at(1)).members.size(), 1);
   EXPECT_EQ(std::get<IRObject>(result.at(1)).members.at(0).first, "foo");
   EXPECT_FALSE(std::get<IRObject>(result.at(1)).members.at(0).second.required);
@@ -53,6 +56,8 @@ TEST(IR_2020_12, test_2) {
   EXPECT_AS_STRING(
       std::get<IRObject>(result.at(1)).members.at(0).second.pointer,
       "/properties/foo");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(1)).members.at(0).second.symbol,
+                "foo");
   EXPECT_TRUE(std::holds_alternative<bool>(
       std::get<IRObject>(result.at(1)).additional));
   EXPECT_TRUE(std::get<bool>(std::get<IRObject>(result.at(1)).additional));
@@ -74,6 +79,7 @@ TEST(IR_2020_12, test_3) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_IR_SCALAR(result, 0, Integer, "");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol);
 }
 
 TEST(IR_2020_12, test_4) {
@@ -92,6 +98,7 @@ TEST(IR_2020_12, test_4) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_IR_SCALAR(result, 0, Number, "");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol);
 }
 
 TEST(IR_2020_12, test_5) {
@@ -113,6 +120,7 @@ TEST(IR_2020_12, test_5) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_IR_SCALAR(result, 0, Integer, "");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol);
 }
 
 TEST(IR_2020_12, test_6) {
@@ -134,6 +142,7 @@ TEST(IR_2020_12, test_6) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_IR_SCALAR(result, 0, Number, "");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol);
 }
 
 TEST(IR_2020_12, enum_null) {
@@ -152,6 +161,7 @@ TEST(IR_2020_12, enum_null) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_IR_SCALAR(result, 0, Null, "");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol);
 }
 
 TEST(IR_2020_12, enum_boolean_true_false) {
@@ -170,6 +180,7 @@ TEST(IR_2020_12, enum_boolean_true_false) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_IR_SCALAR(result, 0, Boolean, "");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol);
 }
 
 TEST(IR_2020_12, enum_boolean_false_true) {
@@ -188,6 +199,7 @@ TEST(IR_2020_12, enum_boolean_false_true) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_IR_SCALAR(result, 0, Boolean, "");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol);
 }
 
 TEST(IR_2020_12, enum_string_values) {
@@ -207,6 +219,7 @@ TEST(IR_2020_12, enum_string_values) {
 
   EXPECT_TRUE(std::holds_alternative<IREnumeration>(result.at(0)));
   EXPECT_AS_STRING(std::get<IREnumeration>(result.at(0)).pointer, "");
+  EXPECT_SYMBOL(std::get<IREnumeration>(result.at(0)).symbol);
   EXPECT_EQ(std::get<IREnumeration>(result.at(0)).values.size(), 3);
   EXPECT_EQ(std::get<IREnumeration>(result.at(0)).values.at(0).to_string(),
             "foo");
@@ -232,6 +245,7 @@ TEST(IR_2020_12, const_null) {
   EXPECT_EQ(result.size(), 1);
 
   EXPECT_IR_SCALAR(result, 0, Null, "");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol);
 }
 
 TEST(IR_2020_12, const_string) {
@@ -251,6 +265,7 @@ TEST(IR_2020_12, const_string) {
 
   EXPECT_TRUE(std::holds_alternative<IREnumeration>(result.at(0)));
   EXPECT_AS_STRING(std::get<IREnumeration>(result.at(0)).pointer, "");
+  EXPECT_SYMBOL(std::get<IREnumeration>(result.at(0)).symbol);
   EXPECT_EQ(std::get<IREnumeration>(result.at(0)).values.size(), 1);
   EXPECT_EQ(std::get<IREnumeration>(result.at(0)).values.at(0).to_string(),
             "hello");
@@ -273,6 +288,7 @@ TEST(IR_2020_12, const_integer) {
 
   EXPECT_TRUE(std::holds_alternative<IREnumeration>(result.at(0)));
   EXPECT_AS_STRING(std::get<IREnumeration>(result.at(0)).pointer, "");
+  EXPECT_SYMBOL(std::get<IREnumeration>(result.at(0)).symbol);
   EXPECT_EQ(std::get<IREnumeration>(result.at(0)).values.size(), 1);
   EXPECT_EQ(std::get<IREnumeration>(result.at(0)).values.at(0).to_integer(),
             42);
@@ -295,6 +311,7 @@ TEST(IR_2020_12, const_boolean_true) {
 
   EXPECT_TRUE(std::holds_alternative<IREnumeration>(result.at(0)));
   EXPECT_AS_STRING(std::get<IREnumeration>(result.at(0)).pointer, "");
+  EXPECT_SYMBOL(std::get<IREnumeration>(result.at(0)).symbol);
   EXPECT_EQ(std::get<IREnumeration>(result.at(0)).values.size(), 1);
   EXPECT_TRUE(std::get<IREnumeration>(result.at(0)).values.at(0).to_boolean());
 }
@@ -316,6 +333,7 @@ TEST(IR_2020_12, object_type_only) {
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(0)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(0)).pointer, "");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(0)).symbol);
   EXPECT_TRUE(std::get<IRObject>(result.at(0)).members.empty());
   EXPECT_TRUE(std::holds_alternative<bool>(
       std::get<IRObject>(result.at(0)).additional));
@@ -340,6 +358,7 @@ TEST(IR_2020_12, object_empty_properties) {
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(0)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(0)).pointer, "");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(0)).symbol);
   EXPECT_TRUE(std::get<IRObject>(result.at(0)).members.empty());
   EXPECT_TRUE(std::holds_alternative<bool>(
       std::get<IRObject>(result.at(0)).additional));
@@ -366,10 +385,14 @@ TEST(IR_2020_12, object_with_additional_properties) {
   EXPECT_EQ(result.size(), 3);
 
   EXPECT_IR_SCALAR(result, 0, String, "/properties/foo");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol, "foo");
   EXPECT_IR_SCALAR(result, 1, Integer, "/additionalProperties");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(1)).symbol,
+                "additionalProperties");
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(2)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(2)).pointer, "");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(2)).symbol);
   EXPECT_EQ(std::get<IRObject>(result.at(2)).members.size(), 1);
   EXPECT_TRUE(std::get<IRObject>(result.at(2)).members.at(0).first == "foo");
   EXPECT_FALSE(std::get<IRObject>(result.at(2)).members.at(0).second.required);
@@ -377,12 +400,17 @@ TEST(IR_2020_12, object_with_additional_properties) {
   EXPECT_AS_STRING(
       std::get<IRObject>(result.at(2)).members.at(0).second.pointer,
       "/properties/foo");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(2)).members.at(0).second.symbol,
+                "foo");
 
   EXPECT_TRUE(std::holds_alternative<IRType>(
       std::get<IRObject>(result.at(2)).additional));
   EXPECT_AS_STRING(
       std::get<IRType>(std::get<IRObject>(result.at(2)).additional).pointer,
       "/additionalProperties");
+  EXPECT_SYMBOL(
+      std::get<IRType>(std::get<IRObject>(result.at(2)).additional).symbol,
+      "additionalProperties");
 }
 
 TEST(IR_2020_12, object_with_impossible_property) {
@@ -404,9 +432,11 @@ TEST(IR_2020_12, object_with_impossible_property) {
   EXPECT_EQ(result.size(), 2);
 
   EXPECT_IR_IMPOSSIBLE(result, 0, "/properties/foo");
+  EXPECT_SYMBOL(std::get<IRImpossible>(result.at(0)).symbol, "foo");
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(1)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(1)).pointer, "");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(1)).symbol);
   EXPECT_EQ(std::get<IRObject>(result.at(1)).members.size(), 1);
   EXPECT_TRUE(std::get<IRObject>(result.at(1)).members.at(0).first == "foo");
   EXPECT_FALSE(std::get<IRObject>(result.at(1)).members.at(0).second.required);
@@ -414,6 +444,8 @@ TEST(IR_2020_12, object_with_impossible_property) {
   EXPECT_AS_STRING(
       std::get<IRObject>(result.at(1)).members.at(0).second.pointer,
       "/properties/foo");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(1)).members.at(0).second.symbol,
+                "foo");
   EXPECT_TRUE(std::holds_alternative<bool>(
       std::get<IRObject>(result.at(1)).additional));
   EXPECT_TRUE(std::get<bool>(std::get<IRObject>(result.at(1)).additional));
@@ -439,11 +471,15 @@ TEST(IR_2020_12, object_with_impossible_additional_properties) {
   EXPECT_EQ(result.size(), 3);
 
   EXPECT_IR_SCALAR(result, 0, String, "/properties/foo");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol, "foo");
 
   EXPECT_IR_IMPOSSIBLE(result, 1, "/additionalProperties");
+  EXPECT_SYMBOL(std::get<IRImpossible>(result.at(1)).symbol,
+                "additionalProperties");
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(2)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(2)).pointer, "");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(2)).symbol);
   EXPECT_EQ(std::get<IRObject>(result.at(2)).members.size(), 1);
   EXPECT_TRUE(std::get<IRObject>(result.at(2)).members.at(0).first == "foo");
   EXPECT_FALSE(std::get<IRObject>(result.at(2)).members.at(0).second.required);
@@ -451,6 +487,8 @@ TEST(IR_2020_12, object_with_impossible_additional_properties) {
   EXPECT_AS_STRING(
       std::get<IRObject>(result.at(2)).members.at(0).second.pointer,
       "/properties/foo");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(2)).members.at(0).second.symbol,
+                "foo");
 
   EXPECT_TRUE(std::holds_alternative<bool>(
       std::get<IRObject>(result.at(2)).additional));
@@ -474,8 +512,11 @@ TEST(IR_2020_12, array_with_items) {
   EXPECT_EQ(result.size(), 2);
 
   EXPECT_IR_SCALAR(result, 0, String, "/items");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol, "items");
 
   EXPECT_IR_ARRAY(result, 1, "", "/items");
+  EXPECT_SYMBOL(std::get<IRArray>(result.at(1)).symbol);
+  EXPECT_SYMBOL(std::get<IRArray>(result.at(1)).items->symbol, "items");
 }
 
 TEST(IR_2020_12, array_nested_in_object) {
@@ -500,11 +541,15 @@ TEST(IR_2020_12, array_nested_in_object) {
   EXPECT_EQ(result.size(), 3);
 
   EXPECT_IR_SCALAR(result, 0, String, "/properties/tags/items");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol, "tags", "items");
 
   EXPECT_IR_ARRAY(result, 1, "/properties/tags", "/properties/tags/items");
+  EXPECT_SYMBOL(std::get<IRArray>(result.at(1)).symbol, "tags");
+  EXPECT_SYMBOL(std::get<IRArray>(result.at(1)).items->symbol, "tags", "items");
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(2)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(2)).pointer, "");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(2)).symbol);
 }
 
 TEST(IR_2020_12, tuple_with_prefix_items) {
@@ -527,15 +572,20 @@ TEST(IR_2020_12, tuple_with_prefix_items) {
   EXPECT_EQ(result.size(), 3);
 
   EXPECT_IR_SCALAR(result, 0, Integer, "/prefixItems/1");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol, "1");
   EXPECT_IR_SCALAR(result, 1, String, "/prefixItems/0");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(1)).symbol, "0");
 
   EXPECT_TRUE(std::holds_alternative<IRTuple>(result.at(2)));
   EXPECT_AS_STRING(std::get<IRTuple>(result.at(2)).pointer, "");
+  EXPECT_SYMBOL(std::get<IRTuple>(result.at(2)).symbol);
   EXPECT_EQ(std::get<IRTuple>(result.at(2)).items.size(), 2);
   EXPECT_AS_STRING(std::get<IRTuple>(result.at(2)).items.at(0).pointer,
                    "/prefixItems/0");
+  EXPECT_SYMBOL(std::get<IRTuple>(result.at(2)).items.at(0).symbol, "0");
   EXPECT_AS_STRING(std::get<IRTuple>(result.at(2)).items.at(1).pointer,
                    "/prefixItems/1");
+  EXPECT_SYMBOL(std::get<IRTuple>(result.at(2)).items.at(1).symbol, "1");
   EXPECT_FALSE(std::get<IRTuple>(result.at(2)).additional.has_value());
 }
 
@@ -559,16 +609,21 @@ TEST(IR_2020_12, tuple_with_prefix_items_and_items) {
   EXPECT_EQ(result.size(), 3);
 
   EXPECT_IR_SCALAR(result, 0, String, "/prefixItems/0");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol, "0");
   EXPECT_IR_SCALAR(result, 1, Boolean, "/items");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(1)).symbol, "items");
 
   EXPECT_TRUE(std::holds_alternative<IRTuple>(result.at(2)));
   EXPECT_AS_STRING(std::get<IRTuple>(result.at(2)).pointer, "");
+  EXPECT_SYMBOL(std::get<IRTuple>(result.at(2)).symbol);
   EXPECT_EQ(std::get<IRTuple>(result.at(2)).items.size(), 1);
   EXPECT_AS_STRING(std::get<IRTuple>(result.at(2)).items.at(0).pointer,
                    "/prefixItems/0");
+  EXPECT_SYMBOL(std::get<IRTuple>(result.at(2)).items.at(0).symbol, "0");
   EXPECT_TRUE(std::get<IRTuple>(result.at(2)).additional.has_value());
   EXPECT_AS_STRING(std::get<IRTuple>(result.at(2)).additional->pointer,
                    "/items");
+  EXPECT_SYMBOL(std::get<IRTuple>(result.at(2)).additional->symbol, "items");
 }
 
 TEST(IR_2020_12, anyof_two_branches) {
@@ -590,15 +645,20 @@ TEST(IR_2020_12, anyof_two_branches) {
   EXPECT_EQ(result.size(), 3);
 
   EXPECT_IR_SCALAR(result, 0, Integer, "/anyOf/1");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol, "1");
   EXPECT_IR_SCALAR(result, 1, String, "/anyOf/0");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(1)).symbol, "0");
 
   EXPECT_TRUE(std::holds_alternative<IRUnion>(result.at(2)));
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(2)).pointer, "");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(2)).symbol);
   EXPECT_EQ(std::get<IRUnion>(result.at(2)).values.size(), 2);
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(2)).values.at(0).pointer,
                    "/anyOf/0");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(2)).values.at(0).symbol, "0");
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(2)).values.at(1).pointer,
                    "/anyOf/1");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(2)).values.at(1).symbol, "1");
 }
 
 TEST(IR_2020_12, anyof_three_branches) {
@@ -621,18 +681,25 @@ TEST(IR_2020_12, anyof_three_branches) {
   EXPECT_EQ(result.size(), 4);
 
   EXPECT_IR_SCALAR(result, 0, Boolean, "/anyOf/2");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol, "2");
   EXPECT_IR_SCALAR(result, 1, Integer, "/anyOf/1");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(1)).symbol, "1");
   EXPECT_IR_SCALAR(result, 2, String, "/anyOf/0");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(2)).symbol, "0");
 
   EXPECT_TRUE(std::holds_alternative<IRUnion>(result.at(3)));
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(3)).pointer, "");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(3)).symbol);
   EXPECT_EQ(std::get<IRUnion>(result.at(3)).values.size(), 3);
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(3)).values.at(0).pointer,
                    "/anyOf/0");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(3)).values.at(0).symbol, "0");
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(3)).values.at(1).pointer,
                    "/anyOf/1");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(3)).values.at(1).symbol, "1");
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(3)).values.at(2).pointer,
                    "/anyOf/2");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(3)).values.at(2).symbol, "2");
 }
 
 TEST(IR_2020_12, oneof_two_branches) {
@@ -654,15 +721,20 @@ TEST(IR_2020_12, oneof_two_branches) {
   EXPECT_EQ(result.size(), 3);
 
   EXPECT_IR_SCALAR(result, 0, Integer, "/oneOf/1");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol, "1");
   EXPECT_IR_SCALAR(result, 1, String, "/oneOf/0");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(1)).symbol, "0");
 
   EXPECT_TRUE(std::holds_alternative<IRUnion>(result.at(2)));
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(2)).pointer, "");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(2)).symbol);
   EXPECT_EQ(std::get<IRUnion>(result.at(2)).values.size(), 2);
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(2)).values.at(0).pointer,
                    "/oneOf/0");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(2)).values.at(0).symbol, "0");
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(2)).values.at(1).pointer,
                    "/oneOf/1");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(2)).values.at(1).symbol, "1");
 }
 
 TEST(IR_2020_12, oneof_three_branches) {
@@ -685,18 +757,25 @@ TEST(IR_2020_12, oneof_three_branches) {
   EXPECT_EQ(result.size(), 4);
 
   EXPECT_IR_SCALAR(result, 0, Boolean, "/oneOf/2");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol, "2");
   EXPECT_IR_SCALAR(result, 1, Integer, "/oneOf/1");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(1)).symbol, "1");
   EXPECT_IR_SCALAR(result, 2, String, "/oneOf/0");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(2)).symbol, "0");
 
   EXPECT_TRUE(std::holds_alternative<IRUnion>(result.at(3)));
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(3)).pointer, "");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(3)).symbol);
   EXPECT_EQ(std::get<IRUnion>(result.at(3)).values.size(), 3);
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(3)).values.at(0).pointer,
                    "/oneOf/0");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(3)).values.at(0).symbol, "0");
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(3)).values.at(1).pointer,
                    "/oneOf/1");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(3)).values.at(1).symbol, "1");
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(3)).values.at(2).pointer,
                    "/oneOf/2");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(3)).values.at(2).symbol, "2");
 }
 
 TEST(IR_2020_12, ref_recursive_to_root) {
@@ -718,9 +797,12 @@ TEST(IR_2020_12, ref_recursive_to_root) {
   EXPECT_EQ(result.size(), 2);
 
   EXPECT_IR_REFERENCE(result, 0, "/properties/child", "");
+  EXPECT_SYMBOL(std::get<IRReference>(result.at(0)).symbol, "child");
+  EXPECT_SYMBOL(std::get<IRReference>(result.at(0)).target.symbol);
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(1)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(1)).pointer, "");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(1)).symbol);
   EXPECT_EQ(std::get<IRObject>(result.at(1)).members.size(), 1);
   EXPECT_TRUE(std::get<IRObject>(result.at(1)).members.at(0).first == "child");
   EXPECT_FALSE(std::get<IRObject>(result.at(1)).members.at(0).second.required);
@@ -728,6 +810,8 @@ TEST(IR_2020_12, ref_recursive_to_root) {
   EXPECT_AS_STRING(
       std::get<IRObject>(result.at(1)).members.at(0).second.pointer,
       "/properties/child");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(1)).members.at(0).second.symbol,
+                "child");
   EXPECT_TRUE(std::holds_alternative<bool>(
       std::get<IRObject>(result.at(1)).additional));
   EXPECT_TRUE(std::get<bool>(std::get<IRObject>(result.at(1)).additional));
@@ -758,10 +842,12 @@ TEST(IR_2020_12, nested_object_with_required_property) {
   EXPECT_EQ(result.size(), 3);
 
   EXPECT_IR_SCALAR(result, 0, String, "/properties/nested/properties/name");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol, "nested", "name");
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(1)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(1)).pointer,
                    "/properties/nested");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(1)).symbol, "nested");
   EXPECT_EQ(std::get<IRObject>(result.at(1)).members.size(), 1);
   EXPECT_TRUE(std::get<IRObject>(result.at(1)).members.at(0).first == "name");
   EXPECT_TRUE(std::get<IRObject>(result.at(1)).members.at(0).second.required);
@@ -769,12 +855,15 @@ TEST(IR_2020_12, nested_object_with_required_property) {
   EXPECT_AS_STRING(
       std::get<IRObject>(result.at(1)).members.at(0).second.pointer,
       "/properties/nested/properties/name");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(1)).members.at(0).second.symbol,
+                "nested", "name");
   EXPECT_TRUE(std::holds_alternative<bool>(
       std::get<IRObject>(result.at(1)).additional));
   EXPECT_TRUE(std::get<bool>(std::get<IRObject>(result.at(1)).additional));
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(2)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(2)).pointer, "");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(2)).symbol);
   EXPECT_EQ(std::get<IRObject>(result.at(2)).members.size(), 1);
   EXPECT_TRUE(std::get<IRObject>(result.at(2)).members.at(0).first == "nested");
   EXPECT_FALSE(std::get<IRObject>(result.at(2)).members.at(0).second.required);
@@ -782,6 +871,8 @@ TEST(IR_2020_12, nested_object_with_required_property) {
   EXPECT_AS_STRING(
       std::get<IRObject>(result.at(2)).members.at(0).second.pointer,
       "/properties/nested");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(2)).members.at(0).second.symbol,
+                "nested");
   EXPECT_TRUE(std::holds_alternative<bool>(
       std::get<IRObject>(result.at(2)).additional));
   EXPECT_TRUE(std::get<bool>(std::get<IRObject>(result.at(2)).additional));
@@ -805,6 +896,7 @@ TEST(IR_2020_12, array_without_items) {
 
   EXPECT_TRUE(std::holds_alternative<IRArray>(result.at(0)));
   EXPECT_AS_STRING(std::get<IRArray>(result.at(0)).pointer, "");
+  EXPECT_SYMBOL(std::get<IRArray>(result.at(0)).symbol);
   EXPECT_FALSE(std::get<IRArray>(result.at(0)).items.has_value());
 }
 
@@ -828,44 +920,71 @@ TEST(IR_2020_12, object_with_additional_properties_true) {
   EXPECT_EQ(result.size(), 9);
 
   EXPECT_IR_SCALAR(result, 0, String, "/properties/name");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol, "name");
   EXPECT_IR_SCALAR(result, 1, Number, "/additionalProperties/anyOf/5");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(1)).symbol, "additionalProperties",
+                "5");
   EXPECT_IR_SCALAR(result, 2, String, "/additionalProperties/anyOf/4");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(2)).symbol, "additionalProperties",
+                "4");
 
   EXPECT_TRUE(std::holds_alternative<IRArray>(result.at(3)));
   EXPECT_AS_STRING(std::get<IRArray>(result.at(3)).pointer,
                    "/additionalProperties/anyOf/3");
+  EXPECT_SYMBOL(std::get<IRArray>(result.at(3)).symbol, "additionalProperties",
+                "3");
   EXPECT_FALSE(std::get<IRArray>(result.at(3)).items.has_value());
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(4)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(4)).pointer,
                    "/additionalProperties/anyOf/2");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(4)).symbol, "additionalProperties",
+                "2");
   EXPECT_EQ(std::get<IRObject>(result.at(4)).members.size(), 0);
   EXPECT_TRUE(std::holds_alternative<bool>(
       std::get<IRObject>(result.at(4)).additional));
   EXPECT_TRUE(std::get<bool>(std::get<IRObject>(result.at(4)).additional));
 
   EXPECT_IR_SCALAR(result, 5, Boolean, "/additionalProperties/anyOf/1");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(5)).symbol, "additionalProperties",
+                "1");
   EXPECT_IR_SCALAR(result, 6, Null, "/additionalProperties/anyOf/0");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(6)).symbol, "additionalProperties",
+                "0");
 
   EXPECT_TRUE(std::holds_alternative<IRUnion>(result.at(7)));
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(7)).pointer,
                    "/additionalProperties");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(7)).symbol, "additionalProperties");
   EXPECT_EQ(std::get<IRUnion>(result.at(7)).values.size(), 6);
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(7)).values.at(0).pointer,
                    "/additionalProperties/anyOf/0");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(7)).values.at(0).symbol,
+                "additionalProperties", "0");
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(7)).values.at(1).pointer,
                    "/additionalProperties/anyOf/1");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(7)).values.at(1).symbol,
+                "additionalProperties", "1");
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(7)).values.at(2).pointer,
                    "/additionalProperties/anyOf/2");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(7)).values.at(2).symbol,
+                "additionalProperties", "2");
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(7)).values.at(3).pointer,
                    "/additionalProperties/anyOf/3");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(7)).values.at(3).symbol,
+                "additionalProperties", "3");
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(7)).values.at(4).pointer,
                    "/additionalProperties/anyOf/4");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(7)).values.at(4).symbol,
+                "additionalProperties", "4");
   EXPECT_AS_STRING(std::get<IRUnion>(result.at(7)).values.at(5).pointer,
                    "/additionalProperties/anyOf/5");
+  EXPECT_SYMBOL(std::get<IRUnion>(result.at(7)).values.at(5).symbol,
+                "additionalProperties", "5");
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(8)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(8)).pointer, "");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(8)).symbol);
   EXPECT_EQ(std::get<IRObject>(result.at(8)).members.size(), 1);
   EXPECT_TRUE(std::get<IRObject>(result.at(8)).members.at(0).first == "name");
   EXPECT_FALSE(std::get<IRObject>(result.at(8)).members.at(0).second.required);
@@ -873,11 +992,16 @@ TEST(IR_2020_12, object_with_additional_properties_true) {
   EXPECT_AS_STRING(
       std::get<IRObject>(result.at(8)).members.at(0).second.pointer,
       "/properties/name");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(8)).members.at(0).second.symbol,
+                "name");
   EXPECT_TRUE(std::holds_alternative<IRType>(
       std::get<IRObject>(result.at(8)).additional));
   EXPECT_AS_STRING(
       std::get<IRType>(std::get<IRObject>(result.at(8)).additional).pointer,
       "/additionalProperties");
+  EXPECT_SYMBOL(
+      std::get<IRType>(std::get<IRObject>(result.at(8)).additional).symbol,
+      "additionalProperties");
 }
 
 TEST(IR_2020_12, object_only_additional_properties) {
@@ -897,15 +1021,21 @@ TEST(IR_2020_12, object_only_additional_properties) {
   EXPECT_EQ(result.size(), 2);
 
   EXPECT_IR_SCALAR(result, 0, Boolean, "/additionalProperties");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol,
+                "additionalProperties");
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(1)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(1)).pointer, "");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(1)).symbol);
   EXPECT_EQ(std::get<IRObject>(result.at(1)).members.size(), 0);
   EXPECT_TRUE(std::holds_alternative<IRType>(
       std::get<IRObject>(result.at(1)).additional));
   EXPECT_AS_STRING(
       std::get<IRType>(std::get<IRObject>(result.at(1)).additional).pointer,
       "/additionalProperties");
+  EXPECT_SYMBOL(
+      std::get<IRType>(std::get<IRObject>(result.at(1)).additional).symbol,
+      "additionalProperties");
 }
 
 TEST(IR_2020_12, embedded_resource_with_nested_id_no_duplicates) {
@@ -941,33 +1071,46 @@ TEST(IR_2020_12, embedded_resource_with_nested_id_no_duplicates) {
   EXPECT_EQ(result.size(), 6);
 
   EXPECT_IR_REFERENCE(result, 0, "/properties/item", "/$defs/Item");
+  EXPECT_SYMBOL(std::get<IRReference>(result.at(0)).symbol, "item");
+  EXPECT_SYMBOL(std::get<IRReference>(result.at(0)).target.symbol, "Item");
 
   EXPECT_IR_IMPOSSIBLE(result, 1, "/additionalProperties");
+  EXPECT_SYMBOL(std::get<IRImpossible>(result.at(1)).symbol,
+                "additionalProperties");
 
   EXPECT_IR_SCALAR(result, 2, String, "/$defs/Item/properties/name");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(2)).symbol, "Item", "name");
 
   EXPECT_IR_IMPOSSIBLE(result, 3, "/$defs/Item/additionalProperties");
+  EXPECT_SYMBOL(std::get<IRImpossible>(result.at(3)).symbol, "Item",
+                "additionalProperties");
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(4)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(4)).pointer, "/$defs/Item");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(4)).symbol, "Item");
   EXPECT_EQ(std::get<IRObject>(result.at(4)).members.size(), 1);
   EXPECT_EQ(std::get<IRObject>(result.at(4)).members.at(0).first, "name");
   EXPECT_TRUE(std::get<IRObject>(result.at(4)).members.at(0).second.required);
   EXPECT_AS_STRING(
       std::get<IRObject>(result.at(4)).members.at(0).second.pointer,
       "/$defs/Item/properties/name");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(4)).members.at(0).second.symbol,
+                "Item", "name");
   EXPECT_TRUE(std::holds_alternative<bool>(
       std::get<IRObject>(result.at(4)).additional));
   EXPECT_FALSE(std::get<bool>(std::get<IRObject>(result.at(4)).additional));
 
   EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(5)));
   EXPECT_AS_STRING(std::get<IRObject>(result.at(5)).pointer, "");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(5)).symbol);
   EXPECT_EQ(std::get<IRObject>(result.at(5)).members.size(), 1);
   EXPECT_EQ(std::get<IRObject>(result.at(5)).members.at(0).first, "item");
   EXPECT_TRUE(std::get<IRObject>(result.at(5)).members.at(0).second.required);
   EXPECT_AS_STRING(
       std::get<IRObject>(result.at(5)).members.at(0).second.pointer,
       "/properties/item");
+  EXPECT_SYMBOL(std::get<IRObject>(result.at(5)).members.at(0).second.symbol,
+                "item");
   EXPECT_TRUE(std::holds_alternative<bool>(
       std::get<IRObject>(result.at(5)).additional));
   EXPECT_FALSE(std::get<bool>(std::get<IRObject>(result.at(5)).additional));

@@ -1,4 +1,4 @@
-import { DocumentSystem, DocumentSystem_X24Defs_UItem } from "./expected";
+import { DocumentSystem, _DocumentSystemItem } from "./expected";
 
 
 // Valid: minimal
@@ -41,6 +41,6 @@ const invalidRootExtra: DocumentSystem = {
 };
 
 // Test standalone Item type
-const validItem: DocumentSystem_X24Defs_UItem = { name: "standalone" };
+const validItem: _DocumentSystemItem = { name: "standalone" };
 // @ts-expect-error
-const invalidItem: DocumentSystem_X24Defs_UItem = { name: 123 };
+const invalidItem: _DocumentSystemItem = { name: 123 };

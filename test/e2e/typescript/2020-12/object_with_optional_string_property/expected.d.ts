@@ -1,6 +1,6 @@
-export type MyObject_Properties_Foo = string;
+export type MyObjectFoo = string;
 
 export interface MyObject {
-  "foo"?: MyObject_Properties_Foo;
+  "foo"?: MyObjectFoo;
   [key: string]: unknown | undefined;
 }

@@ -1,10 +1,10 @@
-export type StrictPerson_Properties_Name = string;
+export type StrictPersonName = string;
 
-export type StrictPerson_Properties_Age = number;
+export type StrictPersonAge = number;
 
-export type StrictPerson_AdditionalProperties = never;
+export type StrictPersonAdditionalProperties = never;
 
 export interface StrictPerson {
-  "name": StrictPerson_Properties_Name;
-  "age"?: StrictPerson_Properties_Age;
+  "name": StrictPersonName;
+  "age"?: StrictPersonAge;
 }

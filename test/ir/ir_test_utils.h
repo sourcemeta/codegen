@@ -6,6 +6,9 @@
 #define EXPECT_AS_STRING(actual, expected)                                     \
   EXPECT_EQ(sourcemeta::core::to_string(actual), expected)
 
+#define EXPECT_SYMBOL(actual, ...)                                             \
+  EXPECT_EQ(actual, (std::vector<std::string>{__VA_ARGS__}))
+
 #define EXPECT_IR_SCALAR(result, index, scalar_type, expected_pointer)         \
   EXPECT_TRUE(                                                                 \
       std::holds_alternative<sourcemeta::codegen::IRScalar>(result.at(index))) \

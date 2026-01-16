@@ -1,13 +1,13 @@
-export type VocabTest_Properties_Value = number;
+export type VocabTestValue = number;
 
-export type VocabTest_Properties_Optional = boolean;
+export type VocabTestOptional = boolean;
 
-export type VocabTest_Properties_Name = string;
+export type VocabTestName = string;
 
-export type VocabTest_AdditionalProperties = never;
+export type VocabTestAdditionalProperties = never;
 
 export interface VocabTest {
-  "name": VocabTest_Properties_Name;
-  "value": VocabTest_Properties_Value;
-  "optional"?: VocabTest_Properties_Optional;
+  "name": VocabTestName;
+  "value": VocabTestValue;
+  "optional"?: VocabTestOptional;
 }

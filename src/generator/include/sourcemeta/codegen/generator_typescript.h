@@ -7,7 +7,11 @@
 
 #include <sourcemeta/codegen/ir.h>
 
+#include <sourcemeta/core/jsonpointer.h>
+
+#include <map>         // std::map
 #include <ostream>     // std::ostream
+#include <string>      // std::string
 #include <string_view> // std::string_view
 
 namespace sourcemeta::codegen {
@@ -16,14 +20,14 @@ namespace sourcemeta::codegen {
 class SOURCEMETA_CODEGEN_GENERATOR_EXPORT TypeScript {
 public:
   TypeScript(std::ostream &stream, std::string_view type_prefix);
-  auto operator()(const IRScalar &entry) const -> void;
-  auto operator()(const IREnumeration &entry) const -> void;
-  auto operator()(const IRObject &entry) const -> void;
-  auto operator()(const IRImpossible &entry) const -> void;
-  auto operator()(const IRArray &entry) const -> void;
-  auto operator()(const IRReference &entry) const -> void;
-  auto operator()(const IRTuple &entry) const -> void;
-  auto operator()(const IRUnion &entry) const -> void;
+  auto operator()(const IRScalar &entry) -> void;
+  auto operator()(const IREnumeration &entry) -> void;
+  auto operator()(const IRObject &entry) -> void;
+  auto operator()(const IRImpossible &entry) -> void;
+  auto operator()(const IRArray &entry) -> void;
+  auto operator()(const IRReference &entry) -> void;
+  auto operator()(const IRTuple &entry) -> void;
+  auto operator()(const IRUnion &entry) -> void;
 
 private:
 // Exporting symbols that depends on the standard C++ library is considered
@@ -35,6 +39,7 @@ private:
   // NOLINTNEXTLINE(cppcoreguidelines-avoid-const-or-ref-data-members)
   std::ostream &output;
   std::string_view prefix;
+  std::map<std::string, sourcemeta::core::Pointer> cache;
 #if defined(_MSC_VER)
 #pragma warning(default : 4251)
 #endif

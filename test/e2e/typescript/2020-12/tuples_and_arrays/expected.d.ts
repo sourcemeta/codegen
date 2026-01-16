@@ -1,319 +1,319 @@
-export type DataPipeline_Properties_Stages_Items_Properties_OutputType_AnyOf_ZIndex5 = number;
+export type DataPipelineStagesItemsOutputType_5 = number;
 
-export type DataPipeline_Properties_Stages_Items_Properties_OutputType_AnyOf_ZIndex4 = string;
+export type DataPipelineStagesItemsOutputType_4 = string;
 
-export type DataPipeline_Properties_Stages_Items_Properties_OutputType_AnyOf_ZIndex3_PrefixItems_ZIndex1 = "sync" | "async";
+export type DataPipelineStagesItemsOutputType_3_1 = "sync" | "async";
 
-export type DataPipeline_Properties_Stages_Items_Properties_OutputType_AnyOf_ZIndex3_PrefixItems_ZIndex0 = string;
+export type DataPipelineStagesItemsOutputType_3_0 = string;
 
-export type DataPipeline_Properties_Stages_Items_Properties_OutputType_AnyOf_ZIndex3_Items = never;
+export type DataPipelineStagesItemsOutputType_3Items = never;
 
-export type DataPipeline_Properties_Stages_Items_Properties_OutputType_AnyOf_ZIndex3 = [DataPipeline_Properties_Stages_Items_Properties_OutputType_AnyOf_ZIndex3_PrefixItems_ZIndex0, DataPipeline_Properties_Stages_Items_Properties_OutputType_AnyOf_ZIndex3_PrefixItems_ZIndex1, ...DataPipeline_Properties_Stages_Items_Properties_OutputType_AnyOf_ZIndex3_Items[]];
+export type DataPipelineStagesItemsOutputType_3 = [DataPipelineStagesItemsOutputType_3_0, DataPipelineStagesItemsOutputType_3_1, ...DataPipelineStagesItemsOutputType_3Items[]];
 
-export type DataPipeline_Properties_Stages_Items_Properties_OutputType_AnyOf_ZIndex2 = Record<string, unknown>;
+export type DataPipelineStagesItemsOutputType_2 = Record<string, unknown>;
 
-export type DataPipeline_Properties_Stages_Items_Properties_OutputType_AnyOf_ZIndex1 = boolean;
+export type DataPipelineStagesItemsOutputType_1 = boolean;
 
-export type DataPipeline_Properties_Stages_Items_Properties_OutputType_AnyOf_ZIndex0 = null;
+export type DataPipelineStagesItemsOutputType_0 = null;
 
-export type DataPipeline_Properties_Stages_Items_Properties_OutputType =
-  DataPipeline_Properties_Stages_Items_Properties_OutputType_AnyOf_ZIndex0 |
-  DataPipeline_Properties_Stages_Items_Properties_OutputType_AnyOf_ZIndex1 |
-  DataPipeline_Properties_Stages_Items_Properties_OutputType_AnyOf_ZIndex2 |
-  DataPipeline_Properties_Stages_Items_Properties_OutputType_AnyOf_ZIndex3 |
-  DataPipeline_Properties_Stages_Items_Properties_OutputType_AnyOf_ZIndex4 |
-  DataPipeline_Properties_Stages_Items_Properties_OutputType_AnyOf_ZIndex5;
+export type DataPipelineStagesItemsOutputType =
+  DataPipelineStagesItemsOutputType_0 |
+  DataPipelineStagesItemsOutputType_1 |
+  DataPipelineStagesItemsOutputType_2 |
+  DataPipelineStagesItemsOutputType_3 |
+  DataPipelineStagesItemsOutputType_4 |
+  DataPipelineStagesItemsOutputType_5;
 
-export type DataPipeline_Properties_Stages_Items_Properties_Name = string;
+export type DataPipelineStagesItemsName = string;
 
-export type DataPipeline_Properties_Stages_Items_Properties_Metrics_AnyOf_ZIndex5 = number;
+export type DataPipelineStagesItemsMetrics_5 = number;
 
-export type DataPipeline_Properties_Stages_Items_Properties_Metrics_AnyOf_ZIndex4 = string;
+export type DataPipelineStagesItemsMetrics_4 = string;
 
-export type DataPipeline_Properties_Stages_Items_Properties_Metrics_AnyOf_ZIndex3_PrefixItems_ZIndex2 = number;
+export type DataPipelineStagesItemsMetrics_3_2 = number;
 
-export type DataPipeline_Properties_Stages_Items_Properties_Metrics_AnyOf_ZIndex3_PrefixItems_ZIndex1 = number;
+export type DataPipelineStagesItemsMetrics_3_1 = number;
 
-export type DataPipeline_Properties_Stages_Items_Properties_Metrics_AnyOf_ZIndex3_PrefixItems_ZIndex0 = number;
+export type DataPipelineStagesItemsMetrics_3_0 = number;
 
-export type DataPipeline_Properties_Stages_Items_Properties_Metrics_AnyOf_ZIndex3_Items = never;
+export type DataPipelineStagesItemsMetrics_3Items = never;
 
-export type DataPipeline_Properties_Stages_Items_Properties_Metrics_AnyOf_ZIndex3 = [DataPipeline_Properties_Stages_Items_Properties_Metrics_AnyOf_ZIndex3_PrefixItems_ZIndex0, DataPipeline_Properties_Stages_Items_Properties_Metrics_AnyOf_ZIndex3_PrefixItems_ZIndex1, DataPipeline_Properties_Stages_Items_Properties_Metrics_AnyOf_ZIndex3_PrefixItems_ZIndex2, ...DataPipeline_Properties_Stages_Items_Properties_Metrics_AnyOf_ZIndex3_Items[]];
+export type DataPipelineStagesItemsMetrics_3 = [DataPipelineStagesItemsMetrics_3_0, DataPipelineStagesItemsMetrics_3_1, DataPipelineStagesItemsMetrics_3_2, ...DataPipelineStagesItemsMetrics_3Items[]];
 
-export type DataPipeline_Properties_Stages_Items_Properties_Metrics_AnyOf_ZIndex2 = Record<string, unknown>;
+export type DataPipelineStagesItemsMetrics_2 = Record<string, unknown>;
 
-export type DataPipeline_Properties_Stages_Items_Properties_Metrics_AnyOf_ZIndex1 = boolean;
+export type DataPipelineStagesItemsMetrics_1 = boolean;
 
-export type DataPipeline_Properties_Stages_Items_Properties_Metrics_AnyOf_ZIndex0 = null;
+export type DataPipelineStagesItemsMetrics_0 = null;
 
-export type DataPipeline_Properties_Stages_Items_Properties_Metrics =
-  DataPipeline_Properties_Stages_Items_Properties_Metrics_AnyOf_ZIndex0 |
-  DataPipeline_Properties_Stages_Items_Properties_Metrics_AnyOf_ZIndex1 |
-  DataPipeline_Properties_Stages_Items_Properties_Metrics_AnyOf_ZIndex2 |
-  DataPipeline_Properties_Stages_Items_Properties_Metrics_AnyOf_ZIndex3 |
-  DataPipeline_Properties_Stages_Items_Properties_Metrics_AnyOf_ZIndex4 |
-  DataPipeline_Properties_Stages_Items_Properties_Metrics_AnyOf_ZIndex5;
+export type DataPipelineStagesItemsMetrics =
+  DataPipelineStagesItemsMetrics_0 |
+  DataPipelineStagesItemsMetrics_1 |
+  DataPipelineStagesItemsMetrics_2 |
+  DataPipelineStagesItemsMetrics_3 |
+  DataPipelineStagesItemsMetrics_4 |
+  DataPipelineStagesItemsMetrics_5;
 
-export type DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex5 = number;
+export type DataPipelineStagesItemsInputTypes_5 = number;
 
-export type DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex4 = string;
+export type DataPipelineStagesItemsInputTypes_4 = string;
 
-export type DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex3_PrefixItems_ZIndex1_AnyOf_ZIndex1 = null;
+export type DataPipelineStagesItemsInputTypes_3_1_1 = null;
 
-export type DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex3_PrefixItems_ZIndex1_AnyOf_ZIndex0 = "required" | "optional";
+export type DataPipelineStagesItemsInputTypes_3_1_0 = "required" | "optional";
 
-export type DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex3_PrefixItems_ZIndex1 =
-  DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex3_PrefixItems_ZIndex1_AnyOf_ZIndex0 |
-  DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex3_PrefixItems_ZIndex1_AnyOf_ZIndex1;
+export type DataPipelineStagesItemsInputTypes_3_1 =
+  DataPipelineStagesItemsInputTypes_3_1_0 |
+  DataPipelineStagesItemsInputTypes_3_1_1;
 
-export type DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex3_PrefixItems_ZIndex0 = "string" | "number" | "boolean" | "object" | "array";
+export type DataPipelineStagesItemsInputTypes_3_0 = "string" | "number" | "boolean" | "object" | "array";
 
-export type DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex3_Items_Properties_TypeName = string;
+export type DataPipelineStagesItemsInputTypes_3ItemsTypeName = string;
 
-export type DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex3_Items_Properties_Nullable = boolean;
+export type DataPipelineStagesItemsInputTypes_3ItemsNullable = boolean;
 
-export type DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex3_Items_AdditionalProperties = never;
+export type DataPipelineStagesItemsInputTypes_3ItemsAdditionalProperties = never;
 
-export interface DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex3_Items {
-  "typeName"?: DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex3_Items_Properties_TypeName;
-  "nullable"?: DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex3_Items_Properties_Nullable;
+export interface DataPipelineStagesItemsInputTypes_3Items {
+  "typeName"?: DataPipelineStagesItemsInputTypes_3ItemsTypeName;
+  "nullable"?: DataPipelineStagesItemsInputTypes_3ItemsNullable;
 }
 
-export type DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex3 = [DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex3_PrefixItems_ZIndex0, DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex3_PrefixItems_ZIndex1, ...DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex3_Items[]];
+export type DataPipelineStagesItemsInputTypes_3 = [DataPipelineStagesItemsInputTypes_3_0, DataPipelineStagesItemsInputTypes_3_1, ...DataPipelineStagesItemsInputTypes_3Items[]];
 
-export type DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex2 = Record<string, unknown>;
+export type DataPipelineStagesItemsInputTypes_2 = Record<string, unknown>;
 
-export type DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex1 = boolean;
+export type DataPipelineStagesItemsInputTypes_1 = boolean;
 
-export type DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex0 = null;
+export type DataPipelineStagesItemsInputTypes_0 = null;
 
-export type DataPipeline_Properties_Stages_Items_Properties_InputTypes =
-  DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex0 |
-  DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex1 |
-  DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex2 |
-  DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex3 |
-  DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex4 |
-  DataPipeline_Properties_Stages_Items_Properties_InputTypes_AnyOf_ZIndex5;
+export type DataPipelineStagesItemsInputTypes =
+  DataPipelineStagesItemsInputTypes_0 |
+  DataPipelineStagesItemsInputTypes_1 |
+  DataPipelineStagesItemsInputTypes_2 |
+  DataPipelineStagesItemsInputTypes_3 |
+  DataPipelineStagesItemsInputTypes_4 |
+  DataPipelineStagesItemsInputTypes_5;
 
-export type DataPipeline_Properties_Stages_Items_Properties_Config_AnyOf_ZIndex1 = null;
+export type DataPipelineStagesItemsConfig_1 = null;
 
-export type DataPipeline_Properties_Stages_Items_Properties_Config_AnyOf_ZIndex0_Properties_Timeout = number;
+export type DataPipelineStagesItemsConfig_0Timeout = number;
 
-export type DataPipeline_Properties_Stages_Items_Properties_Config_AnyOf_ZIndex0_Properties_Retries = number;
+export type DataPipelineStagesItemsConfig_0Retries = number;
 
-export type DataPipeline_Properties_Stages_Items_Properties_Config_AnyOf_ZIndex0_AdditionalProperties = never;
+export type DataPipelineStagesItemsConfig_0AdditionalProperties = never;
 
-export interface DataPipeline_Properties_Stages_Items_Properties_Config_AnyOf_ZIndex0 {
-  "timeout"?: DataPipeline_Properties_Stages_Items_Properties_Config_AnyOf_ZIndex0_Properties_Timeout;
-  "retries"?: DataPipeline_Properties_Stages_Items_Properties_Config_AnyOf_ZIndex0_Properties_Retries;
+export interface DataPipelineStagesItemsConfig_0 {
+  "timeout"?: DataPipelineStagesItemsConfig_0Timeout;
+  "retries"?: DataPipelineStagesItemsConfig_0Retries;
 }
 
-export type DataPipeline_Properties_Stages_Items_Properties_Config =
-  DataPipeline_Properties_Stages_Items_Properties_Config_AnyOf_ZIndex0 |
-  DataPipeline_Properties_Stages_Items_Properties_Config_AnyOf_ZIndex1;
+export type DataPipelineStagesItemsConfig =
+  DataPipelineStagesItemsConfig_0 |
+  DataPipelineStagesItemsConfig_1;
 
-export type DataPipeline_Properties_Stages_Items_AdditionalProperties = never;
+export type DataPipelineStagesItemsAdditionalProperties = never;
 
-export interface DataPipeline_Properties_Stages_Items {
-  "name": DataPipeline_Properties_Stages_Items_Properties_Name;
-  "inputTypes": DataPipeline_Properties_Stages_Items_Properties_InputTypes;
-  "outputType": DataPipeline_Properties_Stages_Items_Properties_OutputType;
-  "config"?: DataPipeline_Properties_Stages_Items_Properties_Config;
-  "metrics"?: DataPipeline_Properties_Stages_Items_Properties_Metrics;
+export interface DataPipelineStagesItems {
+  "name": DataPipelineStagesItemsName;
+  "inputTypes": DataPipelineStagesItemsInputTypes;
+  "outputType": DataPipelineStagesItemsOutputType;
+  "config"?: DataPipelineStagesItemsConfig;
+  "metrics"?: DataPipelineStagesItemsMetrics;
 }
 
-export type DataPipeline_Properties_Stages = DataPipeline_Properties_Stages_Items[];
+export type DataPipelineStages = DataPipelineStagesItems[];
 
-export type DataPipeline_Properties_Pipeline_Properties_Version_AnyOf_ZIndex5 = number;
+export type DataPipelinePipelineVersion_5 = number;
 
-export type DataPipeline_Properties_Pipeline_Properties_Version_AnyOf_ZIndex4 = string;
+export type DataPipelinePipelineVersion_4 = string;
 
-export type DataPipeline_Properties_Pipeline_Properties_Version_AnyOf_ZIndex3_PrefixItems_ZIndex2 = number;
+export type DataPipelinePipelineVersion_3_2 = number;
 
-export type DataPipeline_Properties_Pipeline_Properties_Version_AnyOf_ZIndex3_PrefixItems_ZIndex1 = number;
+export type DataPipelinePipelineVersion_3_1 = number;
 
-export type DataPipeline_Properties_Pipeline_Properties_Version_AnyOf_ZIndex3_PrefixItems_ZIndex0 = number;
+export type DataPipelinePipelineVersion_3_0 = number;
 
-export type DataPipeline_Properties_Pipeline_Properties_Version_AnyOf_ZIndex3_Items = never;
+export type DataPipelinePipelineVersion_3Items = never;
 
-export type DataPipeline_Properties_Pipeline_Properties_Version_AnyOf_ZIndex3 = [DataPipeline_Properties_Pipeline_Properties_Version_AnyOf_ZIndex3_PrefixItems_ZIndex0, DataPipeline_Properties_Pipeline_Properties_Version_AnyOf_ZIndex3_PrefixItems_ZIndex1, DataPipeline_Properties_Pipeline_Properties_Version_AnyOf_ZIndex3_PrefixItems_ZIndex2, ...DataPipeline_Properties_Pipeline_Properties_Version_AnyOf_ZIndex3_Items[]];
+export type DataPipelinePipelineVersion_3 = [DataPipelinePipelineVersion_3_0, DataPipelinePipelineVersion_3_1, DataPipelinePipelineVersion_3_2, ...DataPipelinePipelineVersion_3Items[]];
 
-export type DataPipeline_Properties_Pipeline_Properties_Version_AnyOf_ZIndex2 = Record<string, unknown>;
+export type DataPipelinePipelineVersion_2 = Record<string, unknown>;
 
-export type DataPipeline_Properties_Pipeline_Properties_Version_AnyOf_ZIndex1 = boolean;
+export type DataPipelinePipelineVersion_1 = boolean;
 
-export type DataPipeline_Properties_Pipeline_Properties_Version_AnyOf_ZIndex0 = null;
+export type DataPipelinePipelineVersion_0 = null;
 
-export type DataPipeline_Properties_Pipeline_Properties_Version =
-  DataPipeline_Properties_Pipeline_Properties_Version_AnyOf_ZIndex0 |
-  DataPipeline_Properties_Pipeline_Properties_Version_AnyOf_ZIndex1 |
-  DataPipeline_Properties_Pipeline_Properties_Version_AnyOf_ZIndex2 |
-  DataPipeline_Properties_Pipeline_Properties_Version_AnyOf_ZIndex3 |
-  DataPipeline_Properties_Pipeline_Properties_Version_AnyOf_ZIndex4 |
-  DataPipeline_Properties_Pipeline_Properties_Version_AnyOf_ZIndex5;
+export type DataPipelinePipelineVersion =
+  DataPipelinePipelineVersion_0 |
+  DataPipelinePipelineVersion_1 |
+  DataPipelinePipelineVersion_2 |
+  DataPipelinePipelineVersion_3 |
+  DataPipelinePipelineVersion_4 |
+  DataPipelinePipelineVersion_5;
 
-export type DataPipeline_Properties_Pipeline_Properties_Tags_Items = string;
+export type DataPipelinePipelineTagsItems = string;
 
-export type DataPipeline_Properties_Pipeline_Properties_Tags = DataPipeline_Properties_Pipeline_Properties_Tags_Items[];
+export type DataPipelinePipelineTags = DataPipelinePipelineTagsItems[];
 
-export type DataPipeline_Properties_Pipeline_Properties_Id = string;
+export type DataPipelinePipelineId = string;
 
-export type DataPipeline_Properties_Pipeline_Properties_Coordinates_AnyOf_ZIndex5 = number;
+export type DataPipelinePipelineCoordinates_5 = number;
 
-export type DataPipeline_Properties_Pipeline_Properties_Coordinates_AnyOf_ZIndex4 = string;
+export type DataPipelinePipelineCoordinates_4 = string;
 
-export type DataPipeline_Properties_Pipeline_Properties_Coordinates_AnyOf_ZIndex3_PrefixItems_ZIndex2 = number;
+export type DataPipelinePipelineCoordinates_3_2 = number;
 
-export type DataPipeline_Properties_Pipeline_Properties_Coordinates_AnyOf_ZIndex3_PrefixItems_ZIndex1 = number;
+export type DataPipelinePipelineCoordinates_3_1 = number;
 
-export type DataPipeline_Properties_Pipeline_Properties_Coordinates_AnyOf_ZIndex3_PrefixItems_ZIndex0 = number;
+export type DataPipelinePipelineCoordinates_3_0 = number;
 
-export type DataPipeline_Properties_Pipeline_Properties_Coordinates_AnyOf_ZIndex3_Items = number;
+export type DataPipelinePipelineCoordinates_3Items = number;
 
-export type DataPipeline_Properties_Pipeline_Properties_Coordinates_AnyOf_ZIndex3 = [DataPipeline_Properties_Pipeline_Properties_Coordinates_AnyOf_ZIndex3_PrefixItems_ZIndex0, DataPipeline_Properties_Pipeline_Properties_Coordinates_AnyOf_ZIndex3_PrefixItems_ZIndex1, DataPipeline_Properties_Pipeline_Properties_Coordinates_AnyOf_ZIndex3_PrefixItems_ZIndex2, ...DataPipeline_Properties_Pipeline_Properties_Coordinates_AnyOf_ZIndex3_Items[]];
+export type DataPipelinePipelineCoordinates_3 = [DataPipelinePipelineCoordinates_3_0, DataPipelinePipelineCoordinates_3_1, DataPipelinePipelineCoordinates_3_2, ...DataPipelinePipelineCoordinates_3Items[]];
 
-export type DataPipeline_Properties_Pipeline_Properties_Coordinates_AnyOf_ZIndex2 = Record<string, unknown>;
+export type DataPipelinePipelineCoordinates_2 = Record<string, unknown>;
 
-export type DataPipeline_Properties_Pipeline_Properties_Coordinates_AnyOf_ZIndex1 = boolean;
+export type DataPipelinePipelineCoordinates_1 = boolean;
 
-export type DataPipeline_Properties_Pipeline_Properties_Coordinates_AnyOf_ZIndex0 = null;
+export type DataPipelinePipelineCoordinates_0 = null;
 
-export type DataPipeline_Properties_Pipeline_Properties_Coordinates =
-  DataPipeline_Properties_Pipeline_Properties_Coordinates_AnyOf_ZIndex0 |
-  DataPipeline_Properties_Pipeline_Properties_Coordinates_AnyOf_ZIndex1 |
-  DataPipeline_Properties_Pipeline_Properties_Coordinates_AnyOf_ZIndex2 |
-  DataPipeline_Properties_Pipeline_Properties_Coordinates_AnyOf_ZIndex3 |
-  DataPipeline_Properties_Pipeline_Properties_Coordinates_AnyOf_ZIndex4 |
-  DataPipeline_Properties_Pipeline_Properties_Coordinates_AnyOf_ZIndex5;
+export type DataPipelinePipelineCoordinates =
+  DataPipelinePipelineCoordinates_0 |
+  DataPipelinePipelineCoordinates_1 |
+  DataPipelinePipelineCoordinates_2 |
+  DataPipelinePipelineCoordinates_3 |
+  DataPipelinePipelineCoordinates_4 |
+  DataPipelinePipelineCoordinates_5;
 
-export type DataPipeline_Properties_Pipeline_AdditionalProperties = never;
+export type DataPipelinePipelineAdditionalProperties = never;
 
-export interface DataPipeline_Properties_Pipeline {
-  "id": DataPipeline_Properties_Pipeline_Properties_Id;
-  "version": DataPipeline_Properties_Pipeline_Properties_Version;
-  "coordinates": DataPipeline_Properties_Pipeline_Properties_Coordinates;
-  "tags"?: DataPipeline_Properties_Pipeline_Properties_Tags;
+export interface DataPipelinePipeline {
+  "id": DataPipelinePipelineId;
+  "version": DataPipelinePipelineVersion;
+  "coordinates": DataPipelinePipelineCoordinates;
+  "tags"?: DataPipelinePipelineTags;
 }
 
-export type DataPipeline_Properties_Metadata_Properties_ModifiedAt_AnyOf_ZIndex1 = null;
+export type DataPipelineMetadataModifiedAt_1 = null;
 
-export type DataPipeline_Properties_Metadata_Properties_ModifiedAt_AnyOf_ZIndex0 = string;
+export type DataPipelineMetadataModifiedAt_0 = string;
 
-export type DataPipeline_Properties_Metadata_Properties_ModifiedAt =
-  DataPipeline_Properties_Metadata_Properties_ModifiedAt_AnyOf_ZIndex0 |
-  DataPipeline_Properties_Metadata_Properties_ModifiedAt_AnyOf_ZIndex1;
+export type DataPipelineMetadataModifiedAt =
+  DataPipelineMetadataModifiedAt_0 |
+  DataPipelineMetadataModifiedAt_1;
 
-export type DataPipeline_Properties_Metadata_Properties_Flags_AnyOf_ZIndex5 = number;
+export type DataPipelineMetadataFlags_5 = number;
 
-export type DataPipeline_Properties_Metadata_Properties_Flags_AnyOf_ZIndex4 = string;
+export type DataPipelineMetadataFlags_4 = string;
 
-export type DataPipeline_Properties_Metadata_Properties_Flags_AnyOf_ZIndex3_PrefixItems_ZIndex2 = boolean;
+export type DataPipelineMetadataFlags_3_2 = boolean;
 
-export type DataPipeline_Properties_Metadata_Properties_Flags_AnyOf_ZIndex3_PrefixItems_ZIndex1 = boolean;
+export type DataPipelineMetadataFlags_3_1 = boolean;
 
-export type DataPipeline_Properties_Metadata_Properties_Flags_AnyOf_ZIndex3_PrefixItems_ZIndex0 = boolean;
+export type DataPipelineMetadataFlags_3_0 = boolean;
 
-export type DataPipeline_Properties_Metadata_Properties_Flags_AnyOf_ZIndex3_Items = never;
+export type DataPipelineMetadataFlags_3Items = never;
 
-export type DataPipeline_Properties_Metadata_Properties_Flags_AnyOf_ZIndex3 = [DataPipeline_Properties_Metadata_Properties_Flags_AnyOf_ZIndex3_PrefixItems_ZIndex0, DataPipeline_Properties_Metadata_Properties_Flags_AnyOf_ZIndex3_PrefixItems_ZIndex1, DataPipeline_Properties_Metadata_Properties_Flags_AnyOf_ZIndex3_PrefixItems_ZIndex2, ...DataPipeline_Properties_Metadata_Properties_Flags_AnyOf_ZIndex3_Items[]];
+export type DataPipelineMetadataFlags_3 = [DataPipelineMetadataFlags_3_0, DataPipelineMetadataFlags_3_1, DataPipelineMetadataFlags_3_2, ...DataPipelineMetadataFlags_3Items[]];
 
-export type DataPipeline_Properties_Metadata_Properties_Flags_AnyOf_ZIndex2 = Record<string, unknown>;
+export type DataPipelineMetadataFlags_2 = Record<string, unknown>;
 
-export type DataPipeline_Properties_Metadata_Properties_Flags_AnyOf_ZIndex1 = boolean;
+export type DataPipelineMetadataFlags_1 = boolean;
 
-export type DataPipeline_Properties_Metadata_Properties_Flags_AnyOf_ZIndex0 = null;
+export type DataPipelineMetadataFlags_0 = null;
 
-export type DataPipeline_Properties_Metadata_Properties_Flags =
-  DataPipeline_Properties_Metadata_Properties_Flags_AnyOf_ZIndex0 |
-  DataPipeline_Properties_Metadata_Properties_Flags_AnyOf_ZIndex1 |
-  DataPipeline_Properties_Metadata_Properties_Flags_AnyOf_ZIndex2 |
-  DataPipeline_Properties_Metadata_Properties_Flags_AnyOf_ZIndex3 |
-  DataPipeline_Properties_Metadata_Properties_Flags_AnyOf_ZIndex4 |
-  DataPipeline_Properties_Metadata_Properties_Flags_AnyOf_ZIndex5;
+export type DataPipelineMetadataFlags =
+  DataPipelineMetadataFlags_0 |
+  DataPipelineMetadataFlags_1 |
+  DataPipelineMetadataFlags_2 |
+  DataPipelineMetadataFlags_3 |
+  DataPipelineMetadataFlags_4 |
+  DataPipelineMetadataFlags_5;
 
-export type DataPipeline_Properties_Metadata_Properties_CreatedAt = string;
+export type DataPipelineMetadataCreatedAt = string;
 
-export type DataPipeline_Properties_Metadata_Properties_Authors_Items_AnyOf_ZIndex5 = number;
+export type DataPipelineMetadataAuthorsItems_5 = number;
 
-export type DataPipeline_Properties_Metadata_Properties_Authors_Items_AnyOf_ZIndex4 = string;
+export type DataPipelineMetadataAuthorsItems_4 = string;
 
-export type DataPipeline_Properties_Metadata_Properties_Authors_Items_AnyOf_ZIndex3_PrefixItems_ZIndex1 = string;
+export type DataPipelineMetadataAuthorsItems_3_1 = string;
 
-export type DataPipeline_Properties_Metadata_Properties_Authors_Items_AnyOf_ZIndex3_PrefixItems_ZIndex0 = string;
+export type DataPipelineMetadataAuthorsItems_3_0 = string;
 
-export type DataPipeline_Properties_Metadata_Properties_Authors_Items_AnyOf_ZIndex3_Items = string;
+export type DataPipelineMetadataAuthorsItems_3Items = string;
 
-export type DataPipeline_Properties_Metadata_Properties_Authors_Items_AnyOf_ZIndex3 = [DataPipeline_Properties_Metadata_Properties_Authors_Items_AnyOf_ZIndex3_PrefixItems_ZIndex0, DataPipeline_Properties_Metadata_Properties_Authors_Items_AnyOf_ZIndex3_PrefixItems_ZIndex1, ...DataPipeline_Properties_Metadata_Properties_Authors_Items_AnyOf_ZIndex3_Items[]];
+export type DataPipelineMetadataAuthorsItems_3 = [DataPipelineMetadataAuthorsItems_3_0, DataPipelineMetadataAuthorsItems_3_1, ...DataPipelineMetadataAuthorsItems_3Items[]];
 
-export type DataPipeline_Properties_Metadata_Properties_Authors_Items_AnyOf_ZIndex2 = Record<string, unknown>;
+export type DataPipelineMetadataAuthorsItems_2 = Record<string, unknown>;
 
-export type DataPipeline_Properties_Metadata_Properties_Authors_Items_AnyOf_ZIndex1 = boolean;
+export type DataPipelineMetadataAuthorsItems_1 = boolean;
 
-export type DataPipeline_Properties_Metadata_Properties_Authors_Items_AnyOf_ZIndex0 = null;
+export type DataPipelineMetadataAuthorsItems_0 = null;
 
-export type DataPipeline_Properties_Metadata_Properties_Authors_Items =
-  DataPipeline_Properties_Metadata_Properties_Authors_Items_AnyOf_ZIndex0 |
-  DataPipeline_Properties_Metadata_Properties_Authors_Items_AnyOf_ZIndex1 |
-  DataPipeline_Properties_Metadata_Properties_Authors_Items_AnyOf_ZIndex2 |
-  DataPipeline_Properties_Metadata_Properties_Authors_Items_AnyOf_ZIndex3 |
-  DataPipeline_Properties_Metadata_Properties_Authors_Items_AnyOf_ZIndex4 |
-  DataPipeline_Properties_Metadata_Properties_Authors_Items_AnyOf_ZIndex5;
+export type DataPipelineMetadataAuthorsItems =
+  DataPipelineMetadataAuthorsItems_0 |
+  DataPipelineMetadataAuthorsItems_1 |
+  DataPipelineMetadataAuthorsItems_2 |
+  DataPipelineMetadataAuthorsItems_3 |
+  DataPipelineMetadataAuthorsItems_4 |
+  DataPipelineMetadataAuthorsItems_5;
 
-export type DataPipeline_Properties_Metadata_Properties_Authors = DataPipeline_Properties_Metadata_Properties_Authors_Items[];
+export type DataPipelineMetadataAuthors = DataPipelineMetadataAuthorsItems[];
 
-export type DataPipeline_Properties_Metadata_AdditionalProperties = never;
+export type DataPipelineMetadataAdditionalProperties = never;
 
-export interface DataPipeline_Properties_Metadata {
-  "createdAt"?: DataPipeline_Properties_Metadata_Properties_CreatedAt;
-  "modifiedAt"?: DataPipeline_Properties_Metadata_Properties_ModifiedAt;
-  "authors"?: DataPipeline_Properties_Metadata_Properties_Authors;
-  "flags"?: DataPipeline_Properties_Metadata_Properties_Flags;
+export interface DataPipelineMetadata {
+  "createdAt"?: DataPipelineMetadataCreatedAt;
+  "modifiedAt"?: DataPipelineMetadataModifiedAt;
+  "authors"?: DataPipelineMetadataAuthors;
+  "flags"?: DataPipelineMetadataFlags;
 }
 
-export type DataPipeline_Properties_Connections_Items_AnyOf_ZIndex5 = number;
+export type DataPipelineConnectionsItems_5 = number;
 
-export type DataPipeline_Properties_Connections_Items_AnyOf_ZIndex4 = string;
+export type DataPipelineConnectionsItems_4 = string;
 
-export type DataPipeline_Properties_Connections_Items_AnyOf_ZIndex3_PrefixItems_ZIndex2_Properties_Weight = number;
+export type DataPipelineConnectionsItems_3_2Weight = number;
 
-export type DataPipeline_Properties_Connections_Items_AnyOf_ZIndex3_PrefixItems_ZIndex2_Properties_Bidirectional = boolean;
+export type DataPipelineConnectionsItems_3_2Bidirectional = boolean;
 
-export type DataPipeline_Properties_Connections_Items_AnyOf_ZIndex3_PrefixItems_ZIndex2_AdditionalProperties = never;
+export type DataPipelineConnectionsItems_3_2AdditionalProperties = never;
 
-export interface DataPipeline_Properties_Connections_Items_AnyOf_ZIndex3_PrefixItems_ZIndex2 {
-  "weight": DataPipeline_Properties_Connections_Items_AnyOf_ZIndex3_PrefixItems_ZIndex2_Properties_Weight;
-  "bidirectional"?: DataPipeline_Properties_Connections_Items_AnyOf_ZIndex3_PrefixItems_ZIndex2_Properties_Bidirectional;
+export interface DataPipelineConnectionsItems_3_2 {
+  "weight": DataPipelineConnectionsItems_3_2Weight;
+  "bidirectional"?: DataPipelineConnectionsItems_3_2Bidirectional;
 }
 
-export type DataPipeline_Properties_Connections_Items_AnyOf_ZIndex3_PrefixItems_ZIndex1 = string;
+export type DataPipelineConnectionsItems_3_1 = string;
 
-export type DataPipeline_Properties_Connections_Items_AnyOf_ZIndex3_PrefixItems_ZIndex0 = string;
+export type DataPipelineConnectionsItems_3_0 = string;
 
-export type DataPipeline_Properties_Connections_Items_AnyOf_ZIndex3_Items = never;
+export type DataPipelineConnectionsItems_3Items = never;
 
-export type DataPipeline_Properties_Connections_Items_AnyOf_ZIndex3 = [DataPipeline_Properties_Connections_Items_AnyOf_ZIndex3_PrefixItems_ZIndex0, DataPipeline_Properties_Connections_Items_AnyOf_ZIndex3_PrefixItems_ZIndex1, DataPipeline_Properties_Connections_Items_AnyOf_ZIndex3_PrefixItems_ZIndex2, ...DataPipeline_Properties_Connections_Items_AnyOf_ZIndex3_Items[]];
+export type DataPipelineConnectionsItems_3 = [DataPipelineConnectionsItems_3_0, DataPipelineConnectionsItems_3_1, DataPipelineConnectionsItems_3_2, ...DataPipelineConnectionsItems_3Items[]];
 
-export type DataPipeline_Properties_Connections_Items_AnyOf_ZIndex2 = Record<string, unknown>;
+export type DataPipelineConnectionsItems_2 = Record<string, unknown>;
 
-export type DataPipeline_Properties_Connections_Items_AnyOf_ZIndex1 = boolean;
+export type DataPipelineConnectionsItems_1 = boolean;
 
-export type DataPipeline_Properties_Connections_Items_AnyOf_ZIndex0 = null;
+export type DataPipelineConnectionsItems_0 = null;
 
-export type DataPipeline_Properties_Connections_Items =
-  DataPipeline_Properties_Connections_Items_AnyOf_ZIndex0 |
-  DataPipeline_Properties_Connections_Items_AnyOf_ZIndex1 |
-  DataPipeline_Properties_Connections_Items_AnyOf_ZIndex2 |
-  DataPipeline_Properties_Connections_Items_AnyOf_ZIndex3 |
-  DataPipeline_Properties_Connections_Items_AnyOf_ZIndex4 |
-  DataPipeline_Properties_Connections_Items_AnyOf_ZIndex5;
+export type DataPipelineConnectionsItems =
+  DataPipelineConnectionsItems_0 |
+  DataPipelineConnectionsItems_1 |
+  DataPipelineConnectionsItems_2 |
+  DataPipelineConnectionsItems_3 |
+  DataPipelineConnectionsItems_4 |
+  DataPipelineConnectionsItems_5;
 
-export type DataPipeline_Properties_Connections = DataPipeline_Properties_Connections_Items[];
+export type DataPipelineConnections = DataPipelineConnectionsItems[];
 
-export type DataPipeline_AdditionalProperties = never;
+export type DataPipelineAdditionalProperties = never;
 
 export interface DataPipeline {
-  "pipeline": DataPipeline_Properties_Pipeline;
-  "stages": DataPipeline_Properties_Stages;
-  "connections": DataPipeline_Properties_Connections;
-  "metadata"?: DataPipeline_Properties_Metadata;
+  "pipeline": DataPipelinePipeline;
+  "stages": DataPipelineStages;
+  "connections": DataPipelineConnections;
+  "metadata"?: DataPipelineMetadata;
 }

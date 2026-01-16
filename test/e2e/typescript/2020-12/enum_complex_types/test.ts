@@ -1,9 +1,9 @@
 import {
   ComplexEnum,
-  ComplexEnum_Properties_Status,
-  ComplexEnum_Properties_Coordinates,
-  ComplexEnum_Properties_FixedConfig,
-  ComplexEnum_Properties_FixedList
+  ComplexEnumStatus,
+  ComplexEnumCoordinates,
+  ComplexEnumFixedConfig,
+  ComplexEnumFixedList
 } from "./expected";
 
 
@@ -116,22 +116,22 @@ const extraProperty: ComplexEnum = {
 };
 
 // Test standalone types
-const validStatus1: ComplexEnum_Properties_Status = { code: 200, message: "OK" };
-const validStatus2: ComplexEnum_Properties_Status = { code: 404, message: "Not Found" };
-const validStatus3: ComplexEnum_Properties_Status = { code: 500, message: "Internal Server Error" };
+const validStatus1: ComplexEnumStatus = { code: 200, message: "OK" };
+const validStatus2: ComplexEnumStatus = { code: 404, message: "Not Found" };
+const validStatus3: ComplexEnumStatus = { code: 500, message: "Internal Server Error" };
 // @ts-expect-error - must be one of the enum values
-const invalidStatusStandalone: ComplexEnum_Properties_Status = { code: 201, message: "Created" };
+const invalidStatusStandalone: ComplexEnumStatus = { code: 201, message: "Created" };
 
-const validCoords1: ComplexEnum_Properties_Coordinates = [ 0, 0 ];
-const validCoords2: ComplexEnum_Properties_Coordinates = [ 1, 1 ];
-const validCoords3: ComplexEnum_Properties_Coordinates = [ -1, -1 ];
+const validCoords1: ComplexEnumCoordinates = [ 0, 0 ];
+const validCoords2: ComplexEnumCoordinates = [ 1, 1 ];
+const validCoords3: ComplexEnumCoordinates = [ -1, -1 ];
 // @ts-expect-error - must be one of the enum values
-const invalidCoordsStandalone: ComplexEnum_Properties_Coordinates = [ 0, 1 ];
+const invalidCoordsStandalone: ComplexEnumCoordinates = [ 0, 1 ];
 
-const validConfig: ComplexEnum_Properties_FixedConfig = { enabled: true, maxRetries: 3 };
+const validConfig: ComplexEnumFixedConfig = { enabled: true, maxRetries: 3 };
 // @ts-expect-error - must match const exactly
-const invalidConfig: ComplexEnum_Properties_FixedConfig = { enabled: true, maxRetries: 10 };
+const invalidConfig: ComplexEnumFixedConfig = { enabled: true, maxRetries: 10 };
 
-const validList: ComplexEnum_Properties_FixedList = [ "read", "write", "execute" ];
+const validList: ComplexEnumFixedList = [ "read", "write", "execute" ];
 // @ts-expect-error - must match const exactly
-const invalidList: ComplexEnum_Properties_FixedList = [ "read", "write" ];
+const invalidList: ComplexEnumFixedList = [ "read", "write" ];

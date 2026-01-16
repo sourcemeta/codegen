@@ -27,17 +27,18 @@
 namespace sourcemeta::codegen {
 
 auto handle_impossible(const sourcemeta::core::JSON &,
-                       const sourcemeta::core::SchemaFrame &,
+                       const sourcemeta::core::SchemaFrame &frame,
                        const sourcemeta::core::SchemaFrame::Location &location,
                        const sourcemeta::core::Vocabularies &,
                        const sourcemeta::core::SchemaResolver &,
                        const sourcemeta::core::JSON &) -> IRImpossible {
   return IRImpossible{
-      {.pointer = sourcemeta::core::to_pointer(location.pointer)}};
+      {.pointer = sourcemeta::core::to_pointer(location.pointer),
+       .symbol = symbol(frame, location)}};
 }
 
 auto handle_string(const sourcemeta::core::JSON &schema,
-                   const sourcemeta::core::SchemaFrame &,
+                   const sourcemeta::core::SchemaFrame &frame,
                    const sourcemeta::core::SchemaFrame::Location &location,
                    const sourcemeta::core::Vocabularies &,
                    const sourcemeta::core::SchemaResolver &,
@@ -46,12 +47,13 @@ auto handle_string(const sourcemeta::core::JSON &schema,
                           {"$schema", "$id", "$anchor", "$defs", "$vocabulary",
                            "type", "minLength", "maxLength", "pattern",
                            "format"});
-  return IRScalar{{.pointer = sourcemeta::core::to_pointer(location.pointer)},
+  return IRScalar{{.pointer = sourcemeta::core::to_pointer(location.pointer),
+                   .symbol = symbol(frame, location)},
                   IRScalarType::String};
 }
 
 auto handle_object(const sourcemeta::core::JSON &schema,
-                   const sourcemeta::core::SchemaFrame &,
+                   const sourcemeta::core::SchemaFrame &frame,
                    const sourcemeta::core::SchemaFrame::Location &location,
                    const sourcemeta::core::Vocabularies &,
                    const sourcemeta::core::SchemaResolver &,
@@ -89,9 +91,15 @@ auto handle_object(const sourcemeta::core::JSON &schema,
     property_pointer.push_back("properties");
     property_pointer.push_back(entry.first);
 
-    IRObjectValue member_value{{.pointer = std::move(property_pointer)},
-                               required_set.contains(entry.first),
-                               false};
+    const auto property_location{
+        frame.traverse(sourcemeta::core::to_weak_pointer(property_pointer))};
+    assert(property_location.has_value());
+
+    IRObjectValue member_value{
+        {.pointer = std::move(property_pointer),
+         .symbol = symbol(frame, property_location.value().get())},
+        required_set.contains(entry.first),
+        false};
 
     members.emplace_back(entry.first, std::move(member_value));
   }
@@ -104,17 +112,25 @@ auto handle_object(const sourcemeta::core::JSON &schema,
     } else {
       auto additional_pointer{sourcemeta::core::to_pointer(location.pointer)};
       additional_pointer.push_back("additionalProperties");
-      additional = IRType{.pointer = std::move(additional_pointer)};
+
+      const auto additional_location{frame.traverse(
+          sourcemeta::core::to_weak_pointer(additional_pointer))};
+      assert(additional_location.has_value());
+
+      additional =
+          IRType{.pointer = std::move(additional_pointer),
+                 .symbol = symbol(frame, additional_location.value().get())};
     }
   }
 
-  return IRObject{{.pointer = sourcemeta::core::to_pointer(location.pointer)},
+  return IRObject{{.pointer = sourcemeta::core::to_pointer(location.pointer),
+                   .symbol = symbol(frame, location)},
                   std::move(members),
                   std::move(additional)};
 }
 
 auto handle_integer(const sourcemeta::core::JSON &schema,
-                    const sourcemeta::core::SchemaFrame &,
+                    const sourcemeta::core::SchemaFrame &frame,
                     const sourcemeta::core::SchemaFrame::Location &location,
                     const sourcemeta::core::Vocabularies &,
                     const sourcemeta::core::SchemaResolver &,
@@ -123,12 +139,13 @@ auto handle_integer(const sourcemeta::core::JSON &schema,
                           {"$schema", "$id", "$anchor", "$defs", "$vocabulary",
                            "type", "minimum", "maximum", "exclusiveMinimum",
                            "exclusiveMaximum", "multipleOf"});
-  return IRScalar{{.pointer = sourcemeta::core::to_pointer(location.pointer)},
+  return IRScalar{{.pointer = sourcemeta::core::to_pointer(location.pointer),
+                   .symbol = symbol(frame, location)},
                   IRScalarType::Integer};
 }
 
 auto handle_number(const sourcemeta::core::JSON &schema,
-                   const sourcemeta::core::SchemaFrame &,
+                   const sourcemeta::core::SchemaFrame &frame,
                    const sourcemeta::core::SchemaFrame::Location &location,
                    const sourcemeta::core::Vocabularies &,
                    const sourcemeta::core::SchemaResolver &,
@@ -137,12 +154,13 @@ auto handle_number(const sourcemeta::core::JSON &schema,
                           {"$schema", "$id", "$anchor", "$defs", "$vocabulary",
                            "type", "minimum", "maximum", "exclusiveMinimum",
                            "exclusiveMaximum", "multipleOf"});
-  return IRScalar{{.pointer = sourcemeta::core::to_pointer(location.pointer)},
+  return IRScalar{{.pointer = sourcemeta::core::to_pointer(location.pointer),
+                   .symbol = symbol(frame, location)},
                   IRScalarType::Number};
 }
 
 auto handle_array(const sourcemeta::core::JSON &schema,
-                  const sourcemeta::core::SchemaFrame &,
+                  const sourcemeta::core::SchemaFrame &frame,
                   const sourcemeta::core::SchemaFrame::Location &location,
                   const sourcemeta::core::Vocabularies &vocabularies,
                   const sourcemeta::core::SchemaResolver &,
@@ -167,7 +185,13 @@ auto handle_array(const sourcemeta::core::JSON &schema,
       item_pointer.push_back("prefixItems");
       item_pointer.push_back(index);
 
-      tuple_items.push_back({.pointer = std::move(item_pointer)});
+      const auto item_location{
+          frame.traverse(sourcemeta::core::to_weak_pointer(item_pointer))};
+      assert(item_location.has_value());
+
+      tuple_items.push_back(
+          {.pointer = std::move(item_pointer),
+           .symbol = symbol(frame, item_location.value().get())});
     }
 
     std::optional<IRType> additional{std::nullopt};
@@ -175,10 +199,17 @@ auto handle_array(const sourcemeta::core::JSON &schema,
       auto additional_pointer{sourcemeta::core::to_pointer(location.pointer)};
       additional_pointer.push_back("items");
 
-      additional = IRType{.pointer = std::move(additional_pointer)};
+      const auto additional_location{frame.traverse(
+          sourcemeta::core::to_weak_pointer(additional_pointer))};
+      assert(additional_location.has_value());
+
+      additional =
+          IRType{.pointer = std::move(additional_pointer),
+                 .symbol = symbol(frame, additional_location.value().get())};
     }
 
-    return IRTuple{{.pointer = sourcemeta::core::to_pointer(location.pointer)},
+    return IRTuple{{.pointer = sourcemeta::core::to_pointer(location.pointer),
+                    .symbol = symbol(frame, location)},
                    std::move(tuple_items),
                    std::move(additional)};
   }
@@ -198,7 +229,13 @@ auto handle_array(const sourcemeta::core::JSON &schema,
       item_pointer.push_back("items");
       item_pointer.push_back(index);
 
-      tuple_items.push_back({.pointer = std::move(item_pointer)});
+      const auto item_location{
+          frame.traverse(sourcemeta::core::to_weak_pointer(item_pointer))};
+      assert(item_location.has_value());
+
+      tuple_items.push_back(
+          {.pointer = std::move(item_pointer),
+           .symbol = symbol(frame, item_location.value().get())});
     }
 
     std::optional<IRType> additional{std::nullopt};
@@ -206,10 +243,17 @@ auto handle_array(const sourcemeta::core::JSON &schema,
       auto additional_pointer{sourcemeta::core::to_pointer(location.pointer)};
       additional_pointer.push_back("additionalItems");
 
-      additional = IRType{.pointer = std::move(additional_pointer)};
+      const auto additional_location{frame.traverse(
+          sourcemeta::core::to_weak_pointer(additional_pointer))};
+      assert(additional_location.has_value());
+
+      additional =
+          IRType{.pointer = std::move(additional_pointer),
+                 .symbol = symbol(frame, additional_location.value().get())};
     }
 
-    return IRTuple{{.pointer = sourcemeta::core::to_pointer(location.pointer)},
+    return IRTuple{{.pointer = sourcemeta::core::to_pointer(location.pointer),
+                    .symbol = symbol(frame, location)},
                    std::move(tuple_items),
                    std::move(additional)};
   }
@@ -218,15 +262,22 @@ auto handle_array(const sourcemeta::core::JSON &schema,
   if (subschema.defines("items")) {
     auto items_pointer{sourcemeta::core::to_pointer(location.pointer)};
     items_pointer.push_back("items");
-    items_type = IRType{.pointer = std::move(items_pointer)};
+
+    const auto items_location{
+        frame.traverse(sourcemeta::core::to_weak_pointer(items_pointer))};
+    assert(items_location.has_value());
+
+    items_type = IRType{.pointer = std::move(items_pointer),
+                        .symbol = symbol(frame, items_location.value().get())};
   }
 
-  return IRArray{{.pointer = sourcemeta::core::to_pointer(location.pointer)},
+  return IRArray{{.pointer = sourcemeta::core::to_pointer(location.pointer),
+                  .symbol = symbol(frame, location)},
                  std::move(items_type)};
 }
 
 auto handle_enum(const sourcemeta::core::JSON &schema,
-                 const sourcemeta::core::SchemaFrame &,
+                 const sourcemeta::core::SchemaFrame &frame,
                  const sourcemeta::core::SchemaFrame::Location &location,
                  const sourcemeta::core::Vocabularies &,
                  const sourcemeta::core::SchemaResolver &,
@@ -238,7 +289,8 @@ auto handle_enum(const sourcemeta::core::JSON &schema,
 
   // Boolean and null special cases
   if (enum_json.size() == 1 && enum_json.at(0).is_null()) {
-    return IRScalar{{.pointer = sourcemeta::core::to_pointer(location.pointer)},
+    return IRScalar{{.pointer = sourcemeta::core::to_pointer(location.pointer),
+                     .symbol = symbol(frame, location)},
                     IRScalarType::Null};
   } else if (enum_json.size() == 2) {
     const auto &first{enum_json.at(0)};
@@ -246,7 +298,8 @@ auto handle_enum(const sourcemeta::core::JSON &schema,
     if ((first.is_boolean() && second.is_boolean()) &&
         (first.to_boolean() != second.to_boolean())) {
       return IRScalar{
-          {.pointer = sourcemeta::core::to_pointer(location.pointer)},
+          {.pointer = sourcemeta::core::to_pointer(location.pointer),
+           .symbol = symbol(frame, location)},
           IRScalarType::Boolean};
     }
   }
@@ -254,12 +307,13 @@ auto handle_enum(const sourcemeta::core::JSON &schema,
   std::vector<sourcemeta::core::JSON> values{enum_json.as_array().cbegin(),
                                              enum_json.as_array().cend()};
   return IREnumeration{
-      {.pointer = sourcemeta::core::to_pointer(location.pointer)},
+      {.pointer = sourcemeta::core::to_pointer(location.pointer),
+       .symbol = symbol(frame, location)},
       std::move(values)};
 }
 
 auto handle_anyof(const sourcemeta::core::JSON &schema,
-                  const sourcemeta::core::SchemaFrame &,
+                  const sourcemeta::core::SchemaFrame &frame,
                   const sourcemeta::core::SchemaFrame::Location &location,
                   const sourcemeta::core::Vocabularies &,
                   const sourcemeta::core::SchemaResolver &,
@@ -278,15 +332,22 @@ auto handle_anyof(const sourcemeta::core::JSON &schema,
     branch_pointer.push_back("anyOf");
     branch_pointer.push_back(index);
 
-    branches.push_back({.pointer = std::move(branch_pointer)});
+    const auto branch_location{
+        frame.traverse(sourcemeta::core::to_weak_pointer(branch_pointer))};
+    assert(branch_location.has_value());
+
+    branches.push_back(
+        {.pointer = std::move(branch_pointer),
+         .symbol = symbol(frame, branch_location.value().get())});
   }
 
-  return IRUnion{{.pointer = sourcemeta::core::to_pointer(location.pointer)},
+  return IRUnion{{.pointer = sourcemeta::core::to_pointer(location.pointer),
+                  .symbol = symbol(frame, location)},
                  std::move(branches)};
 }
 
 auto handle_oneof(const sourcemeta::core::JSON &schema,
-                  const sourcemeta::core::SchemaFrame &,
+                  const sourcemeta::core::SchemaFrame &frame,
                   const sourcemeta::core::SchemaFrame::Location &location,
                   const sourcemeta::core::Vocabularies &,
                   const sourcemeta::core::SchemaResolver &,
@@ -305,10 +366,17 @@ auto handle_oneof(const sourcemeta::core::JSON &schema,
     branch_pointer.push_back("oneOf");
     branch_pointer.push_back(index);
 
-    branches.push_back({.pointer = std::move(branch_pointer)});
+    const auto branch_location{
+        frame.traverse(sourcemeta::core::to_weak_pointer(branch_pointer))};
+    assert(branch_location.has_value());
+
+    branches.push_back(
+        {.pointer = std::move(branch_pointer),
+         .symbol = symbol(frame, branch_location.value().get())});
   }
 
-  return IRUnion{{.pointer = sourcemeta::core::to_pointer(location.pointer)},
+  return IRUnion{{.pointer = sourcemeta::core::to_pointer(location.pointer),
+                  .symbol = symbol(frame, location)},
                  std::move(branches)};
 }
 
@@ -341,8 +409,10 @@ auto handle_ref(const sourcemeta::core::JSON &schema,
   const auto &target_location{target.value().get()};
 
   return IRReference{
-      {.pointer = sourcemeta::core::to_pointer(location.pointer)},
-      {.pointer = sourcemeta::core::to_pointer(target_location.pointer)}};
+      {.pointer = sourcemeta::core::to_pointer(location.pointer),
+       .symbol = symbol(frame, location)},
+      {.pointer = sourcemeta::core::to_pointer(target_location.pointer),
+       .symbol = symbol(frame, target_location)}};
 }
 
 auto default_compiler(const sourcemeta::core::JSON &schema,

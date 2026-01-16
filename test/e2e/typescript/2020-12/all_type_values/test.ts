@@ -1,9 +1,9 @@
 import {
   AllTypes,
-  AllTypes_Properties_ObjectField,
-  AllTypes_Properties_NestedTypes,
-  AllTypes_Properties_MultiType,
-  AllTypes_Properties_ArrayField
+  AllTypesObjectField,
+  AllTypesNestedTypes,
+  AllTypesMultiType,
+  AllTypesArrayField
 } from "./expected";
 
 const minimal: AllTypes = {
@@ -272,22 +272,22 @@ const invalidRootExtra: AllTypes = {
   unknownField: "not allowed"
 };
 
-const arrayField: AllTypes_Properties_ArrayField = [ "a", "b" ];
+const arrayField: AllTypesArrayField = [ "a", "b" ];
 // @ts-expect-error
-const invalidArrayFieldType: AllTypes_Properties_ArrayField = [ 1, 2 ];
+const invalidArrayFieldType: AllTypesArrayField = [ 1, 2 ];
 
-const multiType1: AllTypes_Properties_MultiType = "string";
-const multiType2: AllTypes_Properties_MultiType = 42;
-const multiType3: AllTypes_Properties_MultiType = null;
+const multiType1: AllTypesMultiType = "string";
+const multiType2: AllTypesMultiType = 42;
+const multiType3: AllTypesMultiType = null;
 // @ts-expect-error
-const invalidMultiTypeStandalone: AllTypes_Properties_MultiType = true;
+const invalidMultiTypeStandalone: AllTypesMultiType = true;
 
-const objectField: AllTypes_Properties_ObjectField = {};
-const objectField2: AllTypes_Properties_ObjectField = { nested: "value" };
+const objectField: AllTypesObjectField = {};
+const objectField2: AllTypesObjectField = { nested: "value" };
 // @ts-expect-error
-const invalidObjectFieldStandalone: AllTypes_Properties_ObjectField = { nested: 123 };
+const invalidObjectFieldStandalone: AllTypesObjectField = { nested: 123 };
 
-const nestedTypes: AllTypes_Properties_NestedTypes = {};
-const nestedTypes2: AllTypes_Properties_NestedTypes = { deepBoolean: false, deepNull: null, deepInteger: 50 };
+const nestedTypes: AllTypesNestedTypes = {};
+const nestedTypes2: AllTypesNestedTypes = { deepBoolean: false, deepNull: null, deepInteger: 50 };
 // @ts-expect-error
-const invalidNestedTypesStandalone: AllTypes_Properties_NestedTypes = { deepBoolean: "yes" };
+const invalidNestedTypesStandalone: AllTypesNestedTypes = { deepBoolean: "yes" };

@@ -1,15 +1,15 @@
 import {
   Record,
-  Record_X24Defs_UTimestamp,
-  Record_X24Defs_UFullName,
-  Record_X24Defs_ULocation,
-  Record_Properties_Items_Items,
-  Record_Properties_Entity
+  RecordTimestamp,
+  RecordFullName,
+  RecordLocation,
+  RecordItemsItems,
+  RecordEntity
 } from "./expected";
 
 
 // Valid: Timestamp with all required fields
-const timestamp: Record_X24Defs_UTimestamp = {
+const timestamp: RecordTimestamp = {
   rawValue: "2024-01-15",
   year: 2024,
   month: 1,
@@ -17,7 +17,7 @@ const timestamp: Record_X24Defs_UTimestamp = {
 };
 
 // Valid: Timestamp with optional isoFormat
-const timestampWithIso: Record_X24Defs_UTimestamp = {
+const timestampWithIso: RecordTimestamp = {
   rawValue: "2024-01-15",
   year: 2024,
   month: 1,
@@ -27,20 +27,20 @@ const timestampWithIso: Record_X24Defs_UTimestamp = {
 
 // Invalid: Timestamp missing required rawValue
 // @ts-expect-error - rawValue is required
-const timestampMissingRaw: Record_X24Defs_UTimestamp = {
+const timestampMissingRaw: RecordTimestamp = {
   year: 2024,
   month: 1,
   day: 15
 };
 
 // Valid: FullName with required fields only
-const fullNameMinimal: Record_X24Defs_UFullName = {
+const fullNameMinimal: RecordFullName = {
   givenName: "John",
   familyName: "Doe"
 };
 
 // Valid: FullName with all fields
-const fullNameComplete: Record_X24Defs_UFullName = {
+const fullNameComplete: RecordFullName = {
   rawValue: "Dr. John Michael Doe Jr.",
   givenName: "John",
   middleName: "Michael",
@@ -50,7 +50,7 @@ const fullNameComplete: Record_X24Defs_UFullName = {
 };
 
 // Valid: FullName with null nullable fields (type: ["string", "null"])
-const fullNameNulls: Record_X24Defs_UFullName = {
+const fullNameNulls: RecordFullName = {
   givenName: "Jane",
   familyName: "Smith",
   middleName: null,
@@ -60,12 +60,12 @@ const fullNameNulls: Record_X24Defs_UFullName = {
 
 // Invalid: FullName missing required givenName
 // @ts-expect-error - givenName is required
-const fullNameMissingGiven: Record_X24Defs_UFullName = {
+const fullNameMissingGiven: RecordFullName = {
   familyName: "Doe"
 };
 
 // Valid: Location with all required fields
-const location: Record_X24Defs_ULocation = {
+const location: RecordLocation = {
   rawValue: "123 Main St, City, Region 12345, Country",
   line1: "123 Main St",
   city: "City",
@@ -75,7 +75,7 @@ const location: Record_X24Defs_ULocation = {
 };
 
 // Valid: Location with all fields including nullable line2
-const locationComplete: Record_X24Defs_ULocation = {
+const locationComplete: RecordLocation = {
   rawValue: "123 Main St, Apt 4, City, District, Region 12345, Country",
   line1: "123 Main St",
   line2: "Apt 4",
@@ -87,7 +87,7 @@ const locationComplete: Record_X24Defs_ULocation = {
 };
 
 // Valid: Location with null line2
-const locationNullLine2: Record_X24Defs_ULocation = {
+const locationNullLine2: RecordLocation = {
   rawValue: "123 Main St, City, Region 12345, Country",
   line1: "123 Main St",
   line2: null,
@@ -98,7 +98,7 @@ const locationNullLine2: Record_X24Defs_ULocation = {
 };
 
 // Valid: Entity with required fields
-const entity: Record_Properties_Entity = {
+const entity: RecordEntity = {
   fullName: { givenName: "John", familyName: "Doe" },
   birthDate: { rawValue: "1990-05-15", year: 1990, month: 5, day: 15 },
   locations: [
@@ -114,7 +114,7 @@ const entity: Record_Properties_Entity = {
 };
 
 // Valid: Entity with optional fields
-const entityComplete: Record_Properties_Entity = {
+const entityComplete: RecordEntity = {
   fullName: { givenName: "John", familyName: "Doe" },
   birthDate: { rawValue: "1990-05-15", year: 1990, month: 5, day: 15 },
   category: "individual",
@@ -124,13 +124,13 @@ const entityComplete: Record_Properties_Entity = {
 
 // Invalid: Entity missing required fullName
 // @ts-expect-error - fullName is required
-const entityMissingFullName: Record_Properties_Entity = {
+const entityMissingFullName: RecordEntity = {
   birthDate: { rawValue: "1990-05-15", year: 1990, month: 5, day: 15 },
   locations: []
 };
 
 // Valid: Item with required fields
-const item: Record_Properties_Items_Items = {
+const item: RecordItemsItems = {
   itemId: "item-001",
   sequenceNumber: "001",
   description: "Test item",
@@ -139,7 +139,7 @@ const item: Record_Properties_Items_Items = {
 };
 
 // Valid: Item with nullable fields as strings
-const itemWithStrings: Record_Properties_Items_Items = {
+const itemWithStrings: RecordItemsItems = {
   itemId: "item-002",
   sequenceNumber: "002",
   description: "Another item",
@@ -151,7 +151,7 @@ const itemWithStrings: Record_Properties_Items_Items = {
 };
 
 // Valid: Item with nullable fields as null
-const itemWithNulls: Record_Properties_Items_Items = {
+const itemWithNulls: RecordItemsItems = {
   itemId: "item-003",
   sequenceNumber: "003",
   description: "Item with nulls",
@@ -163,7 +163,7 @@ const itemWithNulls: Record_Properties_Items_Items = {
 };
 
 // Valid: Item with resolvedAt as Timestamp (anyOf [$ref, null])
-const itemResolved: Record_Properties_Items_Items = {
+const itemResolved: RecordItemsItems = {
   itemId: "item-004",
   sequenceNumber: "004",
   description: "Resolved item",
@@ -173,7 +173,7 @@ const itemResolved: Record_Properties_Items_Items = {
 };
 
 // Valid: Item with resolvedAt as null
-const itemUnresolved: Record_Properties_Items_Items = {
+const itemUnresolved: RecordItemsItems = {
   itemId: "item-005",
   sequenceNumber: "005",
   description: "Unresolved item",
@@ -184,7 +184,7 @@ const itemUnresolved: Record_Properties_Items_Items = {
 
 // Invalid: Item missing required fields
 // @ts-expect-error - itemId is required
-const itemMissingId: Record_Properties_Items_Items = {
+const itemMissingId: RecordItemsItems = {
   sequenceNumber: "001",
   description: "Missing ID",
   occurredAt: { rawValue: "2024-01-15", year: 2024, month: 1, day: 15 },

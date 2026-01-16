@@ -1,30 +1,30 @@
-export type ColorScheme_Properties_Secondary = ColorScheme_X24Defs_UColor;
+export type ColorSchemeSecondary = ColorSchemeColor;
 
-export type ColorScheme_Properties_Primary = ColorScheme_X24Defs_UColor;
+export type ColorSchemePrimary = ColorSchemeColor;
 
-export type ColorScheme_Properties_Background = ColorScheme_X24Defs_UColor;
+export type ColorSchemeBackground = ColorSchemeColor;
 
-export type ColorScheme_AdditionalProperties = never;
+export type ColorSchemeAdditionalProperties = never;
 
-export type ColorScheme_X24Defs_UColor_Properties_R = number;
+export type ColorSchemeColorR = number;
 
-export type ColorScheme_X24Defs_UColor_Properties_G = number;
+export type ColorSchemeColorG = number;
 
-export type ColorScheme_X24Defs_UColor_Properties_B = number;
+export type ColorSchemeColorB = number;
 
-export type ColorScheme_X24Defs_UColor_Properties_Alpha = number;
+export type ColorSchemeColorAlpha = number;
 
-export type ColorScheme_X24Defs_UColor_AdditionalProperties = never;
+export type ColorSchemeColorAdditionalProperties = never;
 
-export interface ColorScheme_X24Defs_UColor {
-  "r": ColorScheme_X24Defs_UColor_Properties_R;
-  "g": ColorScheme_X24Defs_UColor_Properties_G;
-  "b": ColorScheme_X24Defs_UColor_Properties_B;
-  "alpha"?: ColorScheme_X24Defs_UColor_Properties_Alpha;
+export interface ColorSchemeColor {
+  "r": ColorSchemeColorR;
+  "g": ColorSchemeColorG;
+  "b": ColorSchemeColorB;
+  "alpha"?: ColorSchemeColorAlpha;
 }
 
 export interface ColorScheme {
-  "primary": ColorScheme_Properties_Primary;
-  "secondary": ColorScheme_Properties_Secondary;
-  "background"?: ColorScheme_Properties_Background;
+  "primary": ColorSchemePrimary;
+  "secondary": ColorSchemeSecondary;
+  "background"?: ColorSchemeBackground;
 }

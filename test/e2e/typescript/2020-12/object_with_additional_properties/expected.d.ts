@@ -1,18 +1,18 @@
-export type Person_Properties_Name = string;
+export type PersonName = string;
 
-export type Person_Properties_Age = number;
+export type PersonAge = number;
 
-export type Person_AdditionalProperties = string;
+export type PersonAdditionalProperties = string;
 
 export interface Person {
-  "name": Person_Properties_Name;
-  "age"?: Person_Properties_Age;
+  "name": PersonName;
+  "age"?: PersonAge;
   [key: string]:
     // As a notable limitation, TypeScript requires index signatures
     // to also include the types of all of its properties, so we must
     // match a superset of what JSON Schema allows
-    Person_Properties_Name |
-    Person_Properties_Age |
-    Person_AdditionalProperties |
+    PersonName |
+    PersonAge |
+    PersonAdditionalProperties |
     undefined;
 }

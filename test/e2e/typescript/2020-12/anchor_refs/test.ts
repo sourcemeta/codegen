@@ -1,6 +1,6 @@
 import {
   ColorScheme,
-  ColorScheme_X24Defs_UColor
+  ColorSchemeColor
 } from "./expected";
 
 // Valid: minimal required fields
@@ -17,7 +17,7 @@ const complete: ColorScheme = {
 };
 
 // Valid: color with optional alpha
-const colorWithAlpha: ColorScheme_X24Defs_UColor = {
+const colorWithAlpha: ColorSchemeColor = {
   r: 128,
   g: 128,
   b: 128,
@@ -25,7 +25,7 @@ const colorWithAlpha: ColorScheme_X24Defs_UColor = {
 };
 
 // Valid: color without alpha
-const colorWithoutAlpha: ColorScheme_X24Defs_UColor = {
+const colorWithoutAlpha: ColorSchemeColor = {
   r: 0,
   g: 0,
   b: 0
@@ -33,27 +33,27 @@ const colorWithoutAlpha: ColorScheme_X24Defs_UColor = {
 
 // Invalid: missing required r
 // @ts-expect-error
-const missingR: ColorScheme_X24Defs_UColor = {
+const missingR: ColorSchemeColor = {
   g: 255,
   b: 255
 };
 
 // Invalid: missing required g
 // @ts-expect-error
-const missingG: ColorScheme_X24Defs_UColor = {
+const missingG: ColorSchemeColor = {
   r: 255,
   b: 255
 };
 
 // Invalid: missing required b
 // @ts-expect-error
-const missingB: ColorScheme_X24Defs_UColor = {
+const missingB: ColorSchemeColor = {
   r: 255,
   g: 255
 };
 
 // Invalid: r must be number
-const invalidR: ColorScheme_X24Defs_UColor = {
+const invalidR: ColorSchemeColor = {
   // @ts-expect-error
   r: "255",
   g: 0,
@@ -61,7 +61,7 @@ const invalidR: ColorScheme_X24Defs_UColor = {
 };
 
 // Invalid: alpha must be number
-const invalidAlpha: ColorScheme_X24Defs_UColor = {
+const invalidAlpha: ColorSchemeColor = {
   r: 255,
   g: 0,
   b: 0,
@@ -70,7 +70,7 @@ const invalidAlpha: ColorScheme_X24Defs_UColor = {
 };
 
 // Invalid: extra property on color (additionalProperties: false)
-const invalidColorExtra: ColorScheme_X24Defs_UColor = {
+const invalidColorExtra: ColorSchemeColor = {
   r: 255,
   g: 0,
   b: 0,

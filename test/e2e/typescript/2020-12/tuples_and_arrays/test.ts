@@ -1,7 +1,7 @@
 import {
   DataPipeline,
-  DataPipeline_Properties_Pipeline,
-  DataPipeline_Properties_Stages_Items
+  DataPipelinePipeline,
+  DataPipelineStagesItems
 } from "./expected";
 
 
@@ -39,14 +39,14 @@ const validCoordinatesExtended: DataPipeline = {
 };
 
 // Valid: stage with inputTypes tuple
-const validStage: DataPipeline_Properties_Stages_Items = {
+const validStage: DataPipelineStagesItems = {
   name: "transform",
   inputTypes: [ "string", "required" ],
   outputType: [ "output", "sync" ]
 };
 
 // Valid: stage inputTypes with additional items
-const validStageExtended: DataPipeline_Properties_Stages_Items = {
+const validStageExtended: DataPipelineStagesItems = {
   name: "transform",
   inputTypes: [ "number", "optional", { typeName: "custom" } ],
   outputType: [ "result", "async" ]
@@ -106,13 +106,13 @@ const invalidPipelineExtra: DataPipeline = {
 
 // Invalid: stage missing required name
 // @ts-expect-error
-const invalidStageMissingName: DataPipeline_Properties_Stages_Items = {
+const invalidStageMissingName: DataPipelineStagesItems = {
   inputTypes: [ "string", "required" ],
   outputType: [ "out", "sync" ]
 };
 
 // Invalid: extra property on stage (additionalProperties: false)
-const invalidStageExtra: DataPipeline_Properties_Stages_Items = {
+const invalidStageExtra: DataPipelineStagesItems = {
   name: "test",
   inputTypes: [ "string", "required" ],
   outputType: [ "out", "sync" ],

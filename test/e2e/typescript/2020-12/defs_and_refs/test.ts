@@ -1,10 +1,10 @@
 import {
   SocialPlatform,
-  SocialPlatform_X24Defs_X55ser,
-  SocialPlatform_X24Defs_UPost,
-  SocialPlatform_X24Defs_USettings,
-  SocialPlatform_X24Defs_UTheme,
-  SocialPlatform_X24Defs_UPostStatus
+  _SocialPlatformUser,
+  SocialPlatformPost,
+  _SocialPlatformSettings,
+  SocialPlatformTheme,
+  SocialPlatformPostStatus
 } from "./expected";
 
 
@@ -20,7 +20,7 @@ const minimal: SocialPlatform = {
 };
 
 // Valid: user with profile
-const userWithProfile: SocialPlatform_X24Defs_X55ser = {
+const userWithProfile: _SocialPlatformUser = {
   id: "550e8400-e29b-41d4-a716-446655440001",
   username: "jane_doe",
   email: "jane@example.com",
@@ -32,7 +32,7 @@ const userWithProfile: SocialPlatform_X24Defs_X55ser = {
 };
 
 // Valid: profile with null values (anyOf [string, null])
-const userWithNullProfile: SocialPlatform_X24Defs_X55ser = {
+const userWithNullProfile: _SocialPlatformUser = {
   id: "550e8400-e29b-41d4-a716-446655440002",
   username: "bob",
   email: "bob@example.com",
@@ -43,7 +43,7 @@ const userWithNullProfile: SocialPlatform_X24Defs_X55ser = {
 };
 
 // Valid: post with all fields
-const validPost: SocialPlatform_X24Defs_UPost = {
+const validPost: SocialPlatformPost = {
   id: "550e8400-e29b-41d4-a716-446655440003",
   title: "Hello World",
   content: "This is my first post",
@@ -60,25 +60,25 @@ const validPost: SocialPlatform_X24Defs_UPost = {
 };
 
 // Valid: Theme enum values
-const lightTheme: SocialPlatform_X24Defs_UTheme = "light";
-const darkTheme: SocialPlatform_X24Defs_UTheme = "dark";
-const systemTheme: SocialPlatform_X24Defs_UTheme = "system";
+const lightTheme: SocialPlatformTheme = "light";
+const darkTheme: SocialPlatformTheme = "dark";
+const systemTheme: SocialPlatformTheme = "system";
 
 // Invalid: Theme must be from enum
 // @ts-expect-error - theme must be light|dark|system
-const invalidTheme: SocialPlatform_X24Defs_UTheme = "blue";
+const invalidTheme: SocialPlatformTheme = "blue";
 
 // Valid: PostStatus enum values
-const draftStatus: SocialPlatform_X24Defs_UPostStatus = "draft";
-const publishedStatus: SocialPlatform_X24Defs_UPostStatus = "published";
-const archivedStatus: SocialPlatform_X24Defs_UPostStatus = "archived";
+const draftStatus: SocialPlatformPostStatus = "draft";
+const publishedStatus: SocialPlatformPostStatus = "published";
+const archivedStatus: SocialPlatformPostStatus = "archived";
 
 // Invalid: PostStatus must be from enum
 // @ts-expect-error - status must be draft|published|archived
-const invalidStatus: SocialPlatform_X24Defs_UPostStatus = "deleted";
+const invalidStatus: SocialPlatformPostStatus = "deleted";
 
 // Valid: settings with all fields
-const fullSettings: SocialPlatform_X24Defs_USettings = {
+const fullSettings: _SocialPlatformSettings = {
   theme: "dark",
   notifications: {
     email: true,
@@ -143,13 +143,13 @@ const invalidUserMissingEmail: SocialPlatform = {
 
 // Invalid: Post missing required title
 // @ts-expect-error - title is required
-const invalidPost: SocialPlatform_X24Defs_UPost = {
+const invalidPost: SocialPlatformPost = {
   id: "post-id",
   author: { id: "uuid", username: "test", email: "test@test.com" }
 };
 
 // Invalid: Post with invalid status enum
-const invalidPostStatus: SocialPlatform_X24Defs_UPost = {
+const invalidPostStatus: SocialPlatformPost = {
   id: "post-id",
   title: "Test",
   author: { id: "uuid", username: "test", email: "test@test.com" },
@@ -158,7 +158,7 @@ const invalidPostStatus: SocialPlatform_X24Defs_UPost = {
 };
 
 // Invalid: extra property on User (additionalProperties: false)
-const userExtraProperty: SocialPlatform_X24Defs_X55ser = {
+const userExtraProperty: _SocialPlatformUser = {
   id: "uuid",
   username: "test",
   email: "test@test.com",

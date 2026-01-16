@@ -1,4 +1,4 @@
-import { ConstTest, ConstTest_Properties_Nested } from "./expected";
+import { ConstTest, ConstTestNested } from "./expected";
 
 
 // Valid: all required fields with exact const values
@@ -165,9 +165,9 @@ const nestedExtraProperty: ConstTest = {
 };
 
 // Test standalone nested type
-const nested1: ConstTest_Properties_Nested = {};
-const nested2: ConstTest_Properties_Nested = { fixedValue: "fixed" };
-const nested3: ConstTest_Properties_Nested = { fixedNumber: 100 };
-const nested4: ConstTest_Properties_Nested = { fixedValue: "fixed", fixedNumber: 100 };
+const nested1: ConstTestNested = {};
+const nested2: ConstTestNested = { fixedValue: "fixed" };
+const nested3: ConstTestNested = { fixedNumber: 100 };
+const nested4: ConstTestNested = { fixedValue: "fixed", fixedNumber: 100 };
 // @ts-expect-error - fixedValue must be "fixed"
-const invalidNested: ConstTest_Properties_Nested = { fixedValue: "wrong" };
+const invalidNested: ConstTestNested = { fixedValue: "wrong" };

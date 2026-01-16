@@ -1,9 +1,9 @@
 import {
   ApiResponse,
-  ApiResponse_X24Defs_UEntity,
-  ApiResponse_X24Defs_UEntityAttributes,
-  ApiResponse_X24Defs_UPaginationInfo,
-  ApiResponse_X24Defs_UAppliedFilters
+  ApiResponseEntity,
+  ApiResponseEntityAttributes,
+  ApiResponsePaginationInfo,
+  ApiResponseAppliedFilters
 } from "./expected";
 
 
@@ -59,7 +59,7 @@ const invalidStatus: ApiResponse = {
 };
 
 // Valid: Entity with type enum
-const validEntity: ApiResponse_X24Defs_UEntity = {
+const validEntity: ApiResponseEntity = {
   id: "user-1",
   type: "user",
   attributes: {
@@ -69,7 +69,7 @@ const validEntity: ApiResponse_X24Defs_UEntity = {
 };
 
 // Invalid: Entity type must be from enum
-const invalidEntityType: ApiResponse_X24Defs_UEntity = {
+const invalidEntityType: ApiResponseEntity = {
   id: "e1",
   // @ts-expect-error - type must be user|organization|resource
   type: "admin",
@@ -77,7 +77,7 @@ const invalidEntityType: ApiResponse_X24Defs_UEntity = {
 };
 
 // Valid: Entity with relationships including additionalProperties
-const entityWithRelationships: ApiResponse_X24Defs_UEntity = {
+const entityWithRelationships: ApiResponseEntity = {
   id: "org-1",
   type: "organization",
   attributes: { name: "Acme Corp", createdAt: "2024-01-01" },
@@ -94,7 +94,7 @@ const entityWithRelationships: ApiResponse_X24Defs_UEntity = {
 };
 
 // Valid: EntityAttributes with metadata (additionalProperties: string|number|boolean)
-const attributesWithMetadata: ApiResponse_X24Defs_UEntityAttributes = {
+const attributesWithMetadata: ApiResponseEntityAttributes = {
   name: "Test Entity",
   createdAt: "2024-01-01",
   description: "A test entity",
@@ -108,7 +108,7 @@ const attributesWithMetadata: ApiResponse_X24Defs_UEntityAttributes = {
 };
 
 // Invalid: metadata values must be string|number|boolean, not object
-const invalidMetadata: ApiResponse_X24Defs_UEntityAttributes = {
+const invalidMetadata: ApiResponseEntityAttributes = {
   name: "test",
   createdAt: "2024-01-01",
   metadata: {
@@ -118,7 +118,7 @@ const invalidMetadata: ApiResponse_X24Defs_UEntityAttributes = {
 };
 
 // Invalid: metadata values must be string|number|boolean, not array
-const invalidMetadataArray: ApiResponse_X24Defs_UEntityAttributes = {
+const invalidMetadataArray: ApiResponseEntityAttributes = {
   name: "test",
   createdAt: "2024-01-01",
   metadata: {
@@ -128,7 +128,7 @@ const invalidMetadataArray: ApiResponse_X24Defs_UEntityAttributes = {
 };
 
 // Valid: PaginationInfo with boolean enum fields
-const pagination: ApiResponse_X24Defs_UPaginationInfo = {
+const pagination: ApiResponsePaginationInfo = {
   page: 1,
   pageSize: 20,
   totalItems: 100,
@@ -138,37 +138,37 @@ const pagination: ApiResponse_X24Defs_UPaginationInfo = {
 };
 
 // Valid: AppliedFilters with sortBy enum including null
-const filters: ApiResponse_X24Defs_UAppliedFilters = {
+const filters: ApiResponseAppliedFilters = {
   search: "query",
   sortBy: "name",
   sortOrder: "asc"
 };
 
 // Valid: sortBy can be null (it's in the enum)
-const filtersWithNullSort: ApiResponse_X24Defs_UAppliedFilters = {
+const filtersWithNullSort: ApiResponseAppliedFilters = {
   sortBy: null,
   sortOrder: "desc"
 };
 
 // Invalid: sortBy must be from enum
-const invalidSortBy: ApiResponse_X24Defs_UAppliedFilters = {
+const invalidSortBy: ApiResponseAppliedFilters = {
   // @ts-expect-error - sortBy must be name|createdAt|updatedAt|null
   sortBy: "id"
 };
 
 // Invalid: sortOrder must be asc or desc
-const invalidSortOrder: ApiResponse_X24Defs_UAppliedFilters = {
+const invalidSortOrder: ApiResponseAppliedFilters = {
   // @ts-expect-error - sortOrder must be asc|desc
   sortOrder: "random"
 };
 
 // Valid: types array with enum items
-const filtersWithTypes: ApiResponse_X24Defs_UAppliedFilters = {
+const filtersWithTypes: ApiResponseAppliedFilters = {
   types: [ "user", "organization" ]
 };
 
 // Invalid: types must be from enum
-const invalidTypes: ApiResponse_X24Defs_UAppliedFilters = {
+const invalidTypes: ApiResponseAppliedFilters = {
   // @ts-expect-error - type items must be user|organization|resource
   types: [ "user", "admin" ]
 };

@@ -1,230 +1,230 @@
-export type ApiResponse_Properties_Status = "success" | "error" | "pending";
+export type ApiResponseStatus = "success" | "error" | "pending";
 
-export type ApiResponse_Properties_Meta = ApiResponse_X24Defs_UResponseMeta;
+export type ApiResponseMeta = ApiResponseResponseMeta;
 
-export type ApiResponse_Properties_ErrorCode_AnyOf_ZIndex1 = null;
+export type ApiResponseErrorCode_1 = null;
 
-export type ApiResponse_Properties_ErrorCode_AnyOf_ZIndex0 = string;
+export type ApiResponseErrorCode_0 = string;
 
-export type ApiResponse_Properties_ErrorCode =
-  ApiResponse_Properties_ErrorCode_AnyOf_ZIndex0 |
-  ApiResponse_Properties_ErrorCode_AnyOf_ZIndex1;
+export type ApiResponseErrorCode =
+  ApiResponseErrorCode_0 |
+  ApiResponseErrorCode_1;
 
-export type ApiResponse_Properties_Data = ApiResponse_X24Defs_UPaginatedResult;
+export type ApiResponseData = ApiResponsePaginatedResult;
 
-export type ApiResponse_AdditionalProperties = never;
+export type ApiResponseAdditionalProperties = never;
 
-export type ApiResponse_X24Defs_UResponseMeta_Properties_Version = string;
+export type ApiResponseResponseMetaVersion = string;
 
-export type ApiResponse_X24Defs_UResponseMeta_Properties_Timestamp = string;
+export type ApiResponseResponseMetaTimestamp = string;
 
-export type ApiResponse_X24Defs_UResponseMeta_Properties_RequestId = string;
+export type ApiResponseResponseMetaRequestId = string;
 
-export type ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items_Properties_SuggestedAlternative_AnyOf_ZIndex1 = null;
+export type ApiResponseResponseMetaDeprecationWarningsItemsSuggestedAlternative_1 = null;
 
-export type ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items_Properties_SuggestedAlternative_AnyOf_ZIndex0 = string;
+export type ApiResponseResponseMetaDeprecationWarningsItemsSuggestedAlternative_0 = string;
 
-export type ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items_Properties_SuggestedAlternative =
-  ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items_Properties_SuggestedAlternative_AnyOf_ZIndex0 |
-  ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items_Properties_SuggestedAlternative_AnyOf_ZIndex1;
+export type ApiResponseResponseMetaDeprecationWarningsItemsSuggestedAlternative =
+  ApiResponseResponseMetaDeprecationWarningsItemsSuggestedAlternative_0 |
+  ApiResponseResponseMetaDeprecationWarningsItemsSuggestedAlternative_1;
 
-export type ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items_Properties_Message = string;
+export type ApiResponseResponseMetaDeprecationWarningsItemsMessage = string;
 
-export type ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items_Properties_Field = string;
+export type ApiResponseResponseMetaDeprecationWarningsItemsField = string;
 
-export type ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items_AdditionalProperties = never;
+export type ApiResponseResponseMetaDeprecationWarningsItemsAdditionalProperties = never;
 
-export interface ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items {
-  "message": ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items_Properties_Message;
-  "field": ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items_Properties_Field;
-  "suggestedAlternative"?: ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items_Properties_SuggestedAlternative;
+export interface ApiResponseResponseMetaDeprecationWarningsItems {
+  "message": ApiResponseResponseMetaDeprecationWarningsItemsMessage;
+  "field": ApiResponseResponseMetaDeprecationWarningsItemsField;
+  "suggestedAlternative"?: ApiResponseResponseMetaDeprecationWarningsItemsSuggestedAlternative;
 }
 
-export type ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings = ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings_Items[];
+export type ApiResponseResponseMetaDeprecationWarnings = ApiResponseResponseMetaDeprecationWarningsItems[];
 
-export type ApiResponse_X24Defs_UResponseMeta_AdditionalProperties = never;
+export type ApiResponseResponseMetaAdditionalProperties = never;
 
-export interface ApiResponse_X24Defs_UResponseMeta {
-  "requestId": ApiResponse_X24Defs_UResponseMeta_Properties_RequestId;
-  "timestamp": ApiResponse_X24Defs_UResponseMeta_Properties_Timestamp;
-  "version"?: ApiResponse_X24Defs_UResponseMeta_Properties_Version;
-  "deprecationWarnings"?: ApiResponse_X24Defs_UResponseMeta_Properties_DeprecationWarnings;
+export interface ApiResponseResponseMeta {
+  "requestId": ApiResponseResponseMetaRequestId;
+  "timestamp": ApiResponseResponseMetaTimestamp;
+  "version"?: ApiResponseResponseMetaVersion;
+  "deprecationWarnings"?: ApiResponseResponseMetaDeprecationWarnings;
 }
 
-export type ApiResponse_X24Defs_UPaginationInfo_Properties_TotalPages = number;
+export type ApiResponsePaginationInfoTotalPages = number;
 
-export type ApiResponse_X24Defs_UPaginationInfo_Properties_TotalItems = number;
+export type ApiResponsePaginationInfoTotalItems = number;
 
-export type ApiResponse_X24Defs_UPaginationInfo_Properties_PageSize = number;
+export type ApiResponsePaginationInfoPageSize = number;
 
-export type ApiResponse_X24Defs_UPaginationInfo_Properties_Page = number;
+export type ApiResponsePaginationInfoPage = number;
 
-export type ApiResponse_X24Defs_UPaginationInfo_Properties_HasPreviousPage = boolean;
+export type ApiResponsePaginationInfoHasPreviousPage = boolean;
 
-export type ApiResponse_X24Defs_UPaginationInfo_Properties_HasNextPage = boolean;
+export type ApiResponsePaginationInfoHasNextPage = boolean;
 
-export type ApiResponse_X24Defs_UPaginationInfo_AdditionalProperties = never;
+export type ApiResponsePaginationInfoAdditionalProperties = never;
 
-export interface ApiResponse_X24Defs_UPaginationInfo {
-  "page": ApiResponse_X24Defs_UPaginationInfo_Properties_Page;
-  "pageSize": ApiResponse_X24Defs_UPaginationInfo_Properties_PageSize;
-  "totalItems": ApiResponse_X24Defs_UPaginationInfo_Properties_TotalItems;
-  "totalPages": ApiResponse_X24Defs_UPaginationInfo_Properties_TotalPages;
-  "hasNextPage"?: ApiResponse_X24Defs_UPaginationInfo_Properties_HasNextPage;
-  "hasPreviousPage"?: ApiResponse_X24Defs_UPaginationInfo_Properties_HasPreviousPage;
+export interface ApiResponsePaginationInfo {
+  "page": ApiResponsePaginationInfoPage;
+  "pageSize": ApiResponsePaginationInfoPageSize;
+  "totalItems": ApiResponsePaginationInfoTotalItems;
+  "totalPages": ApiResponsePaginationInfoTotalPages;
+  "hasNextPage"?: ApiResponsePaginationInfoHasNextPage;
+  "hasPreviousPage"?: ApiResponsePaginationInfoHasPreviousPage;
 }
 
-export type ApiResponse_X24Defs_UPaginatedResult_Properties_Pagination = ApiResponse_X24Defs_UPaginationInfo;
+export type ApiResponsePaginatedResultPagination = ApiResponsePaginationInfo;
 
-export type ApiResponse_X24Defs_UPaginatedResult_Properties_Items_Items = ApiResponse_X24Defs_UEntity;
+export type ApiResponsePaginatedResultItemsItems = ApiResponseEntity;
 
-export type ApiResponse_X24Defs_UPaginatedResult_Properties_Items = ApiResponse_X24Defs_UPaginatedResult_Properties_Items_Items[];
+export type ApiResponsePaginatedResultItems = ApiResponsePaginatedResultItemsItems[];
 
-export type ApiResponse_X24Defs_UPaginatedResult_Properties_Filters = ApiResponse_X24Defs_UAppliedFilters;
+export type ApiResponsePaginatedResultFilters = ApiResponseAppliedFilters;
 
-export type ApiResponse_X24Defs_UPaginatedResult_AdditionalProperties = never;
+export type ApiResponsePaginatedResultAdditionalProperties = never;
 
-export interface ApiResponse_X24Defs_UPaginatedResult {
-  "items": ApiResponse_X24Defs_UPaginatedResult_Properties_Items;
-  "pagination": ApiResponse_X24Defs_UPaginatedResult_Properties_Pagination;
-  "filters"?: ApiResponse_X24Defs_UPaginatedResult_Properties_Filters;
+export interface ApiResponsePaginatedResult {
+  "items": ApiResponsePaginatedResultItems;
+  "pagination": ApiResponsePaginatedResultPagination;
+  "filters"?: ApiResponsePaginatedResultFilters;
 }
 
-export type ApiResponse_X24Defs_UEntityReference_Properties_Type = string;
+export type ApiResponseEntityReferenceType = string;
 
-export type ApiResponse_X24Defs_UEntityReference_Properties_Id = string;
+export type ApiResponseEntityReferenceId = string;
 
-export type ApiResponse_X24Defs_UEntityReference_AdditionalProperties = never;
+export type ApiResponseEntityReferenceAdditionalProperties = never;
 
-export interface ApiResponse_X24Defs_UEntityReference {
-  "id": ApiResponse_X24Defs_UEntityReference_Properties_Id;
-  "type": ApiResponse_X24Defs_UEntityReference_Properties_Type;
+export interface ApiResponseEntityReference {
+  "id": ApiResponseEntityReferenceId;
+  "type": ApiResponseEntityReferenceType;
 }
 
-export type ApiResponse_X24Defs_UEntityAttributes_Properties_X75pdatedAt_AnyOf_ZIndex1 = null;
+export type ApiResponseEntityAttributesUpdatedAt_1 = null;
 
-export type ApiResponse_X24Defs_UEntityAttributes_Properties_X75pdatedAt_AnyOf_ZIndex0 = string;
+export type ApiResponseEntityAttributesUpdatedAt_0 = string;
 
-export type ApiResponse_X24Defs_UEntityAttributes_Properties_X75pdatedAt =
-  ApiResponse_X24Defs_UEntityAttributes_Properties_X75pdatedAt_AnyOf_ZIndex0 |
-  ApiResponse_X24Defs_UEntityAttributes_Properties_X75pdatedAt_AnyOf_ZIndex1;
+export type ApiResponseEntityAttributesUpdatedAt =
+  ApiResponseEntityAttributesUpdatedAt_0 |
+  ApiResponseEntityAttributesUpdatedAt_1;
 
-export type ApiResponse_X24Defs_UEntityAttributes_Properties_Tags_Items = string;
+export type ApiResponseEntityAttributesTagsItems = string;
 
-export type ApiResponse_X24Defs_UEntityAttributes_Properties_Tags = ApiResponse_X24Defs_UEntityAttributes_Properties_Tags_Items[];
+export type ApiResponseEntityAttributesTags = ApiResponseEntityAttributesTagsItems[];
 
-export type ApiResponse_X24Defs_UEntityAttributes_Properties_Name = string;
+export type ApiResponseEntityAttributesName = string;
 
-export type ApiResponse_X24Defs_UEntityAttributes_Properties_Metadata_AdditionalProperties_AnyOf_ZIndex2 = boolean;
+export type ApiResponseEntityAttributesMetadataAdditionalProperties_2 = boolean;
 
-export type ApiResponse_X24Defs_UEntityAttributes_Properties_Metadata_AdditionalProperties_AnyOf_ZIndex1 = number;
+export type ApiResponseEntityAttributesMetadataAdditionalProperties_1 = number;
 
-export type ApiResponse_X24Defs_UEntityAttributes_Properties_Metadata_AdditionalProperties_AnyOf_ZIndex0 = string;
+export type ApiResponseEntityAttributesMetadataAdditionalProperties_0 = string;
 
-export type ApiResponse_X24Defs_UEntityAttributes_Properties_Metadata_AdditionalProperties =
-  ApiResponse_X24Defs_UEntityAttributes_Properties_Metadata_AdditionalProperties_AnyOf_ZIndex0 |
-  ApiResponse_X24Defs_UEntityAttributes_Properties_Metadata_AdditionalProperties_AnyOf_ZIndex1 |
-  ApiResponse_X24Defs_UEntityAttributes_Properties_Metadata_AdditionalProperties_AnyOf_ZIndex2;
+export type ApiResponseEntityAttributesMetadataAdditionalProperties =
+  ApiResponseEntityAttributesMetadataAdditionalProperties_0 |
+  ApiResponseEntityAttributesMetadataAdditionalProperties_1 |
+  ApiResponseEntityAttributesMetadataAdditionalProperties_2;
 
-export type ApiResponse_X24Defs_UEntityAttributes_Properties_Metadata = Record<string, ApiResponse_X24Defs_UEntityAttributes_Properties_Metadata_AdditionalProperties>;
+export type ApiResponseEntityAttributesMetadata = Record<string, ApiResponseEntityAttributesMetadataAdditionalProperties>;
 
-export type ApiResponse_X24Defs_UEntityAttributes_Properties_Description_AnyOf_ZIndex1 = null;
+export type ApiResponseEntityAttributesDescription_1 = null;
 
-export type ApiResponse_X24Defs_UEntityAttributes_Properties_Description_AnyOf_ZIndex0 = string;
+export type ApiResponseEntityAttributesDescription_0 = string;
 
-export type ApiResponse_X24Defs_UEntityAttributes_Properties_Description =
-  ApiResponse_X24Defs_UEntityAttributes_Properties_Description_AnyOf_ZIndex0 |
-  ApiResponse_X24Defs_UEntityAttributes_Properties_Description_AnyOf_ZIndex1;
+export type ApiResponseEntityAttributesDescription =
+  ApiResponseEntityAttributesDescription_0 |
+  ApiResponseEntityAttributesDescription_1;
 
-export type ApiResponse_X24Defs_UEntityAttributes_Properties_CreatedAt = string;
+export type ApiResponseEntityAttributesCreatedAt = string;
 
-export type ApiResponse_X24Defs_UEntityAttributes_AdditionalProperties = never;
+export type ApiResponseEntityAttributesAdditionalProperties = never;
 
-export interface ApiResponse_X24Defs_UEntityAttributes {
-  "name": ApiResponse_X24Defs_UEntityAttributes_Properties_Name;
-  "description"?: ApiResponse_X24Defs_UEntityAttributes_Properties_Description;
-  "createdAt": ApiResponse_X24Defs_UEntityAttributes_Properties_CreatedAt;
-  "updatedAt"?: ApiResponse_X24Defs_UEntityAttributes_Properties_X75pdatedAt;
-  "tags"?: ApiResponse_X24Defs_UEntityAttributes_Properties_Tags;
-  "metadata"?: ApiResponse_X24Defs_UEntityAttributes_Properties_Metadata;
+export interface ApiResponseEntityAttributes {
+  "name": ApiResponseEntityAttributesName;
+  "description"?: ApiResponseEntityAttributesDescription;
+  "createdAt": ApiResponseEntityAttributesCreatedAt;
+  "updatedAt"?: ApiResponseEntityAttributesUpdatedAt;
+  "tags"?: ApiResponseEntityAttributesTags;
+  "metadata"?: ApiResponseEntityAttributesMetadata;
 }
 
-export type ApiResponse_X24Defs_UEntity_Properties_Type = "user" | "organization" | "resource";
+export type ApiResponseEntityType = "user" | "organization" | "resource";
 
-export type ApiResponse_X24Defs_UEntity_Properties_Relationships_Properties_Parent = ApiResponse_X24Defs_UEntityReference;
+export type ApiResponseEntityRelationshipsParent = ApiResponseEntityReference;
 
-export type ApiResponse_X24Defs_UEntity_Properties_Relationships_Properties_Children_Items = ApiResponse_X24Defs_UEntityReference;
+export type ApiResponseEntityRelationshipsChildrenItems = ApiResponseEntityReference;
 
-export type ApiResponse_X24Defs_UEntity_Properties_Relationships_Properties_Children = ApiResponse_X24Defs_UEntity_Properties_Relationships_Properties_Children_Items[];
+export type ApiResponseEntityRelationshipsChildren = ApiResponseEntityRelationshipsChildrenItems[];
 
-export type ApiResponse_X24Defs_UEntity_Properties_Relationships_AdditionalProperties = ApiResponse_X24Defs_UEntityReference;
+export type ApiResponseEntityRelationshipsAdditionalProperties = ApiResponseEntityReference;
 
-export interface ApiResponse_X24Defs_UEntity_Properties_Relationships {
-  "parent"?: ApiResponse_X24Defs_UEntity_Properties_Relationships_Properties_Parent;
-  "children"?: ApiResponse_X24Defs_UEntity_Properties_Relationships_Properties_Children;
+export interface ApiResponseEntityRelationships {
+  "parent"?: ApiResponseEntityRelationshipsParent;
+  "children"?: ApiResponseEntityRelationshipsChildren;
   [key: string]:
     // As a notable limitation, TypeScript requires index signatures
     // to also include the types of all of its properties, so we must
     // match a superset of what JSON Schema allows
-    ApiResponse_X24Defs_UEntity_Properties_Relationships_Properties_Parent |
-    ApiResponse_X24Defs_UEntity_Properties_Relationships_Properties_Children |
-    ApiResponse_X24Defs_UEntity_Properties_Relationships_AdditionalProperties |
+    ApiResponseEntityRelationshipsParent |
+    ApiResponseEntityRelationshipsChildren |
+    ApiResponseEntityRelationshipsAdditionalProperties |
     undefined;
 }
 
-export type ApiResponse_X24Defs_UEntity_Properties_Id = string;
+export type ApiResponseEntityId = string;
 
-export type ApiResponse_X24Defs_UEntity_Properties_Attributes = ApiResponse_X24Defs_UEntityAttributes;
+export type _ApiResponseEntityAttributes = ApiResponseEntityAttributes;
 
-export type ApiResponse_X24Defs_UEntity_AdditionalProperties = never;
+export type ApiResponseEntityAdditionalProperties = never;
 
-export interface ApiResponse_X24Defs_UEntity {
-  "id": ApiResponse_X24Defs_UEntity_Properties_Id;
-  "type": ApiResponse_X24Defs_UEntity_Properties_Type;
-  "attributes": ApiResponse_X24Defs_UEntity_Properties_Attributes;
-  "relationships"?: ApiResponse_X24Defs_UEntity_Properties_Relationships;
+export interface ApiResponseEntity {
+  "id": ApiResponseEntityId;
+  "type": ApiResponseEntityType;
+  "attributes": _ApiResponseEntityAttributes;
+  "relationships"?: ApiResponseEntityRelationships;
 }
 
-export type ApiResponse_X24Defs_UAppliedFilters_Properties_Types_Items = "user" | "organization" | "resource";
+export type ApiResponseAppliedFiltersTypesItems = "user" | "organization" | "resource";
 
-export type ApiResponse_X24Defs_UAppliedFilters_Properties_Types = ApiResponse_X24Defs_UAppliedFilters_Properties_Types_Items[];
+export type ApiResponseAppliedFiltersTypes = ApiResponseAppliedFiltersTypesItems[];
 
-export type ApiResponse_X24Defs_UAppliedFilters_Properties_SortOrder = "asc" | "desc";
+export type ApiResponseAppliedFiltersSortOrder = "asc" | "desc";
 
-export type ApiResponse_X24Defs_UAppliedFilters_Properties_SortBy = "name" | "createdAt" | "updatedAt" | null;
+export type ApiResponseAppliedFiltersSortBy = "name" | "createdAt" | "updatedAt" | null;
 
-export type ApiResponse_X24Defs_UAppliedFilters_Properties_Search_AnyOf_ZIndex1 = null;
+export type ApiResponseAppliedFiltersSearch_1 = null;
 
-export type ApiResponse_X24Defs_UAppliedFilters_Properties_Search_AnyOf_ZIndex0 = string;
+export type ApiResponseAppliedFiltersSearch_0 = string;
 
-export type ApiResponse_X24Defs_UAppliedFilters_Properties_Search =
-  ApiResponse_X24Defs_UAppliedFilters_Properties_Search_AnyOf_ZIndex0 |
-  ApiResponse_X24Defs_UAppliedFilters_Properties_Search_AnyOf_ZIndex1;
+export type ApiResponseAppliedFiltersSearch =
+  ApiResponseAppliedFiltersSearch_0 |
+  ApiResponseAppliedFiltersSearch_1;
 
-export type ApiResponse_X24Defs_UAppliedFilters_Properties_DateRange_Properties_Start = string;
+export type ApiResponseAppliedFiltersDateRangeStart = string;
 
-export type ApiResponse_X24Defs_UAppliedFilters_Properties_DateRange_Properties_End = string;
+export type ApiResponseAppliedFiltersDateRangeEnd = string;
 
-export type ApiResponse_X24Defs_UAppliedFilters_Properties_DateRange_AdditionalProperties = never;
+export type ApiResponseAppliedFiltersDateRangeAdditionalProperties = never;
 
-export interface ApiResponse_X24Defs_UAppliedFilters_Properties_DateRange {
-  "start": ApiResponse_X24Defs_UAppliedFilters_Properties_DateRange_Properties_Start;
-  "end": ApiResponse_X24Defs_UAppliedFilters_Properties_DateRange_Properties_End;
+export interface ApiResponseAppliedFiltersDateRange {
+  "start": ApiResponseAppliedFiltersDateRangeStart;
+  "end": ApiResponseAppliedFiltersDateRangeEnd;
 }
 
-export type ApiResponse_X24Defs_UAppliedFilters_AdditionalProperties = never;
+export type ApiResponseAppliedFiltersAdditionalProperties = never;
 
-export interface ApiResponse_X24Defs_UAppliedFilters {
-  "search"?: ApiResponse_X24Defs_UAppliedFilters_Properties_Search;
-  "dateRange"?: ApiResponse_X24Defs_UAppliedFilters_Properties_DateRange;
-  "types"?: ApiResponse_X24Defs_UAppliedFilters_Properties_Types;
-  "sortBy"?: ApiResponse_X24Defs_UAppliedFilters_Properties_SortBy;
-  "sortOrder"?: ApiResponse_X24Defs_UAppliedFilters_Properties_SortOrder;
+export interface ApiResponseAppliedFilters {
+  "search"?: ApiResponseAppliedFiltersSearch;
+  "dateRange"?: ApiResponseAppliedFiltersDateRange;
+  "types"?: ApiResponseAppliedFiltersTypes;
+  "sortBy"?: ApiResponseAppliedFiltersSortBy;
+  "sortOrder"?: ApiResponseAppliedFiltersSortOrder;
 }
 
 export interface ApiResponse {
-  "status": ApiResponse_Properties_Status;
-  "errorCode"?: ApiResponse_Properties_ErrorCode;
-  "data": ApiResponse_Properties_Data;
-  "meta": ApiResponse_Properties_Meta;
+  "status": ApiResponseStatus;
+  "errorCode"?: ApiResponseErrorCode;
+  "data": ApiResponseData;
+  "meta": ApiResponseMeta;
 }

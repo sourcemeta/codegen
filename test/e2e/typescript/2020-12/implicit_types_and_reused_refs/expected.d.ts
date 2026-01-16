@@ -1,235 +1,235 @@
-export type DocSystem_Properties_RelatedDocuments_Items_Properties_Title_AnyOf_ZIndex1 = null;
+export type DocSystemRelatedDocumentsItemsTitle_1 = null;
 
-export type DocSystem_Properties_RelatedDocuments_Items_Properties_Title_AnyOf_ZIndex0 = string;
+export type DocSystemRelatedDocumentsItemsTitle_0 = string;
 
-export type DocSystem_Properties_RelatedDocuments_Items_Properties_Title =
-  DocSystem_Properties_RelatedDocuments_Items_Properties_Title_AnyOf_ZIndex0 |
-  DocSystem_Properties_RelatedDocuments_Items_Properties_Title_AnyOf_ZIndex1;
+export type DocSystemRelatedDocumentsItemsTitle =
+  DocSystemRelatedDocumentsItemsTitle_0 |
+  DocSystemRelatedDocumentsItemsTitle_1;
 
-export type DocSystem_Properties_RelatedDocuments_Items_Properties_Relationship = "parent" | "child" | "sibling" | "reference";
+export type DocSystemRelatedDocumentsItemsRelationship = "parent" | "child" | "sibling" | "reference";
 
-export type DocSystem_Properties_RelatedDocuments_Items_Properties_Id = DocSystem_X24Defs_X55X55ID;
+export type DocSystemRelatedDocumentsItemsId = DocSystemUUID;
 
-export type DocSystem_Properties_RelatedDocuments_Items_AdditionalProperties = never;
+export type DocSystemRelatedDocumentsItemsAdditionalProperties = never;
 
-export interface DocSystem_Properties_RelatedDocuments_Items {
-  "id": DocSystem_Properties_RelatedDocuments_Items_Properties_Id;
-  "relationship": DocSystem_Properties_RelatedDocuments_Items_Properties_Relationship;
-  "title"?: DocSystem_Properties_RelatedDocuments_Items_Properties_Title;
+export interface DocSystemRelatedDocumentsItems {
+  "id": DocSystemRelatedDocumentsItemsId;
+  "relationship": DocSystemRelatedDocumentsItemsRelationship;
+  "title"?: DocSystemRelatedDocumentsItemsTitle;
 }
 
-export type DocSystem_Properties_RelatedDocuments = DocSystem_Properties_RelatedDocuments_Items[];
+export type DocSystemRelatedDocuments = DocSystemRelatedDocumentsItems[];
 
-export type DocSystem_Properties_Permissions_Properties_Readers_Items = DocSystem_X24Defs_X55ser;
+export type DocSystemPermissionsReadersItems = DocSystemUser;
 
-export type DocSystem_Properties_Permissions_Properties_Readers = DocSystem_Properties_Permissions_Properties_Readers_Items[];
+export type DocSystemPermissionsReaders = DocSystemPermissionsReadersItems[];
 
-export type DocSystem_Properties_Permissions_Properties_Owner = DocSystem_X24Defs_X55ser;
+export type DocSystemPermissionsOwner = DocSystemUser;
 
-export type DocSystem_Properties_Permissions_Properties_IsPublic = boolean;
+export type DocSystemPermissionsIsPublic = boolean;
 
-export type DocSystem_Properties_Permissions_Properties_ExpiresAt_AnyOf_ZIndex1 = null;
+export type DocSystemPermissionsExpiresAt_1 = null;
 
-export type DocSystem_Properties_Permissions_Properties_ExpiresAt_AnyOf_ZIndex0 = DocSystem_X24Defs_UTimestamp;
+export type DocSystemPermissionsExpiresAt_0 = DocSystemTimestamp;
 
-export type DocSystem_Properties_Permissions_Properties_ExpiresAt =
-  DocSystem_Properties_Permissions_Properties_ExpiresAt_AnyOf_ZIndex0 |
-  DocSystem_Properties_Permissions_Properties_ExpiresAt_AnyOf_ZIndex1;
+export type DocSystemPermissionsExpiresAt =
+  DocSystemPermissionsExpiresAt_0 |
+  DocSystemPermissionsExpiresAt_1;
 
-export type DocSystem_Properties_Permissions_Properties_Editors_Items = DocSystem_X24Defs_X55ser;
+export type DocSystemPermissionsEditorsItems = DocSystemUser;
 
-export type DocSystem_Properties_Permissions_Properties_Editors = DocSystem_Properties_Permissions_Properties_Editors_Items[];
+export type DocSystemPermissionsEditors = DocSystemPermissionsEditorsItems[];
 
-export type DocSystem_Properties_Permissions_AdditionalProperties = never;
+export type DocSystemPermissionsAdditionalProperties = never;
 
-export interface DocSystem_Properties_Permissions {
-  "owner": DocSystem_Properties_Permissions_Properties_Owner;
-  "readers": DocSystem_Properties_Permissions_Properties_Readers;
-  "editors": DocSystem_Properties_Permissions_Properties_Editors;
-  "isPublic"?: DocSystem_Properties_Permissions_Properties_IsPublic;
-  "expiresAt"?: DocSystem_Properties_Permissions_Properties_ExpiresAt;
+export interface DocSystemPermissions {
+  "owner": DocSystemPermissionsOwner;
+  "readers": DocSystemPermissionsReaders;
+  "editors": DocSystemPermissionsEditors;
+  "isPublic"?: DocSystemPermissionsIsPublic;
+  "expiresAt"?: DocSystemPermissionsExpiresAt;
 }
 
-export type DocSystem_Properties_History_Items_Properties_Timestamp = DocSystem_X24Defs_UTimestamp;
+export type DocSystemHistoryItemsTimestamp = DocSystemTimestamp;
 
-export type DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex1 = null;
+export type DocSystemHistoryItemsDetails_1 = null;
 
-export type DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_OldValue_AnyOf_ZIndex2 = null;
+export type DocSystemHistoryItemsDetails_0OldValue_2 = null;
 
-export type DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_OldValue_AnyOf_ZIndex1 = number;
+export type DocSystemHistoryItemsDetails_0OldValue_1 = number;
 
-export type DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_OldValue_AnyOf_ZIndex0 = string;
+export type DocSystemHistoryItemsDetails_0OldValue_0 = string;
 
-export type DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_OldValue =
-  DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_OldValue_AnyOf_ZIndex0 |
-  DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_OldValue_AnyOf_ZIndex1 |
-  DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_OldValue_AnyOf_ZIndex2;
+export type DocSystemHistoryItemsDetails_0OldValue =
+  DocSystemHistoryItemsDetails_0OldValue_0 |
+  DocSystemHistoryItemsDetails_0OldValue_1 |
+  DocSystemHistoryItemsDetails_0OldValue_2;
 
-export type DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_NewValue_AnyOf_ZIndex2 = null;
+export type DocSystemHistoryItemsDetails_0NewValue_2 = null;
 
-export type DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_NewValue_AnyOf_ZIndex1 = number;
+export type DocSystemHistoryItemsDetails_0NewValue_1 = number;
 
-export type DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_NewValue_AnyOf_ZIndex0 = string;
+export type DocSystemHistoryItemsDetails_0NewValue_0 = string;
 
-export type DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_NewValue =
-  DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_NewValue_AnyOf_ZIndex0 |
-  DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_NewValue_AnyOf_ZIndex1 |
-  DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_NewValue_AnyOf_ZIndex2;
+export type DocSystemHistoryItemsDetails_0NewValue =
+  DocSystemHistoryItemsDetails_0NewValue_0 |
+  DocSystemHistoryItemsDetails_0NewValue_1 |
+  DocSystemHistoryItemsDetails_0NewValue_2;
 
-export type DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_Field = string;
+export type DocSystemHistoryItemsDetails_0Field = string;
 
-export type DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_AdditionalProperties = never;
+export type DocSystemHistoryItemsDetails_0AdditionalProperties = never;
 
-export interface DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0 {
-  "field"?: DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_Field;
-  "oldValue"?: DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_OldValue;
-  "newValue"?: DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0_Properties_NewValue;
+export interface DocSystemHistoryItemsDetails_0 {
+  "field"?: DocSystemHistoryItemsDetails_0Field;
+  "oldValue"?: DocSystemHistoryItemsDetails_0OldValue;
+  "newValue"?: DocSystemHistoryItemsDetails_0NewValue;
 }
 
-export type DocSystem_Properties_History_Items_Properties_Details =
-  DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex0 |
-  DocSystem_Properties_History_Items_Properties_Details_AnyOf_ZIndex1;
+export type DocSystemHistoryItemsDetails =
+  DocSystemHistoryItemsDetails_0 |
+  DocSystemHistoryItemsDetails_1;
 
-export type DocSystem_Properties_History_Items_Properties_Actor = DocSystem_X24Defs_X55ser;
+export type DocSystemHistoryItemsActor = DocSystemUser;
 
-export type DocSystem_Properties_History_Items_Properties_Action = "created" | "updated" | "deleted" | "restored" | "shared";
+export type DocSystemHistoryItemsAction = "created" | "updated" | "deleted" | "restored" | "shared";
 
-export type DocSystem_Properties_History_Items_AdditionalProperties = never;
+export type DocSystemHistoryItemsAdditionalProperties = never;
 
-export interface DocSystem_Properties_History_Items {
-  "action": DocSystem_Properties_History_Items_Properties_Action;
-  "actor": DocSystem_Properties_History_Items_Properties_Actor;
-  "timestamp": DocSystem_Properties_History_Items_Properties_Timestamp;
-  "details"?: DocSystem_Properties_History_Items_Properties_Details;
+export interface DocSystemHistoryItems {
+  "action": DocSystemHistoryItemsAction;
+  "actor": DocSystemHistoryItemsActor;
+  "timestamp": DocSystemHistoryItemsTimestamp;
+  "details"?: DocSystemHistoryItemsDetails;
 }
 
-export type DocSystem_Properties_History = DocSystem_Properties_History_Items[];
+export type DocSystemHistory = DocSystemHistoryItems[];
 
-export type DocSystem_Properties_Document_Properties_Title = string;
+export type DocSystemDocumentTitle = string;
 
-export type DocSystem_Properties_Document_Properties_Tags_Items_Properties_Name = string;
+export type DocSystemDocumentTagsItemsName = string;
 
-export type DocSystem_Properties_Document_Properties_Tags_Items_Properties_Color_AnyOf_ZIndex1 = null;
+export type DocSystemDocumentTagsItemsColor_1 = null;
 
-export type DocSystem_Properties_Document_Properties_Tags_Items_Properties_Color_AnyOf_ZIndex0 = string;
+export type DocSystemDocumentTagsItemsColor_0 = string;
 
-export type DocSystem_Properties_Document_Properties_Tags_Items_Properties_Color =
-  DocSystem_Properties_Document_Properties_Tags_Items_Properties_Color_AnyOf_ZIndex0 |
-  DocSystem_Properties_Document_Properties_Tags_Items_Properties_Color_AnyOf_ZIndex1;
+export type DocSystemDocumentTagsItemsColor =
+  DocSystemDocumentTagsItemsColor_0 |
+  DocSystemDocumentTagsItemsColor_1;
 
-export type DocSystem_Properties_Document_Properties_Tags_Items_AdditionalProperties = never;
+export type DocSystemDocumentTagsItemsAdditionalProperties = never;
 
-export interface DocSystem_Properties_Document_Properties_Tags_Items {
-  "name": DocSystem_Properties_Document_Properties_Tags_Items_Properties_Name;
-  "color"?: DocSystem_Properties_Document_Properties_Tags_Items_Properties_Color;
+export interface DocSystemDocumentTagsItems {
+  "name": DocSystemDocumentTagsItemsName;
+  "color"?: DocSystemDocumentTagsItemsColor;
 }
 
-export type DocSystem_Properties_Document_Properties_Tags = DocSystem_Properties_Document_Properties_Tags_Items[];
+export type DocSystemDocumentTags = DocSystemDocumentTagsItems[];
 
-export type DocSystem_Properties_Document_Properties_Reviewers_Items = DocSystem_X24Defs_X55ser;
+export type DocSystemDocumentReviewersItems = DocSystemUser;
 
-export type DocSystem_Properties_Document_Properties_Reviewers = DocSystem_Properties_Document_Properties_Reviewers_Items[];
+export type DocSystemDocumentReviewers = DocSystemDocumentReviewersItems[];
 
-export type DocSystem_Properties_Document_Properties_Metadata_Properties_Version = number;
+export type DocSystemDocumentMetadataVersion = number;
 
-export type DocSystem_Properties_Document_Properties_Metadata_Properties_X75pdatedAt = DocSystem_X24Defs_UTimestamp;
+export type DocSystemDocumentMetadataUpdatedAt = DocSystemTimestamp;
 
-export type DocSystem_Properties_Document_Properties_Metadata_Properties_CreatedAt = DocSystem_X24Defs_UTimestamp;
+export type DocSystemDocumentMetadataCreatedAt = DocSystemTimestamp;
 
-export type DocSystem_Properties_Document_Properties_Metadata_AdditionalProperties = never;
+export type DocSystemDocumentMetadataAdditionalProperties = never;
 
-export interface DocSystem_Properties_Document_Properties_Metadata {
-  "createdAt"?: DocSystem_Properties_Document_Properties_Metadata_Properties_CreatedAt;
-  "updatedAt"?: DocSystem_Properties_Document_Properties_Metadata_Properties_X75pdatedAt;
-  "version"?: DocSystem_Properties_Document_Properties_Metadata_Properties_Version;
+export interface DocSystemDocumentMetadata {
+  "createdAt"?: DocSystemDocumentMetadataCreatedAt;
+  "updatedAt"?: DocSystemDocumentMetadataUpdatedAt;
+  "version"?: DocSystemDocumentMetadataVersion;
 }
 
-export type DocSystem_Properties_Document_Properties_Id = DocSystem_X24Defs_X55X55ID;
+export type DocSystemDocumentId = DocSystemUUID;
 
-export type DocSystem_Properties_Document_Properties_Content_Properties_Summary_AnyOf_ZIndex1 = null;
+export type DocSystemDocumentContentSummary_1 = null;
 
-export type DocSystem_Properties_Document_Properties_Content_Properties_Summary_AnyOf_ZIndex0 = string;
+export type DocSystemDocumentContentSummary_0 = string;
 
-export type DocSystem_Properties_Document_Properties_Content_Properties_Summary =
-  DocSystem_Properties_Document_Properties_Content_Properties_Summary_AnyOf_ZIndex0 |
-  DocSystem_Properties_Document_Properties_Content_Properties_Summary_AnyOf_ZIndex1;
+export type DocSystemDocumentContentSummary =
+  DocSystemDocumentContentSummary_0 |
+  DocSystemDocumentContentSummary_1;
 
-export type DocSystem_Properties_Document_Properties_Content_Properties_Format = "markdown" | "html" | "plaintext";
+export type DocSystemDocumentContentFormat = "markdown" | "html" | "plaintext";
 
-export type DocSystem_Properties_Document_Properties_Content_Properties_Body = string;
+export type DocSystemDocumentContentBody = string;
 
-export type DocSystem_Properties_Document_Properties_Content_AdditionalProperties = never;
+export type DocSystemDocumentContentAdditionalProperties = never;
 
-export interface DocSystem_Properties_Document_Properties_Content {
-  "format": DocSystem_Properties_Document_Properties_Content_Properties_Format;
-  "body": DocSystem_Properties_Document_Properties_Content_Properties_Body;
-  "summary"?: DocSystem_Properties_Document_Properties_Content_Properties_Summary;
+export interface DocSystemDocumentContent {
+  "format": DocSystemDocumentContentFormat;
+  "body": DocSystemDocumentContentBody;
+  "summary"?: DocSystemDocumentContentSummary;
 }
 
-export type DocSystem_Properties_Document_Properties_Author = DocSystem_X24Defs_X55ser;
+export type DocSystemDocumentAuthor = DocSystemUser;
 
-export type DocSystem_Properties_Document_AdditionalProperties = never;
+export type DocSystemDocumentAdditionalProperties = never;
 
-export interface DocSystem_Properties_Document {
-  "id": DocSystem_Properties_Document_Properties_Id;
-  "title": DocSystem_Properties_Document_Properties_Title;
-  "content": DocSystem_Properties_Document_Properties_Content;
-  "author": DocSystem_Properties_Document_Properties_Author;
-  "reviewers"?: DocSystem_Properties_Document_Properties_Reviewers;
-  "tags"?: DocSystem_Properties_Document_Properties_Tags;
-  "metadata"?: DocSystem_Properties_Document_Properties_Metadata;
+export interface DocSystemDocument {
+  "id": DocSystemDocumentId;
+  "title": DocSystemDocumentTitle;
+  "content": DocSystemDocumentContent;
+  "author": DocSystemDocumentAuthor;
+  "reviewers"?: DocSystemDocumentReviewers;
+  "tags"?: DocSystemDocumentTags;
+  "metadata"?: DocSystemDocumentMetadata;
 }
 
-export type DocSystem_AdditionalProperties = never;
+export type DocSystemAdditionalProperties = never;
 
-export type DocSystem_X24Defs_X55ser_Properties_Role = "admin" | "editor" | "viewer" | "guest";
+export type DocSystemUserRole = "admin" | "editor" | "viewer" | "guest";
 
-export type DocSystem_X24Defs_X55ser_Properties_Id = DocSystem_X24Defs_X55X55ID;
+export type DocSystemUserId = DocSystemUUID;
 
-export type DocSystem_X24Defs_X55ser_Properties_Email = string;
+export type DocSystemUserEmail = string;
 
-export type DocSystem_X24Defs_X55ser_Properties_DisplayName_AnyOf_ZIndex1 = null;
+export type DocSystemUserDisplayName_1 = null;
 
-export type DocSystem_X24Defs_X55ser_Properties_DisplayName_AnyOf_ZIndex0 = string;
+export type DocSystemUserDisplayName_0 = string;
 
-export type DocSystem_X24Defs_X55ser_Properties_DisplayName =
-  DocSystem_X24Defs_X55ser_Properties_DisplayName_AnyOf_ZIndex0 |
-  DocSystem_X24Defs_X55ser_Properties_DisplayName_AnyOf_ZIndex1;
+export type DocSystemUserDisplayName =
+  DocSystemUserDisplayName_0 |
+  DocSystemUserDisplayName_1;
 
-export type DocSystem_X24Defs_X55ser_AdditionalProperties = never;
+export type DocSystemUserAdditionalProperties = never;
 
-export interface DocSystem_X24Defs_X55ser {
-  "id": DocSystem_X24Defs_X55ser_Properties_Id;
-  "email": DocSystem_X24Defs_X55ser_Properties_Email;
-  "displayName"?: DocSystem_X24Defs_X55ser_Properties_DisplayName;
-  "role"?: DocSystem_X24Defs_X55ser_Properties_Role;
+export interface DocSystemUser {
+  "id": DocSystemUserId;
+  "email": DocSystemUserEmail;
+  "displayName"?: DocSystemUserDisplayName;
+  "role"?: DocSystemUserRole;
 }
 
-export type DocSystem_X24Defs_X55X55ID = string;
+export type DocSystemUUID = string;
 
-export type DocSystem_X24Defs_UTimestamp_Properties_X75nix = number;
+export type DocSystemTimestampUnix = number;
 
-export type DocSystem_X24Defs_UTimestamp_Properties_Timezone_AnyOf_ZIndex1 = null;
+export type DocSystemTimestampTimezone_1 = null;
 
-export type DocSystem_X24Defs_UTimestamp_Properties_Timezone_AnyOf_ZIndex0 = string;
+export type DocSystemTimestampTimezone_0 = string;
 
-export type DocSystem_X24Defs_UTimestamp_Properties_Timezone =
-  DocSystem_X24Defs_UTimestamp_Properties_Timezone_AnyOf_ZIndex0 |
-  DocSystem_X24Defs_UTimestamp_Properties_Timezone_AnyOf_ZIndex1;
+export type DocSystemTimestampTimezone =
+  DocSystemTimestampTimezone_0 |
+  DocSystemTimestampTimezone_1;
 
-export type DocSystem_X24Defs_UTimestamp_Properties_Iso = string;
+export type DocSystemTimestampIso = string;
 
-export type DocSystem_X24Defs_UTimestamp_AdditionalProperties = never;
+export type DocSystemTimestampAdditionalProperties = never;
 
-export interface DocSystem_X24Defs_UTimestamp {
-  "unix": DocSystem_X24Defs_UTimestamp_Properties_X75nix;
-  "iso": DocSystem_X24Defs_UTimestamp_Properties_Iso;
-  "timezone"?: DocSystem_X24Defs_UTimestamp_Properties_Timezone;
+export interface DocSystemTimestamp {
+  "unix": DocSystemTimestampUnix;
+  "iso": DocSystemTimestampIso;
+  "timezone"?: DocSystemTimestampTimezone;
 }
 
 export interface DocSystem {
-  "document": DocSystem_Properties_Document;
-  "permissions": DocSystem_Properties_Permissions;
-  "history": DocSystem_Properties_History;
-  "relatedDocuments"?: DocSystem_Properties_RelatedDocuments;
+  "document": DocSystemDocument;
+  "permissions": DocSystemPermissions;
+  "history": DocSystemHistory;
+  "relatedDocuments"?: DocSystemRelatedDocuments;
 }

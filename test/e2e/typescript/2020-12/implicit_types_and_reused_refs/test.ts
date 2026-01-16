@@ -1,10 +1,10 @@
 import {
   DocSystem,
-  DocSystem_X24Defs_X55ser,
-  DocSystem_X24Defs_UTimestamp,
-  DocSystem_Properties_Document,
-  DocSystem_Properties_Permissions,
-  DocSystem_Properties_History_Items
+  DocSystemUser,
+  DocSystemTimestamp,
+  DocSystemDocument,
+  DocSystemPermissions,
+  DocSystemHistoryItems
 } from "./expected";
 
 
@@ -31,7 +31,7 @@ const minimal: DocSystem = {
 };
 
 // Valid: User with all fields including role enum
-const userWithRole: DocSystem_X24Defs_X55ser = {
+const userWithRole: DocSystemUser = {
   id: "user-123",
   email: "user@example.com",
   displayName: "John Doe",
@@ -39,14 +39,14 @@ const userWithRole: DocSystem_X24Defs_X55ser = {
 };
 
 // Valid: User with null displayName (anyOf [string, null])
-const userNullDisplay: DocSystem_X24Defs_X55ser = {
+const userNullDisplay: DocSystemUser = {
   id: "user-123",
   email: "user@example.com",
   displayName: null
 };
 
 // Invalid: User role must be from enum
-const invalidRole: DocSystem_X24Defs_X55ser = {
+const invalidRole: DocSystemUser = {
   id: "user-123",
   email: "user@example.com",
   // @ts-expect-error - role must be admin|editor|viewer|guest
@@ -54,14 +54,14 @@ const invalidRole: DocSystem_X24Defs_X55ser = {
 };
 
 // Valid: Timestamp with all fields
-const timestamp: DocSystem_X24Defs_UTimestamp = {
+const timestamp: DocSystemTimestamp = {
   unix: 1704067200,
   iso: "2024-01-01T00:00:00Z",
   timezone: "UTC"
 };
 
 // Valid: Timestamp with null timezone
-const timestampNullTz: DocSystem_X24Defs_UTimestamp = {
+const timestampNullTz: DocSystemTimestamp = {
   unix: 1704067200,
   iso: "2024-01-01T00:00:00Z",
   timezone: null
@@ -69,26 +69,26 @@ const timestampNullTz: DocSystem_X24Defs_UTimestamp = {
 
 // Invalid: Timestamp missing required unix
 // @ts-expect-error - unix is required
-const timestampMissingUnix: DocSystem_X24Defs_UTimestamp = {
+const timestampMissingUnix: DocSystemTimestamp = {
   iso: "2024-01-01T00:00:00Z"
 };
 
 // Valid: Document with format enum values
-const docMarkdown: DocSystem_Properties_Document = {
+const docMarkdown: DocSystemDocument = {
   id: "doc-1",
   title: "Markdown Doc",
   content: { format: "markdown", body: "# Title" },
   author: { id: "user-1", email: "a@b.com" }
 };
 
-const docHtml: DocSystem_Properties_Document = {
+const docHtml: DocSystemDocument = {
   id: "doc-2",
   title: "HTML Doc",
   content: { format: "html", body: "<h1>Title</h1>" },
   author: { id: "user-1", email: "a@b.com" }
 };
 
-const docPlaintext: DocSystem_Properties_Document = {
+const docPlaintext: DocSystemDocument = {
   id: "doc-3",
   title: "Plain Doc",
   content: { format: "plaintext", body: "Title" },
@@ -96,7 +96,7 @@ const docPlaintext: DocSystem_Properties_Document = {
 };
 
 // Invalid: format must be from enum
-const invalidFormat: DocSystem_Properties_Document = {
+const invalidFormat: DocSystemDocument = {
   id: "doc-1",
   title: "Doc",
   content: {
@@ -108,14 +108,14 @@ const invalidFormat: DocSystem_Properties_Document = {
 };
 
 // Valid: permissions with isPublic boolean enum
-const permissionsPublic: DocSystem_Properties_Permissions = {
+const permissionsPublic: DocSystemPermissions = {
   owner: { id: "user-1", email: "owner@a.com" },
   readers: [],
   editors: [],
   isPublic: true
 };
 
-const permissionsPrivate: DocSystem_Properties_Permissions = {
+const permissionsPrivate: DocSystemPermissions = {
   owner: { id: "user-1", email: "owner@a.com" },
   readers: [],
   editors: [],
@@ -123,7 +123,7 @@ const permissionsPrivate: DocSystem_Properties_Permissions = {
 };
 
 // Valid: permissions with expiresAt as Timestamp
-const permissionsWithExpiry: DocSystem_Properties_Permissions = {
+const permissionsWithExpiry: DocSystemPermissions = {
   owner: { id: "user-1", email: "owner@a.com" },
   readers: [],
   editors: [],
@@ -131,7 +131,7 @@ const permissionsWithExpiry: DocSystem_Properties_Permissions = {
 };
 
 // Valid: permissions with expiresAt as null
-const permissionsNoExpiry: DocSystem_Properties_Permissions = {
+const permissionsNoExpiry: DocSystemPermissions = {
   owner: { id: "user-1", email: "owner@a.com" },
   readers: [],
   editors: [],
@@ -139,39 +139,39 @@ const permissionsNoExpiry: DocSystem_Properties_Permissions = {
 };
 
 // Valid: history item with all action enum values
-const historyCreated: DocSystem_Properties_History_Items = {
+const historyCreated: DocSystemHistoryItems = {
   action: "created",
   actor: { id: "user-1", email: "a@b.com" },
   timestamp: { unix: 1704067200, iso: "2024-01-01T00:00:00Z" }
 };
 
-const historyUpdated: DocSystem_Properties_History_Items = {
+const historyUpdated: DocSystemHistoryItems = {
   action: "updated",
   actor: { id: "user-1", email: "a@b.com" },
   timestamp: { unix: 1704067200, iso: "2024-01-01T00:00:00Z" },
   details: { field: "title", oldValue: "Old", newValue: "New" }
 };
 
-const historyDeleted: DocSystem_Properties_History_Items = {
+const historyDeleted: DocSystemHistoryItems = {
   action: "deleted",
   actor: { id: "user-1", email: "a@b.com" },
   timestamp: { unix: 1704067200, iso: "2024-01-01T00:00:00Z" }
 };
 
-const historyRestored: DocSystem_Properties_History_Items = {
+const historyRestored: DocSystemHistoryItems = {
   action: "restored",
   actor: { id: "user-1", email: "a@b.com" },
   timestamp: { unix: 1704067200, iso: "2024-01-01T00:00:00Z" }
 };
 
-const historyShared: DocSystem_Properties_History_Items = {
+const historyShared: DocSystemHistoryItems = {
   action: "shared",
   actor: { id: "user-1", email: "a@b.com" },
   timestamp: { unix: 1704067200, iso: "2024-01-01T00:00:00Z" }
 };
 
 // Invalid: action must be from enum
-const historyInvalidAction: DocSystem_Properties_History_Items = {
+const historyInvalidAction: DocSystemHistoryItems = {
   // @ts-expect-error - action must be created|updated|deleted|restored|shared
   action: "archived",
   actor: { id: "user-1", email: "a@b.com" },
@@ -179,7 +179,7 @@ const historyInvalidAction: DocSystem_Properties_History_Items = {
 };
 
 // Valid: history with details having number oldValue/newValue
-const historyNumericChange: DocSystem_Properties_History_Items = {
+const historyNumericChange: DocSystemHistoryItems = {
   action: "updated",
   actor: { id: "user-1", email: "a@b.com" },
   timestamp: { unix: 1704067200, iso: "2024-01-01T00:00:00Z" },
@@ -187,7 +187,7 @@ const historyNumericChange: DocSystem_Properties_History_Items = {
 };
 
 // Valid: history with details as null
-const historyNullDetails: DocSystem_Properties_History_Items = {
+const historyNullDetails: DocSystemHistoryItems = {
   action: "created",
   actor: { id: "user-1", email: "a@b.com" },
   timestamp: { unix: 1704067200, iso: "2024-01-01T00:00:00Z" },

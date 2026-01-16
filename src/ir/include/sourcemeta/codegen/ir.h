@@ -16,6 +16,7 @@
 #include <cstdint>    // std::uint8_t
 #include <functional> // std::function
 #include <optional>   // std::optional, std::nullopt
+#include <string>     // std::string
 #include <utility>    // std::pair
 #include <variant>    // std::variant
 #include <vector>     // std::vector
@@ -37,6 +38,7 @@ enum class IRScalarType : std::uint8_t {
 /// @ingroup ir
 struct IRType {
   sourcemeta::core::Pointer pointer;
+  std::vector<std::string> symbol;
 };
 
 /// @ingroup ir
@@ -115,6 +117,12 @@ auto compile(const sourcemeta::core::JSON &schema,
              const Compiler &compiler,
              const std::string_view default_dialect = "",
              const std::string_view default_id = "") -> IRResult;
+
+/// @ingroup ir
+SOURCEMETA_CODEGEN_IR_EXPORT
+auto symbol(const sourcemeta::core::SchemaFrame &frame,
+            const sourcemeta::core::SchemaFrame::Location &location)
+    -> std::vector<std::string>;
 
 } // namespace sourcemeta::codegen
 

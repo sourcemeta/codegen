@@ -1,157 +1,157 @@
-export type SocialPlatform_Properties_X75ser = SocialPlatform_X24Defs_X55ser;
+export type SocialPlatformUser = _SocialPlatformUser;
 
-export type SocialPlatform_Properties_Settings = SocialPlatform_X24Defs_USettings;
+export type SocialPlatformSettings = _SocialPlatformSettings;
 
-export type SocialPlatform_Properties_Posts_Items = SocialPlatform_X24Defs_UPost;
+export type SocialPlatformPostsItems = SocialPlatformPost;
 
-export type SocialPlatform_Properties_Posts = SocialPlatform_Properties_Posts_Items[];
+export type SocialPlatformPosts = SocialPlatformPostsItems[];
 
-export type SocialPlatform_Properties_PinnedPost_AnyOf_ZIndex1 = null;
+export type SocialPlatformPinnedPost_1 = null;
 
-export type SocialPlatform_Properties_PinnedPost_AnyOf_ZIndex0 = SocialPlatform_X24Defs_UPost;
+export type SocialPlatformPinnedPost_0 = SocialPlatformPost;
 
-export type SocialPlatform_Properties_PinnedPost =
-  SocialPlatform_Properties_PinnedPost_AnyOf_ZIndex0 |
-  SocialPlatform_Properties_PinnedPost_AnyOf_ZIndex1;
+export type SocialPlatformPinnedPost =
+  SocialPlatformPinnedPost_0 |
+  SocialPlatformPinnedPost_1;
 
-export type SocialPlatform_Properties_Followers_Items = SocialPlatform_X24Defs_X55ser;
+export type SocialPlatformFollowersItems = _SocialPlatformUser;
 
-export type SocialPlatform_Properties_Followers = SocialPlatform_Properties_Followers_Items[];
+export type SocialPlatformFollowers = SocialPlatformFollowersItems[];
 
-export type SocialPlatform_AdditionalProperties = never;
+export type SocialPlatformAdditionalProperties = never;
 
-export type SocialPlatform_X24Defs_X55ser_Properties_X75sername = string;
+export type SocialPlatformUserUsername = string;
 
-export type SocialPlatform_X24Defs_X55ser_Properties_Profile = SocialPlatform_X24Defs_UProfile;
+export type SocialPlatformUserProfile = SocialPlatformProfile;
 
-export type SocialPlatform_X24Defs_X55ser_Properties_Id = SocialPlatform_X24Defs_X55X55ID;
+export type SocialPlatformUserId = SocialPlatformUUID;
 
-export type SocialPlatform_X24Defs_X55ser_Properties_Email = SocialPlatform_X24Defs_UEmail;
+export type SocialPlatformUserEmail = SocialPlatformEmail;
 
-export type SocialPlatform_X24Defs_X55ser_AdditionalProperties = never;
+export type SocialPlatformUserAdditionalProperties = never;
 
-export interface SocialPlatform_X24Defs_X55ser {
-  "id": SocialPlatform_X24Defs_X55ser_Properties_Id;
-  "username": SocialPlatform_X24Defs_X55ser_Properties_X75sername;
-  "email": SocialPlatform_X24Defs_X55ser_Properties_Email;
-  "profile"?: SocialPlatform_X24Defs_X55ser_Properties_Profile;
+export interface _SocialPlatformUser {
+  "id": SocialPlatformUserId;
+  "username": SocialPlatformUserUsername;
+  "email": SocialPlatformUserEmail;
+  "profile"?: SocialPlatformUserProfile;
 }
 
-export type SocialPlatform_X24Defs_X55X55ID = string;
+export type SocialPlatformUUID = string;
 
-export type SocialPlatform_X24Defs_X55RL = string;
+export type SocialPlatformURL = string;
 
-export type SocialPlatform_X24Defs_UTheme = "light" | "dark" | "system";
+export type SocialPlatformTheme = "light" | "dark" | "system";
 
-export type SocialPlatform_X24Defs_UTag_Properties_Slug = string;
+export type SocialPlatformTagSlug = string;
 
-export type SocialPlatform_X24Defs_UTag_Properties_Name = string;
+export type SocialPlatformTagName = string;
 
-export type SocialPlatform_X24Defs_UTag_AdditionalProperties = never;
+export type SocialPlatformTagAdditionalProperties = never;
 
-export interface SocialPlatform_X24Defs_UTag {
-  "name": SocialPlatform_X24Defs_UTag_Properties_Name;
-  "slug"?: SocialPlatform_X24Defs_UTag_Properties_Slug;
+export interface SocialPlatformTag {
+  "name": SocialPlatformTagName;
+  "slug"?: SocialPlatformTagSlug;
 }
 
-export type SocialPlatform_X24Defs_USettings_Properties_Theme = SocialPlatform_X24Defs_UTheme;
+export type SocialPlatformSettingsTheme = SocialPlatformTheme;
 
-export type SocialPlatform_X24Defs_USettings_Properties_Privacy = SocialPlatform_X24Defs_UPrivacySettings;
+export type SocialPlatformSettingsPrivacy = SocialPlatformPrivacySettings;
 
-export type SocialPlatform_X24Defs_USettings_Properties_Notifications = SocialPlatform_X24Defs_UNotificationSettings;
+export type SocialPlatformSettingsNotifications = SocialPlatformNotificationSettings;
 
-export type SocialPlatform_X24Defs_USettings_AdditionalProperties = never;
+export type SocialPlatformSettingsAdditionalProperties = never;
 
-export interface SocialPlatform_X24Defs_USettings {
-  "theme"?: SocialPlatform_X24Defs_USettings_Properties_Theme;
-  "notifications"?: SocialPlatform_X24Defs_USettings_Properties_Notifications;
-  "privacy"?: SocialPlatform_X24Defs_USettings_Properties_Privacy;
+export interface _SocialPlatformSettings {
+  "theme"?: SocialPlatformSettingsTheme;
+  "notifications"?: SocialPlatformSettingsNotifications;
+  "privacy"?: SocialPlatformSettingsPrivacy;
 }
 
-export type SocialPlatform_X24Defs_UProfile_Properties_Location_AnyOf_ZIndex1 = null;
+export type SocialPlatformProfileLocation_1 = null;
 
-export type SocialPlatform_X24Defs_UProfile_Properties_Location_AnyOf_ZIndex0 = string;
+export type SocialPlatformProfileLocation_0 = string;
 
-export type SocialPlatform_X24Defs_UProfile_Properties_Location =
-  SocialPlatform_X24Defs_UProfile_Properties_Location_AnyOf_ZIndex0 |
-  SocialPlatform_X24Defs_UProfile_Properties_Location_AnyOf_ZIndex1;
+export type SocialPlatformProfileLocation =
+  SocialPlatformProfileLocation_0 |
+  SocialPlatformProfileLocation_1;
 
-export type SocialPlatform_X24Defs_UProfile_Properties_Bio_AnyOf_ZIndex1 = null;
+export type SocialPlatformProfileBio_1 = null;
 
-export type SocialPlatform_X24Defs_UProfile_Properties_Bio_AnyOf_ZIndex0 = string;
+export type SocialPlatformProfileBio_0 = string;
 
-export type SocialPlatform_X24Defs_UProfile_Properties_Bio =
-  SocialPlatform_X24Defs_UProfile_Properties_Bio_AnyOf_ZIndex0 |
-  SocialPlatform_X24Defs_UProfile_Properties_Bio_AnyOf_ZIndex1;
+export type SocialPlatformProfileBio =
+  SocialPlatformProfileBio_0 |
+  SocialPlatformProfileBio_1;
 
-export type SocialPlatform_X24Defs_UProfile_Properties_Avatar = SocialPlatform_X24Defs_X55RL;
+export type SocialPlatformProfileAvatar = SocialPlatformURL;
 
-export type SocialPlatform_X24Defs_UProfile_AdditionalProperties = never;
+export type SocialPlatformProfileAdditionalProperties = never;
 
-export interface SocialPlatform_X24Defs_UProfile {
-  "bio"?: SocialPlatform_X24Defs_UProfile_Properties_Bio;
-  "avatar"?: SocialPlatform_X24Defs_UProfile_Properties_Avatar;
-  "location"?: SocialPlatform_X24Defs_UProfile_Properties_Location;
+export interface SocialPlatformProfile {
+  "bio"?: SocialPlatformProfileBio;
+  "avatar"?: SocialPlatformProfileAvatar;
+  "location"?: SocialPlatformProfileLocation;
 }
 
-export type SocialPlatform_X24Defs_UPrivacySettings_Properties_ShowEmail = boolean;
+export type SocialPlatformPrivacySettingsShowEmail = boolean;
 
-export type SocialPlatform_X24Defs_UPrivacySettings_Properties_ProfileVisible = boolean;
+export type SocialPlatformPrivacySettingsProfileVisible = boolean;
 
-export type SocialPlatform_X24Defs_UPrivacySettings_AdditionalProperties = never;
+export type SocialPlatformPrivacySettingsAdditionalProperties = never;
 
-export interface SocialPlatform_X24Defs_UPrivacySettings {
-  "profileVisible"?: SocialPlatform_X24Defs_UPrivacySettings_Properties_ProfileVisible;
-  "showEmail"?: SocialPlatform_X24Defs_UPrivacySettings_Properties_ShowEmail;
+export interface SocialPlatformPrivacySettings {
+  "profileVisible"?: SocialPlatformPrivacySettingsProfileVisible;
+  "showEmail"?: SocialPlatformPrivacySettingsShowEmail;
 }
 
-export type SocialPlatform_X24Defs_UPostStatus = "draft" | "published" | "archived";
+export type SocialPlatformPostStatus = "draft" | "published" | "archived";
 
-export type SocialPlatform_X24Defs_UPost_Properties_Title = string;
+export type SocialPlatformPostTitle = string;
 
-export type SocialPlatform_X24Defs_UPost_Properties_Tags_Items = SocialPlatform_X24Defs_UTag;
+export type SocialPlatformPostTagsItems = SocialPlatformTag;
 
-export type SocialPlatform_X24Defs_UPost_Properties_Tags = SocialPlatform_X24Defs_UPost_Properties_Tags_Items[];
+export type SocialPlatformPostTags = SocialPlatformPostTagsItems[];
 
-export type SocialPlatform_X24Defs_UPost_Properties_Status = SocialPlatform_X24Defs_UPostStatus;
+export type _SocialPlatformPostStatus = SocialPlatformPostStatus;
 
-export type SocialPlatform_X24Defs_UPost_Properties_Id = SocialPlatform_X24Defs_X55X55ID;
+export type SocialPlatformPostId = SocialPlatformUUID;
 
-export type SocialPlatform_X24Defs_UPost_Properties_Content = string;
+export type SocialPlatformPostContent = string;
 
-export type SocialPlatform_X24Defs_UPost_Properties_Author = SocialPlatform_X24Defs_X55ser;
+export type SocialPlatformPostAuthor = _SocialPlatformUser;
 
-export type SocialPlatform_X24Defs_UPost_AdditionalProperties = never;
+export type SocialPlatformPostAdditionalProperties = never;
 
-export interface SocialPlatform_X24Defs_UPost {
-  "id": SocialPlatform_X24Defs_UPost_Properties_Id;
-  "title": SocialPlatform_X24Defs_UPost_Properties_Title;
-  "content"?: SocialPlatform_X24Defs_UPost_Properties_Content;
-  "author": SocialPlatform_X24Defs_UPost_Properties_Author;
-  "tags"?: SocialPlatform_X24Defs_UPost_Properties_Tags;
-  "status"?: SocialPlatform_X24Defs_UPost_Properties_Status;
+export interface SocialPlatformPost {
+  "id": SocialPlatformPostId;
+  "title": SocialPlatformPostTitle;
+  "content"?: SocialPlatformPostContent;
+  "author": SocialPlatformPostAuthor;
+  "tags"?: SocialPlatformPostTags;
+  "status"?: _SocialPlatformPostStatus;
 }
 
-export type SocialPlatform_X24Defs_UNotificationSettings_Properties_Sms = boolean;
+export type SocialPlatformNotificationSettingsSms = boolean;
 
-export type SocialPlatform_X24Defs_UNotificationSettings_Properties_Push = boolean;
+export type SocialPlatformNotificationSettingsPush = boolean;
 
-export type SocialPlatform_X24Defs_UNotificationSettings_Properties_Email = boolean;
+export type SocialPlatformNotificationSettingsEmail = boolean;
 
-export type SocialPlatform_X24Defs_UNotificationSettings_AdditionalProperties = never;
+export type SocialPlatformNotificationSettingsAdditionalProperties = never;
 
-export interface SocialPlatform_X24Defs_UNotificationSettings {
-  "email"?: SocialPlatform_X24Defs_UNotificationSettings_Properties_Email;
-  "push"?: SocialPlatform_X24Defs_UNotificationSettings_Properties_Push;
-  "sms"?: SocialPlatform_X24Defs_UNotificationSettings_Properties_Sms;
+export interface SocialPlatformNotificationSettings {
+  "email"?: SocialPlatformNotificationSettingsEmail;
+  "push"?: SocialPlatformNotificationSettingsPush;
+  "sms"?: SocialPlatformNotificationSettingsSms;
 }
 
-export type SocialPlatform_X24Defs_UEmail = string;
+export type SocialPlatformEmail = string;
 
 export interface SocialPlatform {
-  "user": SocialPlatform_Properties_X75ser;
-  "posts": SocialPlatform_Properties_Posts;
-  "settings": SocialPlatform_Properties_Settings;
-  "followers"?: SocialPlatform_Properties_Followers;
-  "pinnedPost"?: SocialPlatform_Properties_PinnedPost;
+  "user": SocialPlatformUser;
+  "posts": SocialPlatformPosts;
+  "settings": SocialPlatformSettings;
+  "followers"?: SocialPlatformFollowers;
+  "pinnedPost"?: SocialPlatformPinnedPost;
 }

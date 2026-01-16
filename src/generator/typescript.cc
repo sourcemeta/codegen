@@ -40,9 +40,9 @@ namespace sourcemeta::codegen {
 TypeScript::TypeScript(std::ostream &stream, const std::string_view type_prefix)
     : output{stream}, prefix{type_prefix} {}
 
-auto TypeScript::operator()(const IRScalar &entry) const -> void {
+auto TypeScript::operator()(const IRScalar &entry) -> void {
   this->output << "export type "
-               << sourcemeta::core::mangle(entry.pointer, this->prefix)
+               << mangle(this->prefix, entry.pointer, entry.symbol, this->cache)
                << " = ";
 
   switch (entry.value) {
@@ -64,9 +64,9 @@ auto TypeScript::operator()(const IRScalar &entry) const -> void {
   this->output << ";\n";
 }
 
-auto TypeScript::operator()(const IREnumeration &entry) const -> void {
+auto TypeScript::operator()(const IREnumeration &entry) -> void {
   this->output << "export type "
-               << sourcemeta::core::mangle(entry.pointer, this->prefix)
+               << mangle(this->prefix, entry.pointer, entry.symbol, this->cache)
                << " = ";
 
   const char *separator{""};
@@ -79,8 +79,9 @@ auto TypeScript::operator()(const IREnumeration &entry) const -> void {
   this->output << ";\n";
 }
 
-auto TypeScript::operator()(const IRObject &entry) const -> void {
-  const auto type_name{sourcemeta::core::mangle(entry.pointer, this->prefix)};
+auto TypeScript::operator()(const IRObject &entry) -> void {
+  const auto type_name{
+      mangle(this->prefix, entry.pointer, entry.symbol, this->cache)};
   const auto has_typed_additional{
       std::holds_alternative<IRType>(entry.additional)};
   const auto allows_any_additional{
@@ -88,10 +89,10 @@ auto TypeScript::operator()(const IRObject &entry) const -> void {
       std::get<bool>(entry.additional)};
 
   if (has_typed_additional && entry.members.empty()) {
+    const auto &additional_type{std::get<IRType>(entry.additional)};
     this->output << "export type " << type_name << " = Record<string, "
-                 << sourcemeta::core::mangle(
-                        std::get<IRType>(entry.additional).pointer,
-                        this->prefix)
+                 << mangle(this->prefix, additional_type.pointer,
+                           additional_type.symbol, this->cache)
                  << ">;\n";
     return;
   }
@@ -117,7 +118,8 @@ auto TypeScript::operator()(const IRObject &entry) const -> void {
     this->output << "  " << readonly_marker << "\""
                  << escape_string(member_name) << "\"" << optional_marker
                  << ": "
-                 << sourcemeta::core::mangle(member_value.pointer, this->prefix)
+                 << mangle(this->prefix, member_value.pointer,
+                           member_value.symbol, this->cache)
                  << ";\n";
   }
 
@@ -135,15 +137,15 @@ auto TypeScript::operator()(const IRObject &entry) const -> void {
     this->output << "    // match a superset of what JSON Schema allows\n";
     for (const auto &[member_name, member_value] : entry.members) {
       this->output << "    "
-                   << sourcemeta::core::mangle(member_value.pointer,
-                                               this->prefix)
+                   << mangle(this->prefix, member_value.pointer,
+                             member_value.symbol, this->cache)
                    << " |\n";
     }
 
+    const auto &additional_type{std::get<IRType>(entry.additional)};
     this->output << "    "
-                 << sourcemeta::core::mangle(
-                        std::get<IRType>(entry.additional).pointer,
-                        this->prefix)
+                 << mangle(this->prefix, additional_type.pointer,
+                           additional_type.symbol, this->cache)
                  << " |\n";
     this->output << "    undefined;\n";
   }
@@ -151,19 +153,20 @@ auto TypeScript::operator()(const IRObject &entry) const -> void {
   this->output << "}\n";
 }
 
-auto TypeScript::operator()(const IRImpossible &entry) const -> void {
+auto TypeScript::operator()(const IRImpossible &entry) -> void {
   this->output << "export type "
-               << sourcemeta::core::mangle(entry.pointer, this->prefix)
+               << mangle(this->prefix, entry.pointer, entry.symbol, this->cache)
                << " = never;\n";
 }
 
-auto TypeScript::operator()(const IRArray &entry) const -> void {
+auto TypeScript::operator()(const IRArray &entry) -> void {
   this->output << "export type "
-               << sourcemeta::core::mangle(entry.pointer, this->prefix)
+               << mangle(this->prefix, entry.pointer, entry.symbol, this->cache)
                << " = ";
 
   if (entry.items.has_value()) {
-    this->output << sourcemeta::core::mangle(entry.items->pointer, this->prefix)
+    this->output << mangle(this->prefix, entry.items->pointer,
+                           entry.items->symbol, this->cache)
                  << "[]";
   } else {
     this->output << "unknown[]";
@@ -172,44 +175,48 @@ auto TypeScript::operator()(const IRArray &entry) const -> void {
   this->output << ";\n";
 }
 
-auto TypeScript::operator()(const IRReference &entry) const -> void {
+auto TypeScript::operator()(const IRReference &entry) -> void {
   this->output << "export type "
-               << sourcemeta::core::mangle(entry.pointer, this->prefix) << " = "
-               << sourcemeta::core::mangle(entry.target.pointer, this->prefix)
+               << mangle(this->prefix, entry.pointer, entry.symbol, this->cache)
+               << " = "
+               << mangle(this->prefix, entry.target.pointer,
+                         entry.target.symbol, this->cache)
                << ";\n";
 }
 
-auto TypeScript::operator()(const IRTuple &entry) const -> void {
+auto TypeScript::operator()(const IRTuple &entry) -> void {
   this->output << "export type "
-               << sourcemeta::core::mangle(entry.pointer, this->prefix)
+               << mangle(this->prefix, entry.pointer, entry.symbol, this->cache)
                << " = [";
 
   const char *separator{""};
   for (const auto &item : entry.items) {
     this->output << separator
-                 << sourcemeta::core::mangle(item.pointer, this->prefix);
+                 << mangle(this->prefix, item.pointer, item.symbol,
+                           this->cache);
     separator = ", ";
   }
 
   if (entry.additional.has_value()) {
     this->output << separator << "..."
-                 << sourcemeta::core::mangle(entry.additional->pointer,
-                                             this->prefix)
+                 << mangle(this->prefix, entry.additional->pointer,
+                           entry.additional->symbol, this->cache)
                  << "[]";
   }
 
   this->output << "];\n";
 }
 
-auto TypeScript::operator()(const IRUnion &entry) const -> void {
+auto TypeScript::operator()(const IRUnion &entry) -> void {
   this->output << "export type "
-               << sourcemeta::core::mangle(entry.pointer, this->prefix)
+               << mangle(this->prefix, entry.pointer, entry.symbol, this->cache)
                << " =\n";
 
   const char *separator{""};
   for (const auto &value : entry.values) {
     this->output << separator << "  "
-                 << sourcemeta::core::mangle(value.pointer, this->prefix);
+                 << mangle(this->prefix, value.pointer, value.symbol,
+                           this->cache);
     separator = " |\n";
   }
 
