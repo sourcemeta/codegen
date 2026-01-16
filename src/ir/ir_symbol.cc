@@ -2,15 +2,28 @@
 
 #include <sourcemeta/core/uri.h>
 
-#include <algorithm> // std::ranges::reverse
-#include <cassert>   // assert
-#include <sstream>   // std::istringstream
-#include <string>    // std::string, std::getline
-#include <vector>    // std::vector
+#include <algorithm>  // std::ranges::reverse
+#include <cassert>    // assert
+#include <filesystem> // std::filesystem::path
+#include <sstream>    // std::istringstream
+#include <string>     // std::string, std::getline
+#include <vector>     // std::vector
 
 namespace {
 
+// Strip all extensions from a filename (e.g., "user.schema.json" -> "user")
+auto strip_extensions(const std::string &filename) -> std::string {
+  std::filesystem::path path{filename};
+  while (path.has_extension()) {
+    path = path.stem();
+  }
+  return path.string();
+}
+
 // If the input looks like an absolute URI, extract its path segments.
+// For file URIs, only the filename (without extensions) is used.
+// For other URIs, all path segments are used with extensions stripped from
+// the last segment.
 // Otherwise, add the input as a single segment.
 // Note: segments are added in reverse order because the caller reverses
 // the entire result at the end.
@@ -30,13 +43,23 @@ auto push_token_segments(std::vector<std::string> &result,
           }
         }
 
-        // Reverse segments since the caller will reverse the entire result
-        std::ranges::reverse(segments);
-        for (const auto &path_segment : segments) {
-          result.emplace_back(path_segment);
-        }
+        if (!segments.empty()) {
+          // Strip extensions from the last segment
+          segments.back() = strip_extensions(segments.back());
 
-        return;
+          // For file URIs, only use the filename
+          if (uri.is_file()) {
+            result.emplace_back(segments.back());
+          } else {
+            // Reverse segments since the caller will reverse the entire result
+            std::ranges::reverse(segments);
+            for (const auto &path_segment : segments) {
+              result.emplace_back(path_segment);
+            }
+          }
+
+          return;
+        }
       }
     }
     // NOLINTNEXTLINE(bugprone-empty-catch)
