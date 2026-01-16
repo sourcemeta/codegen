@@ -1,8 +1,8 @@
 import {
   ApiResponse,
-  ApiResponseHttpsexamplecomschemasuser,
-  ApiResponseHttpsexamplecomschemasmetadata,
-  ApiResponseHttpsexamplecomschemasemail
+  ApiResponseSchemasUser,
+  ApiResponseSchemasMetadata,
+  ApiResponseSchemasEmail
 } from "./expected";
 
 
@@ -29,26 +29,26 @@ const minimalResponse: ApiResponse = {
 };
 
 // Valid: user object directly
-const user: ApiResponseHttpsexamplecomschemasuser = {
+const user: ApiResponseSchemasUser = {
   id: 42,
   name: "Test User"
 };
 
 // Valid: user with email
-const userWithEmail: ApiResponseHttpsexamplecomschemasuser = {
+const userWithEmail: ApiResponseSchemasUser = {
   id: 42,
   name: "Test User",
   email: "test@example.com"
 };
 
 // Valid: metadata object
-const metadata: ApiResponseHttpsexamplecomschemasmetadata = {
+const metadata: ApiResponseSchemasMetadata = {
   timestamp: "2024-01-15",
   version: 2
 };
 
 // Valid: email is just a string
-const email: ApiResponseHttpsexamplecomschemasemail = "user@domain.com";
+const email: ApiResponseSchemasEmail = "user@domain.com";
 
 // Invalid: missing required field 'data'
 // @ts-expect-error - data is required

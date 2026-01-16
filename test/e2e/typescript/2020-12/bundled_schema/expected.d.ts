@@ -1,35 +1,35 @@
-export type ApiResponseMeta = ApiResponseHttpsexamplecomschemasmetadata;
+export type ApiResponseMeta = ApiResponseSchemasMetadata;
 
-export type ApiResponseData = ApiResponseHttpsexamplecomschemasuser;
+export type ApiResponseData = ApiResponseSchemasUser;
 
 export type ApiResponseAdditionalProperties = never;
 
-export type ApiResponseHttpsexamplecomschemasuserName = string;
+export type ApiResponseSchemasUserName = string;
 
-export type ApiResponseHttpsexamplecomschemasuserId = number;
+export type ApiResponseSchemasUserId = number;
 
-export type ApiResponseHttpsexamplecomschemasuserEmail = ApiResponseHttpsexamplecomschemasemail;
+export type ApiResponseSchemasUserEmail = ApiResponseSchemasEmail;
 
-export type ApiResponseHttpsexamplecomschemasuserAdditionalProperties = never;
+export type ApiResponseSchemasUserAdditionalProperties = never;
 
-export interface ApiResponseHttpsexamplecomschemasuser {
-  "id": ApiResponseHttpsexamplecomschemasuserId;
-  "name": ApiResponseHttpsexamplecomschemasuserName;
-  "email"?: ApiResponseHttpsexamplecomschemasuserEmail;
+export interface ApiResponseSchemasUser {
+  "id": ApiResponseSchemasUserId;
+  "name": ApiResponseSchemasUserName;
+  "email"?: ApiResponseSchemasUserEmail;
 }
 
-export type ApiResponseHttpsexamplecomschemasmetadataVersion = number;
+export type ApiResponseSchemasMetadataVersion = number;
 
-export type ApiResponseHttpsexamplecomschemasmetadataTimestamp = string;
+export type ApiResponseSchemasMetadataTimestamp = string;
 
-export type ApiResponseHttpsexamplecomschemasmetadataAdditionalProperties = never;
+export type ApiResponseSchemasMetadataAdditionalProperties = never;
 
-export interface ApiResponseHttpsexamplecomschemasmetadata {
-  "timestamp"?: ApiResponseHttpsexamplecomschemasmetadataTimestamp;
-  "version"?: ApiResponseHttpsexamplecomschemasmetadataVersion;
+export interface ApiResponseSchemasMetadata {
+  "timestamp"?: ApiResponseSchemasMetadataTimestamp;
+  "version"?: ApiResponseSchemasMetadataVersion;
 }
 
-export type ApiResponseHttpsexamplecomschemasemail = string;
+export type ApiResponseSchemasEmail = string;
 
 export interface ApiResponse {
   "data": ApiResponseData;
