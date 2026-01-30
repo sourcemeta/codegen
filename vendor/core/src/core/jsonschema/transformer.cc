@@ -36,6 +36,87 @@ auto calculate_health_percentage(const std::size_t subschemas,
   return static_cast<std::uint8_t>(result);
 }
 
+auto check_rules(
+    const sourcemeta::core::JSON &schema,
+    const sourcemeta::core::SchemaFrame &frame,
+    const std::vector<std::tuple<
+        std::unique_ptr<sourcemeta::core::SchemaTransformRule>, bool, bool>>
+        &rules,
+    const sourcemeta::core::SchemaWalker &walker,
+    const sourcemeta::core::SchemaResolver &resolver,
+    const sourcemeta::core::SchemaTransformer::Callback &callback,
+    const sourcemeta::core::JSON::String &exclude_keyword,
+    const bool non_mutating_only) -> std::pair<bool, std::uint8_t> {
+  std::unordered_set<sourcemeta::core::Pointer,
+                     sourcemeta::core::Pointer::Hasher>
+      visited;
+  bool result{true};
+  std::size_t subschema_count{0};
+  std::size_t subschema_failures{0};
+
+  for (const auto &entry : frame.locations()) {
+    if (entry.second.type !=
+            sourcemeta::core::SchemaFrame::LocationType::Resource &&
+        entry.second.type !=
+            sourcemeta::core::SchemaFrame::LocationType::Subschema) {
+      continue;
+    }
+
+    const auto [visited_iterator, inserted] =
+        visited.insert(sourcemeta::core::to_pointer(entry.second.pointer));
+    if (!inserted) {
+      continue;
+    }
+    const auto &entry_pointer{*visited_iterator};
+
+    subschema_count += 1;
+
+    const auto &current{sourcemeta::core::get(schema, entry_pointer)};
+    const auto current_vocabularies{frame.vocabularies(entry.second, resolver)};
+
+    bool subschema_failed{false};
+    for (const auto &[rule, mutates, _] : rules) {
+      // TODO: In this case, can we avoid framing and the entire subschema loop
+      // if there will be no rules to execute that match this criteria?
+      if (non_mutating_only && mutates) {
+        continue;
+      }
+
+      const auto outcome{rule->check(current, schema, current_vocabularies,
+                                     walker, resolver, frame, entry.second,
+                                     exclude_keyword)};
+      if (outcome.applies) {
+        subschema_failed = true;
+        callback(entry_pointer, rule->name(), rule->message(), outcome);
+      }
+    }
+
+    if (subschema_failed) {
+      subschema_failures += 1;
+      result = false;
+    }
+  }
+
+  return {result,
+          calculate_health_percentage(subschema_count, subschema_failures)};
+}
+
+auto analyse_frame(sourcemeta::core::SchemaFrame &frame,
+                   const sourcemeta::core::JSON &schema,
+                   const sourcemeta::core::SchemaWalker &walker,
+                   const sourcemeta::core::SchemaResolver &resolver,
+                   const std::string_view default_dialect,
+                   const std::string_view default_id) -> void {
+
+  // If we use the default id when there is already one, framing will duplicate
+  // the locations leading to duplicate check reports
+  if (!sourcemeta::core::identify(schema, resolver, default_dialect).empty()) {
+    frame.analyse(schema, walker, resolver, default_dialect);
+  } else {
+    frame.analyse(schema, walker, resolver, default_dialect, default_id);
+  }
+}
+
 } // namespace
 
 namespace sourcemeta::core {
@@ -68,90 +149,53 @@ auto SchemaTransformRule::rereference(const std::string_view reference,
                                    "The reference broke after transformation");
 }
 
-auto SchemaTransformRule::check(const JSON &schema, const JSON &root,
-                                const Vocabularies &vocabularies,
-                                const SchemaWalker &walker,
-                                const SchemaResolver &resolver,
-                                const SchemaFrame &frame,
-                                const SchemaFrame::Location &location) const
-    -> SchemaTransformRule::Result {
-  return this->condition(schema, root, vocabularies, frame, location, walker,
-                         resolver);
+auto SchemaTransformRule::check(
+    const JSON &schema, const JSON &root, const Vocabularies &vocabularies,
+    const SchemaWalker &walker, const SchemaResolver &resolver,
+    const SchemaFrame &frame, const SchemaFrame::Location &location,
+    const JSON::String &exclude_keyword) const -> SchemaTransformRule::Result {
+  auto result{this->condition(schema, root, vocabularies, frame, location,
+                              walker, resolver)};
+
+  // Support rule exclusion
+  if (result.applies && !exclude_keyword.empty() && schema.is_object()) {
+    const auto *exclude_value{schema.try_at(exclude_keyword)};
+    if (exclude_value != nullptr &&
+        ((exclude_value->is_string() &&
+          exclude_value->to_string() == this->name()) ||
+         (exclude_value->is_array() &&
+          exclude_value->contains(this->name())))) {
+      return false;
+    }
+  }
+
+  return result;
 }
 
 auto SchemaTransformer::check(const JSON &schema, const SchemaWalker &walker,
                               const SchemaResolver &resolver,
                               const SchemaTransformer::Callback &callback,
                               std::string_view default_dialect,
-                              std::string_view default_id) const
+                              std::string_view default_id,
+                              const JSON::String &exclude_keyword) const
     -> std::pair<bool, std::uint8_t> {
   SchemaFrame frame{SchemaFrame::Mode::References};
-
-  // If we use the default id when there is already one, framing will duplicate
-  // the locations leading to duplicate check reports
-  if (!sourcemeta::core::identify(schema, resolver, default_dialect).empty()) {
-    frame.analyse(schema, walker, resolver, default_dialect);
-  } else {
-    frame.analyse(schema, walker, resolver, default_dialect, default_id);
-  }
-
-  std::unordered_set<Pointer> visited;
-  bool result{true};
-  std::size_t subschema_count{0};
-  std::size_t subschema_failures{0};
-  for (const auto &entry : frame.locations()) {
-    if (entry.second.type != SchemaFrame::LocationType::Resource &&
-        entry.second.type != SchemaFrame::LocationType::Subschema) {
-      continue;
-    }
-
-    // Framing may report resource twice or more given default identifiers and
-    // nested resources, risking reporting the same errors twice
-    const auto [visited_iterator, inserted] =
-        visited.insert(to_pointer(entry.second.pointer));
-    if (!inserted) {
-      continue;
-    }
-    const auto &entry_pointer{*visited_iterator};
-
-    subschema_count += 1;
-
-    const auto &current{get(schema, entry_pointer)};
-    const auto current_vocabularies{frame.vocabularies(entry.second, resolver)};
-    bool subresult{true};
-    for (const auto &rule : this->rules) {
-      const auto outcome{rule->check(current, schema, current_vocabularies,
-                                     walker, resolver, frame, entry.second)};
-      if (outcome.applies) {
-        subresult = false;
-        callback(entry_pointer, rule->name(), rule->message(), outcome);
-      }
-    }
-
-    if (!subresult) {
-      subschema_failures += 1;
-      result = false;
-    }
-  }
-
-  return {result,
-          calculate_health_percentage(subschema_count, subschema_failures)};
+  analyse_frame(frame, schema, walker, resolver, default_dialect, default_id);
+  return check_rules(schema, frame, this->rules, walker, resolver, callback,
+                     exclude_keyword, false);
 }
 
 auto SchemaTransformer::apply(JSON &schema, const SchemaWalker &walker,
                               const SchemaResolver &resolver,
                               const SchemaTransformer::Callback &callback,
                               std::string_view default_dialect,
-                              std::string_view default_id) const
+                              std::string_view default_id,
+                              const JSON::String &exclude_keyword) const
     -> std::pair<bool, std::uint8_t> {
   assert(!this->rules.empty());
   std::unordered_set<std::tuple<const JSON *, std::string_view, std::uint64_t>,
                      ProcessedRuleHasher>
       processed_rules;
-
-  bool result{true};
-  std::size_t subschema_count{0};
-  std::size_t subschema_failures{0};
 
   SchemaFrame frame{SchemaFrame::Mode::References};
 
@@ -167,13 +211,12 @@ auto SchemaTransformer::apply(JSON &schema, const SchemaWalker &walker,
 
   while (true) {
     if (frame.empty()) {
-      frame.analyse(schema, walker, resolver, default_dialect, default_id);
+      analyse_frame(frame, schema, walker, resolver, default_dialect,
+                    default_id);
     }
 
-    std::unordered_set<Pointer> visited;
+    std::unordered_set<Pointer, Pointer::Hasher> visited;
     bool applied{false};
-    subschema_count = 0;
-    subschema_failures = 0;
 
     for (const auto &entry : frame.locations()) {
       if (entry.second.type != SchemaFrame::LocationType::Resource &&
@@ -189,17 +232,20 @@ auto SchemaTransformer::apply(JSON &schema, const SchemaWalker &walker,
         continue;
       }
       const auto &entry_pointer{*visited_iterator};
-
-      subschema_count += 1;
-
       auto &current{get(schema, entry_pointer)};
       const auto current_vocabularies{
           frame.vocabularies(entry.second, resolver)};
 
-      bool subschema_failed{false};
-      for (const auto &rule : this->rules) {
-        auto outcome{rule->condition(current, schema, current_vocabularies,
-                                     frame, entry.second, walker, resolver)};
+      for (const auto &[rule, mutates, reframe_after_transform] : this->rules) {
+        // Only process mutating rules in the main loop.
+        // Non-mutating rules will be processed once at the end.
+        if (!mutates) {
+          continue;
+        }
+
+        auto outcome{rule->check(current, schema, current_vocabularies, walker,
+                                 resolver, frame, entry.second,
+                                 exclude_keyword)};
 
         if (!outcome.applies) {
           continue;
@@ -226,18 +272,14 @@ auto SchemaTransformer::apply(JSON &schema, const SchemaWalker &walker,
                target.relative_pointer});
         }
 
-        try {
-          rule->transform(current, outcome);
-        } catch (const SchemaAbortError &) {
-          result = false;
-          subschema_failed = true;
-          callback(entry_pointer, rule->name(), rule->message(), outcome);
-          continue;
-        }
+        rule->transform(current, outcome);
 
         applied = true;
 
-        frame.analyse(schema, walker, resolver, default_dialect, default_id);
+        if (reframe_after_transform) {
+          analyse_frame(frame, schema, walker, resolver, default_dialect,
+                        default_id);
+        }
 
         const auto new_location{frame.traverse(to_weak_pointer(entry_pointer))};
         // The location should still exist after transform
@@ -249,8 +291,8 @@ auto SchemaTransformer::apply(JSON &schema, const SchemaWalker &walker,
 
         // The condition must always be false after applying the
         // transformation in order to avoid infinite loops
-        if (rule->condition(current, schema, new_vocabularies, frame,
-                            new_location.value().get(), walker, resolver)
+        if (rule->check(current, schema, new_vocabularies, walker, resolver,
+                        frame, new_location.value().get(), exclude_keyword)
                 .applies) {
           std::ostringstream error;
           error << "Rule condition holds after application: " << rule->name();
@@ -306,11 +348,9 @@ auto SchemaTransformer::apply(JSON &schema, const SchemaWalker &walker,
           frame.reset();
         }
 
-        goto core_transformer_start_again;
-      }
-
-      if (subschema_failed) {
-        subschema_failures += 1;
+        if (references_fixed || reframe_after_transform) {
+          goto core_transformer_start_again;
+        }
       }
     }
 
@@ -320,13 +360,17 @@ auto SchemaTransformer::apply(JSON &schema, const SchemaWalker &walker,
     }
   }
 
-  return {result,
-          calculate_health_percentage(subschema_count, subschema_failures)};
+  if (frame.empty()) {
+    analyse_frame(frame, schema, walker, resolver, default_dialect, default_id);
+  }
+
+  return check_rules(schema, frame, this->rules, walker, resolver, callback,
+                     exclude_keyword, true);
 }
 
 auto SchemaTransformer::remove(const std::string_view name) -> bool {
-  return std::erase_if(this->rules, [&name](const auto &rule) {
-           return rule->name() == name;
+  return std::erase_if(this->rules, [&name](const auto &entry) {
+           return std::get<0>(entry)->name() == name;
          }) > 0;
 }
 

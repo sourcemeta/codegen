@@ -27,6 +27,14 @@
       std::get<sourcemeta::codegen::IRImpossible>(result.at(index)).pointer,   \
       expected_pointer)
 
+#define EXPECT_IR_ANY(result, index, expected_pointer)                         \
+  EXPECT_TRUE(                                                                 \
+      std::holds_alternative<sourcemeta::codegen::IRAny>(result.at(index)))    \
+      << "Expected IRAny at index " << index;                                  \
+  EXPECT_AS_STRING(                                                            \
+      std::get<sourcemeta::codegen::IRAny>(result.at(index)).pointer,          \
+      expected_pointer)
+
 #define EXPECT_IR_ARRAY(result, index, expected_pointer,                       \
                         expected_items_pointer)                                \
   EXPECT_TRUE(                                                                 \

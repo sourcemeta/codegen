@@ -460,6 +460,37 @@ public:
     return result;
   }
 
+  /// Get a copy of the JSON Pointer starting from a given token index up to
+  /// (but not including) a given end index. This method is undefined if the
+  /// start index is greater than the end index or if the end index is greater
+  /// than the pointer size. For example:
+  ///
+  /// ```cpp
+  /// #include <sourcemeta/core/jsonpointer.h>
+  /// #include <cassert>
+  ///
+  /// const sourcemeta::core::Pointer pointer{"foo", "bar", "baz", "qux"};
+  /// const sourcemeta::core::Pointer result{pointer.slice(1, 3)};
+  /// assert(result.size() == 2);
+  /// assert(result.at(0).is_property());
+  /// assert(result.at(0).to_property() == "bar");
+  /// assert(result.at(1).is_property());
+  /// assert(result.at(1).to_property() == "baz");
+  /// ```
+  [[nodiscard]] auto slice(const std::size_t start, const std::size_t end) const
+      -> GenericPointer<PropertyT, Hash> {
+    assert(start <= end);
+    assert(end <= this->size());
+    auto new_begin{this->data.cbegin()};
+    std::advance(new_begin, start);
+    auto new_end{this->data.cbegin()};
+    std::advance(new_end, end);
+    GenericPointer<PropertyT, Hash> result;
+    result.reserve(end - start);
+    std::copy(new_begin, new_end, std::back_inserter(result.data));
+    return result;
+  }
+
   /// Concatenate a JSON Pointer with another JSON Pointer, getting a new
   /// pointer as a result. For example:
   ///
@@ -674,6 +705,13 @@ public:
     return this->data == other.data;
   }
 
+  /// Compare with a reference wrapper
+  [[nodiscard]] auto
+  operator==(const std::reference_wrapper<const GenericPointer<PropertyT, Hash>>
+                 &other) const noexcept -> bool {
+    return this->data == other.get().data;
+  }
+
   /// Overload to support ordering of JSON Pointers. Typically for sorting
   /// reasons.
   [[nodiscard]] auto
@@ -681,6 +719,81 @@ public:
       -> bool {
     return this->data < other.data;
   }
+
+  /// Compare with a reference wrapper for ordering
+  [[nodiscard]] auto
+  operator<(const std::reference_wrapper<const GenericPointer<PropertyT, Hash>>
+                &other) const noexcept -> bool {
+    return this->data < other.get().data;
+  }
+
+  /// Hash functor for use with containers
+  struct Hasher {
+    using is_transparent = void;
+
+    auto
+    operator()(const GenericPointer<PropertyT, Hash> &pointer) const noexcept
+        -> std::size_t {
+      const auto size{pointer.size()};
+      if (size == 0) {
+        return size;
+      }
+
+      const auto &first{pointer.at(0)};
+      const auto &middle{pointer.at(size / 2)};
+      const auto &last{pointer.at(size - 1)};
+
+      return size +
+             (first.is_property()
+                  ? static_cast<std::size_t>(first.property_hash().a)
+                  : first.to_index()) +
+             (middle.is_property()
+                  ? static_cast<std::size_t>(middle.property_hash().a)
+                  : middle.to_index()) +
+             (last.is_property()
+                  ? static_cast<std::size_t>(last.property_hash().a)
+                  : last.to_index());
+    }
+
+    auto operator()(
+        const std::reference_wrapper<const GenericPointer<PropertyT, Hash>>
+            &reference) const noexcept -> std::size_t {
+      return (*this)(reference.get());
+    }
+  };
+
+  /// Comparator for use with containers
+  struct Comparator {
+    using is_transparent = void;
+
+    auto operator()(const GenericPointer<PropertyT, Hash> &left,
+                    const GenericPointer<PropertyT, Hash> &right) const noexcept
+        -> bool {
+      return left == right;
+    }
+
+    auto operator()(
+        const std::reference_wrapper<const GenericPointer<PropertyT, Hash>>
+            &left,
+        const std::reference_wrapper<const GenericPointer<PropertyT, Hash>>
+            &right) const noexcept -> bool {
+      return left.get() == right.get();
+    }
+
+    auto operator()(
+        const std::reference_wrapper<const GenericPointer<PropertyT, Hash>>
+            &left,
+        const GenericPointer<PropertyT, Hash> &right) const noexcept -> bool {
+      return left.get() == right;
+    }
+
+    auto operator()(
+        const GenericPointer<PropertyT, Hash> &left,
+        const std::reference_wrapper<const GenericPointer<PropertyT, Hash>>
+            &right) const noexcept -> bool {
+      return left == right.get();
+    }
+  };
 
 private:
   Container data;
