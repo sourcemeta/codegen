@@ -124,8 +124,7 @@ auto URI::resolve_from(const URI &base) -> URI & {
     const auto base_path = base.path_.value_or("");
     if (!base_path.starts_with('/') && this->path_.has_value()) {
       const auto &ref_path = this->path_.value();
-      if (!ref_path.starts_with('/') &&
-          ref_path.find('/') == std::string::npos) {
+      if (!ref_path.starts_with('/') && !ref_path.contains('/')) {
         auto merged = merge_paths(base_path, ref_path, false);
         this->path_ = remove_dot_segments(merged);
         return *this;
@@ -202,8 +201,16 @@ auto URI::relative_to(const URI &base) -> URI & {
     return *this;
   }
 
-  // Hosts must match (but both can be null for URNs)
+  // The full authority must match (but components can be null for URNs)
+  if (this->userinfo_ != base.userinfo_) {
+    return *this;
+  }
+
   if (this->host_ != base.host_) {
+    return *this;
+  }
+
+  if (this->port_ != base.port_) {
     return *this;
   }
 

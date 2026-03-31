@@ -152,7 +152,18 @@ public:
   /// ```
   [[nodiscard]] auto is_relative() const -> bool;
 
-  /// Check if the host is an ipv6 address. For example:
+  /// Check if the host is an IPv4 address. For example:
+  ///
+  /// ```cpp
+  /// #include <sourcemeta/core/uri.h>
+  /// #include <cassert>
+  ///
+  /// sourcemeta::core::URI uri{"http://192.168.1.1/index.html"};
+  /// assert(uri.is_ipv4());
+  /// ```
+  [[nodiscard]] auto is_ipv4() const -> bool;
+
+  /// Check if the host is an IPv6 address. For example:
   ///
   /// ```cpp
   /// #include <sourcemeta/core/uri.h>
@@ -335,7 +346,7 @@ public:
   ///
   /// const sourcemeta::core::URI
   ///   uri{"https://www.sourcemeta.com/foo#bar"};
-  /// assert(uri.recompose_without_fragment().has_value()");
+  /// assert(uri.recompose_without_fragment().has_value());
   /// assert(uri.recompose_without_fragment().value() ==
   /// "https://sourcemeta.com/foo");
   /// ```
@@ -349,7 +360,7 @@ public:
   /// #include <cassert>
   ///
   /// sourcemeta::core::URI uri{"hTtP://exAmpLe.com:80/TEST"};
-  /// uri.canonicalize():
+  /// uri.canonicalize();
   /// assert(uri.recompose() == "http://example.com/TEST");
   /// ```
   auto canonicalize() -> URI &;
@@ -417,7 +428,7 @@ public:
   ///
   /// const sourcemeta::core::URI uri{"https://user:@host"};
   /// assert(uri.userinfo().has_value());
-  /// assert(uri.userinfo().value() == "user:);
+  /// assert(uri.userinfo().value() == "user:");
   /// ```
   ///
   /// As mentioned in RFC 3986, the format "user:password" is deprecated.
@@ -469,6 +480,34 @@ public:
   /// ```
   static auto canonicalize(std::string_view input) -> std::string;
 
+  /// Check if the given string is a valid absolute URI (has a scheme) per
+  /// RFC 3986 without constructing a full URI object. For example:
+  ///
+  /// ```cpp
+  /// #include <sourcemeta/core/uri.h>
+  /// #include <cassert>
+  ///
+  /// assert(sourcemeta::core::URI::is_uri("https://example.com/path"));
+  /// assert(!sourcemeta::core::URI::is_uri("://bad"));
+  /// assert(!sourcemeta::core::URI::is_uri("relative/path"));
+  /// ```
+  [[nodiscard]] static auto is_uri(std::string_view input) noexcept -> bool;
+
+  /// Check if the given string is a valid URI reference per RFC 3986
+  /// (absolute or relative) without constructing a full URI object.
+  /// For example:
+  ///
+  /// ```cpp
+  /// #include <sourcemeta/core/uri.h>
+  /// #include <cassert>
+  ///
+  /// assert(sourcemeta::core::URI::is_uri_reference("https://example.com"));
+  /// assert(sourcemeta::core::URI::is_uri_reference("relative/path"));
+  /// assert(!sourcemeta::core::URI::is_uri_reference("://bad"));
+  /// ```
+  [[nodiscard]] static auto is_uri_reference(std::string_view input) noexcept
+      -> bool;
+
 private:
   auto parse(std::string_view input) -> void;
 
@@ -485,6 +524,7 @@ private:
   std::optional<std::string> scheme_{};
   std::optional<std::string> fragment_{};
   std::optional<std::string> query_{};
+  bool ip_literal_{false};
 #if defined(_MSC_VER)
 #pragma warning(default : 4251)
 #endif

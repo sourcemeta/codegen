@@ -5,9 +5,10 @@
 #include <algorithm>     // std::sort, std::unique
 #include <cmath>         // std::floor
 #include <iterator>      // std::back_inserter
+#include <memory>        // std::unique_ptr, std::make_unique
 #include <unordered_map> // std::unordered_map
 #include <unordered_set> // std::unordered_set
-#include <utility>       // std::move
+#include <utility>       // std::move, std::to_underlying
 namespace sourcemeta::core {
 
 template <typename... Args>
@@ -52,6 +53,7 @@ inline auto APPLIES_TO_POINTERS(std::vector<Pointer> &&keywords)
 #include "common/anyof_false_simplify.h"
 #include "common/anyof_remove_false_schemas.h"
 #include "common/anyof_true_simplify.h"
+#include "common/const_in_enum.h"
 #include "common/const_with_type.h"
 #include "common/content_media_type_without_encoding.h"
 #include "common/content_schema_without_media_type.h"
@@ -99,6 +101,7 @@ inline auto APPLIES_TO_POINTERS(std::vector<Pointer> &&keywords)
 
 // Linter
 #include "linter/comment_trim.h"
+#include "linter/const_not_in_enum.h"
 #include "linter/content_schema_default.h"
 #include "linter/definitions_to_defs.h"
 #include "linter/dependencies_default.h"
@@ -108,6 +111,8 @@ inline auto APPLIES_TO_POINTERS(std::vector<Pointer> &&keywords)
 #include "linter/duplicate_examples.h"
 #include "linter/enum_to_const.h"
 #include "linter/equal_numeric_bounds_to_const.h"
+#include "linter/forbid_empty_enum.h"
+#include "linter/invalid_external_ref.h"
 #include "linter/items_array_default.h"
 #include "linter/items_schema_default.h"
 #include "linter/multiple_of_default.h"
@@ -176,6 +181,7 @@ auto add(SchemaTransformer &bundle, const AlterSchemaMode mode) -> void {
   bundle.add<DuplicateEnumValues>();
   bundle.add<DuplicateRequiredValues>();
   bundle.add<ConstWithType>();
+  bundle.add<ConstInEnum>();
   bundle.add<NonApplicableAdditionalItems>();
   bundle.add<ModernOfficialDialectWithEmptyFragment>();
   bundle.add<ExclusiveMaximumNumberAndMaximum>();
@@ -207,6 +213,7 @@ auto add(SchemaTransformer &bundle, const AlterSchemaMode mode) -> void {
 
   if (mode == AlterSchemaMode::Linter) {
     bundle.add<EqualNumericBoundsToConst>();
+    bundle.add<ConstNotInEnum>();
     bundle.add<ContentSchemaDefault>();
     bundle.add<DependenciesDefault>();
     bundle.add<DependentRequiredDefault>();
@@ -222,6 +229,7 @@ auto add(SchemaTransformer &bundle, const AlterSchemaMode mode) -> void {
     bundle.add<UnsatisfiableMaxContains>();
     bundle.add<UnsatisfiableMinProperties>();
     bundle.add<EnumToConst>();
+    bundle.add<ForbidEmptyEnum>();
     bundle.add<TopLevelTitle>();
     bundle.add<TopLevelDescription>();
     bundle.add<TopLevelExamples>();
@@ -233,6 +241,7 @@ auto add(SchemaTransformer &bundle, const AlterSchemaMode mode) -> void {
     bundle.add<CommentTrim>();
     bundle.add<DuplicateExamples>();
     bundle.add<SimplePropertiesIdentifiers>();
+    bundle.add<InvalidExternalRef>();
   }
 
   bundle.add<UnnecessaryAllOfRefWrapperModern>();

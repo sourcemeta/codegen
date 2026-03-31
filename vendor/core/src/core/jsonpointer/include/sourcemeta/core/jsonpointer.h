@@ -21,7 +21,6 @@
 #include <ostream>     // std::basic_ostream
 #include <string>      // std::basic_string
 #include <string_view> // std::string_view
-#include <type_traits> // std::is_same_v
 
 /// @defgroup jsonpointer JSON Pointer
 /// @brief A growing implementation of RFC 6901 JSON Pointer.
@@ -415,13 +414,28 @@ auto to_pointer(const std::basic_string<JSON::Char, JSON::CharTraits,
 /// const std::string foo = "foo";
 /// const sourcemeta::core::WeakPointer pointer{std::cref(foo)};
 /// const sourcemeta::core::Pointer result{
-///   sourcemeta::core::to_pointer(pointer)}:
+///   sourcemeta::core::to_pointer(pointer)};
 /// assert(result.size() == 1);
 /// assert(result.at(0).is_property());
 /// assert(result.at(0).to_property() == "foo");
 /// ```
 SOURCEMETA_CORE_JSONPOINTER_EXPORT
 auto to_pointer(const WeakPointer &pointer) -> Pointer;
+
+/// @ingroup jsonpointer
+/// Check if the given string is a valid JSON Pointer per RFC 6901 without
+/// constructing a JSON Pointer object. For example:
+///
+/// ```cpp
+/// #include <sourcemeta/core/jsonpointer.h>
+/// #include <cassert>
+///
+/// assert(sourcemeta::core::is_pointer("/foo/bar/0"));
+/// assert(sourcemeta::core::is_pointer(""));
+/// assert(!sourcemeta::core::is_pointer("foo"));
+/// ```
+SOURCEMETA_CORE_JSONPOINTER_EXPORT
+auto is_pointer(std::string_view input) noexcept -> bool;
 
 /// @ingroup jsonpointer
 /// Convert a JSON Pointer into a JSON WeakPointer. For example:
@@ -603,38 +617,6 @@ auto to_uri(const WeakPointer &pointer, const std::string_view base) -> URI;
 /// assert(subpointers.at(3) == "/2");
 /// ```
 using PointerWalker = GenericPointerWalker<WeakPointer>;
-
-/// @ingroup jsonpointer
-/// Serialise a Pointer as JSON
-template <typename T>
-  requires std::is_same_v<T, Pointer>
-auto to_json(const T &value) -> JSON {
-  return JSON{to_string(value)};
-}
-
-/// @ingroup jsonpointer
-/// Serialise a WeakPointer as JSON
-template <typename T>
-  requires std::is_same_v<T, WeakPointer>
-auto to_json(const T &value) -> JSON {
-  return JSON{to_string(value)};
-}
-
-/// @ingroup jsonpointer
-/// Deserialise a Pointer from JSON
-template <typename T>
-  requires std::is_same_v<T, Pointer>
-auto from_json(const JSON &value) -> std::optional<T> {
-  if (!value.is_string()) {
-    return std::nullopt;
-  }
-
-  try {
-    return to_pointer(value);
-  } catch (const PointerParseError &) {
-    return std::nullopt;
-  }
-}
 
 } // namespace sourcemeta::core
 

@@ -6,7 +6,7 @@
 #include <cstddef>          // std::size_t
 #include <initializer_list> // std::initializer_list
 #include <iterator>         // std::advance
-#include <utility>          // std::pair, std::move
+#include <utility>          // std::pair, std::move, std::unreachable
 #include <vector>           // std::vector
 
 namespace sourcemeta::core {
@@ -124,6 +124,13 @@ public:
     return this->hasher(key);
   }
 
+  /// Compute a hash from raw data
+  [[nodiscard]] inline auto hash(const char *raw_data,
+                                 const std::size_t raw_size) const noexcept
+      -> hash_type {
+    return hasher(raw_data, raw_size);
+  }
+
   /// Attempt to find an entry by key
   [[nodiscard]] inline auto find(const Key &key) const -> const_iterator {
     const auto key_hash{this->hash(key)};
@@ -183,6 +190,11 @@ public:
   /// Check if the object is empty
   [[nodiscard]] inline auto empty() const -> bool { return this->data.empty(); }
 
+  /// Reserve capacity for a given number of entries
+  inline auto reserve(const size_type capacity) -> void {
+    this->data.reserve(capacity);
+  }
+
   /// Access an object entry by its underlying positional index
   [[nodiscard]] inline auto at(const size_type index) const -> const Entry & {
     return this->data.at(index);
@@ -208,12 +220,7 @@ public:
       }
     }
 
-// See https://en.cppreference.com/w/cpp/utility/unreachable
-#if defined(_MSC_VER) && !defined(__clang__)
-    __assume(false);
-#else
-    __builtin_unreachable();
-#endif
+    std::unreachable();
   }
 
   /// Access an object entry by its key name
@@ -235,12 +242,7 @@ public:
       }
     }
 
-// See https://en.cppreference.com/w/cpp/utility/unreachable
-#if defined(_MSC_VER) && !defined(__clang__)
-    __assume(false);
-#else
-    __builtin_unreachable();
-#endif
+    std::unreachable();
   }
 
   /// Try to access an object entry by its underlying positional index
@@ -365,6 +367,24 @@ public:
     return key_hash;
   }
 
+  /// Emplace an object property with a pre-computed hash
+  inline auto emplace_assume_new(Key &&key, mapped_type &&value,
+                                 const hash_type key_hash) -> void {
+    this->data.push_back({std::move(key), std::move(value), key_hash});
+  }
+
+  /// Emplace an object property with a pre-computed hash
+  inline auto emplace_assume_new(const Key &key, mapped_type &&value,
+                                 const hash_type key_hash) -> void {
+    this->data.push_back({key, std::move(value), key_hash});
+  }
+
+  /// Get the key of the last-inserted property
+  [[nodiscard]] inline auto back_key() const noexcept -> const Key & {
+    assert(!this->data.empty());
+    return this->data.back().first;
+  }
+
   /// Remove every property in the object
   inline auto clear() noexcept -> void { this->data.clear(); }
 
@@ -437,7 +457,7 @@ private:
 #if defined(_MSC_VER)
 #pragma warning(disable : 4251)
 #endif
-  Hash hasher;
+  static constexpr Hash hasher{};
   underlying_type data;
 #if defined(_MSC_VER)
 #pragma warning(default : 4251)
