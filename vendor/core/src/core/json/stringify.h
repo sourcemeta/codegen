@@ -6,6 +6,9 @@
 #include "grammar.h"
 
 #include <algorithm> // std::transform, std::sort
+#include <array>     // std::array
+#include <cassert>   // assert
+#include <charconv>  // std::to_chars
 #include <cstddef>   // std::size_t
 #include <cstdint>   // std::int64_t
 #include <iomanip>   // std::setprecision
@@ -13,7 +16,7 @@
 #include <iterator>  // std::next, std::cbegin, std::cend, std::back_inserter
 #include <ostream>   // std::basic_ostream
 #include <sstream>   // std::ostringstream
-#include <string>    // std::to_string
+#include <string>    // std::basic_string
 #include <vector>    // std::vector
 
 namespace sourcemeta::core::internal {
@@ -61,11 +64,13 @@ auto stringify(
     const std::int64_t value,
     std::basic_ostream<typename JSON::Char, typename JSON::CharTraits> &stream)
     -> void {
-  const auto string{std::to_string(value)};
-  stream.write(string.c_str(),
+  std::array<char, 20> buffer{};
+  const auto [end_pointer, error_code] =
+      std::to_chars(buffer.data(), buffer.data() + buffer.size(), value);
+  stream.write(buffer.data(),
                static_cast<typename std::basic_ostream<
                    typename JSON::Char, typename JSON::CharTraits>::int_type>(
-                   string.size()));
+                   end_pointer - buffer.data()));
 }
 
 template <template <typename T> typename Allocator>
@@ -82,11 +87,12 @@ auto stringify(
     stream.flags(flags);
     stream.precision(precision);
   } else {
-    const auto flags{stream.flags()};
-    const auto precision{stream.precision()};
-    stream << std::noshowpoint << value;
-    stream.flags(flags);
-    stream.precision(precision);
+    std::array<char, 64> buffer{};
+    const auto result{
+        std::to_chars(buffer.data(), buffer.data() + buffer.size(), value)};
+    // This can't realistically happen on production given the buffer size
+    assert(result.ec == std::errc{});
+    stream.write(buffer.data(), result.ptr - buffer.data());
   }
 }
 

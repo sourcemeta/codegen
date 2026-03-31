@@ -41,7 +41,12 @@ SOURCEMETA_CORE_JSONSCHEMA_EXPORT
 auto schema_resolver(const std::string_view identifier) -> std::optional<JSON>;
 
 /// @ingroup jsonschema
-/// A default schema walker with support for a wide range of drafs
+/// Check if a given identifier corresponds to a known built-in schema
+SOURCEMETA_CORE_JSONSCHEMA_EXPORT
+auto is_known_schema(const std::string_view identifier) noexcept -> bool;
+
+/// @ingroup jsonschema
+/// A default schema walker with support for a wide range of drafts
 SOURCEMETA_CORE_JSONSCHEMA_EXPORT
 auto schema_walker(const std::string_view keyword,
                    const Vocabularies &vocabularies)
@@ -314,6 +319,45 @@ auto base_dialect(const JSON &schema, const SchemaResolver &resolver,
 
 /// @ingroup jsonschema
 ///
+/// Parse the `$vocabulary` keyword from a given schema, if set. For example:
+///
+/// ```cpp
+/// #include <sourcemeta/core/json.h>
+/// #include <sourcemeta/core/jsonschema.h>
+/// #include <cassert>
+///
+/// const sourcemeta::core::JSON document =
+///   sourcemeta::core::parse_json(R"JSON({
+///   "$schema": "https://json-schema.org/draft/2020-12/schema",
+///   "$vocabulary": {
+///     "https://json-schema.org/draft/2020-12/vocab/core": true,
+///     "https://json-schema.org/draft/2020-12/vocab/applicator": true
+///   }
+/// })JSON");
+///
+/// const auto result{
+///   sourcemeta::core::parse_vocabularies(
+///     document, sourcemeta::core::schema_resolver)};
+///
+/// assert(result.has_value());
+/// assert(result->size() == 2);
+/// ```
+SOURCEMETA_CORE_JSONSCHEMA_EXPORT
+auto parse_vocabularies(const JSON &schema, const SchemaResolver &resolver,
+                        std::string_view default_dialect = "")
+    -> std::optional<Vocabularies>;
+
+/// @ingroup jsonschema
+///
+/// A shortcut to sourcemeta::core::parse_vocabularies when the base dialect
+/// is already known.
+SOURCEMETA_CORE_JSONSCHEMA_EXPORT
+auto parse_vocabularies(const JSON &schema,
+                        const SchemaBaseDialect base_dialect)
+    -> std::optional<Vocabularies>;
+
+/// @ingroup jsonschema
+///
 /// List the vocabularies that a specific schema makes use of. If you set a
 /// default dialect URI, this will be used if the given schema does not
 /// declare the
@@ -408,7 +452,7 @@ auto wrap(std::string_view identifier) -> JSON;
 /// @ingroup jsonschema
 ///
 /// Wrap a schema to only access one of its subschemas. This is useful if you
-/// want to perform validation only a specific part of the schemaw without
+/// want to perform validation on only a specific part of the schema without
 /// having to reinvent the wheel. For example:
 ///
 /// ```cpp

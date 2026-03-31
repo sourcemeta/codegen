@@ -98,8 +98,13 @@ public:
         locations.reserve(input.size());
       }
 
+// TODO: Remove once GitHub Actions ship proper C++23 support
+#if __cpp_lib_containers_ranges >= 202202L
+      locations.assign_range(input);
+#else
       locations.assign(std::make_move_iterator(std::begin(input)),
                        std::make_move_iterator(std::end(input)));
+#endif
     }
 
     Result(std::vector<Pointer> &&locations_, JSON::String &&description_)
@@ -231,16 +236,17 @@ public:
   /// Add a rule to the bundle. Rules are evaluated in the order they are added.
   /// It is the caller's responsibility to not add duplicate rules.
   template <std::derived_from<SchemaTransformRule> T, typename... Args>
-  auto add(Args &&...args) -> void {
+  auto add(Args &&...args) -> std::string_view {
     static_assert(requires { typename T::mutates; });
     static_assert(requires { typename T::reframe_after_transform; });
     static_assert(
         std::is_same_v<typename T::mutates, std::true_type> ||
         std::is_same_v<typename T::reframe_after_transform, std::false_type>);
-    this->rules.emplace_back(
+    auto &entry{this->rules.emplace_back(
         std::make_unique<T>(std::forward<Args>(args)...),
         std::is_same_v<typename T::mutates, std::true_type>,
-        std::is_same_v<typename T::reframe_after_transform, std::true_type>);
+        std::is_same_v<typename T::reframe_after_transform, std::true_type>)};
+    return std::get<0>(entry)->name();
   }
 
   /// Remove a rule from the bundle

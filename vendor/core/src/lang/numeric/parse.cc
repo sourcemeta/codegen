@@ -1,6 +1,8 @@
 #include <sourcemeta/core/numeric_parse.h>
 
-#include <stdexcept> // std::invalid_argument, std::out_of_range
+#include <charconv>     // std::from_chars
+#include <stdexcept>    // std::invalid_argument, std::out_of_range
+#include <system_error> // std::errc
 
 namespace sourcemeta::core {
 
@@ -16,13 +18,19 @@ auto to_double(const std::string &input) noexcept -> std::optional<double> {
 
 auto to_int64_t(const std::string &input) noexcept
     -> std::optional<std::int64_t> {
-  try {
-    return static_cast<std::int64_t>(std::stoll(input));
-  } catch (const std::invalid_argument &) {
-    return std::nullopt;
-  } catch (const std::out_of_range &) {
+  return to_int64_t(input, 10);
+}
+
+auto to_int64_t(const std::string &input, const int base) noexcept
+    -> std::optional<std::int64_t> {
+  std::int64_t value{};
+  const auto result =
+      std::from_chars(input.data(), input.data() + input.size(), value, base);
+  if (result.ec != std::errc{}) {
     return std::nullopt;
   }
+
+  return value;
 }
 
 } // namespace sourcemeta::core

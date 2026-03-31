@@ -11,6 +11,7 @@
 #include <sourcemeta/core/jsonschema_types.h>
 #include <sourcemeta/core/jsonschema_walker.h>
 
+#include <concepts>      // std::invocable
 #include <cstdint>       // std::uint8_t
 #include <functional>    // std::reference_wrapper
 #include <map>           // std::map
@@ -127,6 +128,8 @@ public:
   /// A JSON Schema reference frame is a mapping of URIs to schema identifiers,
   /// JSON Pointers within the schema, and subschemas dialects. We call it
   /// reference frame as this mapping is essential for resolving references.
+  // TODO: Consider replacing std::map with std::flat_map once libc++
+  // supports it (__cpp_lib_flat_map) for better cache locality
   using Locations =
       // While it might seem weird that we namespace the location URIs with a
       // reference type, it is essential for distinguishing schema resource URIs
@@ -209,14 +212,25 @@ public:
                    std::optional<std::reference_wrapper<const Location>>>;
 
   /// Iterate over all resource URIs in the frame
-  auto for_each_resource_uri(
-      const std::function<void(std::string_view)> &callback) const -> void;
+  template <std::invocable<std::string_view> F>
+  auto for_each_resource_uri(const F &callback) const -> void {
+    for (const auto &[key, location] : this->locations_) {
+      if (location.type == LocationType::Resource) {
+        callback(key.second);
+      }
+    }
+  }
 
   /// Iterate over all unresolved references (where destination cannot be
   /// traversed)
-  auto for_each_unresolved_reference(
-      const std::function<void(const WeakPointer &, const ReferencesEntry &)>
-          &callback) const -> void;
+  template <std::invocable<const WeakPointer &, const ReferencesEntry &> F>
+  auto for_each_unresolved_reference(const F &callback) const -> void {
+    for (const auto &[key, reference] : this->references_) {
+      if (!this->traverse(reference.destination).has_value()) {
+        callback(key.second, reference);
+      }
+    }
+  }
 
   /// Check if there are any references to a given location pointer
   [[nodiscard]] auto has_references_to(const WeakPointer &pointer) const
@@ -242,15 +256,12 @@ public:
   auto reset() -> void;
 
   /// Determines if a location could be evaluated during validation
-  [[nodiscard]] auto is_reachable(const Location &location,
+  [[nodiscard]] auto is_reachable(const Location &base,
+                                  const Location &location,
                                   const SchemaWalker &walker,
                                   const SchemaResolver &resolver) const -> bool;
 
 private:
-  auto populate_pointer_to_location() const -> void;
-  auto populate_reachability(const SchemaWalker &walker,
-                             const SchemaResolver &resolver) const -> void;
-
   Mode mode_;
 // Exporting symbols that depends on the standard C++ library is considered
 // safe.
@@ -265,10 +276,72 @@ private:
                              std::vector<const Location *>, WeakPointer::Hasher,
                              WeakPointer::Comparator>
       pointer_to_location_;
-  mutable std::unordered_map<std::reference_wrapper<const WeakPointer>, bool,
+  mutable std::unordered_set<std::reference_wrapper<const WeakPointer>,
                              WeakPointer::Hasher, WeakPointer::Comparator>
+      pointers_with_non_orphan_;
+  using ReachabilityCache = std::unordered_map<const WeakPointer *, bool>;
+  struct ReachabilityKey {
+    const WeakPointer *pointer;
+    bool orphan;
+    auto operator==(const ReachabilityKey &other) const noexcept -> bool {
+      return this->pointer == other.pointer && this->orphan == other.orphan;
+    }
+  };
+  struct ReachabilityKeyHasher {
+    auto operator()(const ReachabilityKey &key) const noexcept -> std::size_t {
+      return std::hash<const void *>{}(key.pointer) ^
+             (std::hash<bool>{}(key.orphan) << 1);
+    }
+  };
+  mutable std::unordered_map<ReachabilityKey, ReachabilityCache,
+                             ReachabilityKeyHasher>
       reachability_;
+  mutable std::unordered_map<std::reference_wrapper<const WeakPointer>,
+                             std::vector<const WeakPointer *>,
+                             WeakPointer::Hasher, WeakPointer::Comparator>
+      references_by_destination_;
+  mutable std::unordered_set<std::reference_wrapper<const WeakPointer>,
+                             WeakPointer::Hasher, WeakPointer::Comparator>
+      location_members_children_;
+  mutable std::unordered_map<std::reference_wrapper<const WeakPointer>,
+                             std::vector<const Location *>, WeakPointer::Hasher,
+                             WeakPointer::Comparator>
+      descendants_by_pointer_;
+  struct PotentialSource {
+    const WeakPointer *source_pointer;
+    WeakPointer source_parent;
+    bool crosses;
+  };
+  mutable std::unordered_map<const Location *, std::vector<PotentialSource>>
+      potential_sources_by_location_;
+  struct ReachabilityEdge {
+    const Location *target;
+    bool orphan_context_only;
+    bool is_reference;
+  };
+  mutable std::unordered_map<const Location *, std::vector<ReachabilityEdge>>
+      reachability_graph_;
+  mutable std::unordered_map<std::reference_wrapper<const WeakPointer>,
+                             const WeakPointer *, WeakPointer::Hasher,
+                             WeakPointer::Comparator>
+      canonical_pointer_;
+  mutable std::unordered_map<const Location *, const WeakPointer *>
+      location_to_canonical_;
   bool standalone_{false};
+
+  auto populate_pointer_to_location() const -> void;
+  auto populate_reference_graph() const -> void;
+  auto populate_location_members(const SchemaWalker &walker,
+                                 const SchemaResolver &resolver) const -> void;
+  auto populate_descendants() const -> void;
+  auto populate_potential_sources(const SchemaWalker &walker,
+                                  const SchemaResolver &resolver) const -> void;
+  auto populate_reachability_graph(const SchemaWalker &walker,
+                                   const SchemaResolver &resolver) const
+      -> void;
+  auto populate_reachability(const Location &base, const SchemaWalker &walker,
+                             const SchemaResolver &resolver) const
+      -> const ReachabilityCache &;
 #if defined(_MSC_VER)
 #pragma warning(default : 4251 4275)
 #endif

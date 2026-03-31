@@ -3,15 +3,19 @@
 
 #include <sourcemeta/core/jsonpointer_token.h>
 
-#include <algorithm>        // std::copy, std::equal
+#include <algorithm>        // std::move, std::equal
 #include <cassert>          // assert
 #include <cstddef>          // std::size_t
 #include <functional>       // std::reference_wrapper
 #include <initializer_list> // std::initializer_list
 #include <iterator>         // std::advance, std::back_inserter
-#include <type_traits>      // std::enable_if_t, std::is_same_v, std::false_type
+#include <optional>         // std::optional
+#include <ranges>           // std::ranges::subrange
+#include <type_traits>      // std::is_same_v, std::decay_t
 #include <utility>          // std::move
 #include <vector>           // std::vector
+
+#include <sourcemeta/core/preprocessor.h>
 
 namespace sourcemeta::core {
 
@@ -21,8 +25,6 @@ public:
   using Token = GenericToken<PropertyT, Hash>;
   using Value = typename Token::Value;
   using Container = std::vector<Token>;
-  // We manually provide a JSON transformer
-  using json_auto = std::false_type;
 
   /// This constructor creates an empty JSON Pointer. For example:
   ///
@@ -131,7 +133,7 @@ public:
   /// assert(pointer.back().is_property());
   /// assert(pointer.back().to_property() == "bar");
   /// ```
-  [[nodiscard]] auto back() const -> const_reference {
+  [[nodiscard]] SOURCEMETA_FORCEINLINE auto back() const -> const_reference {
     assert(!this->empty());
     return this->data.back();
   }
@@ -146,7 +148,7 @@ public:
   /// const sourcemeta::core::Pointer pointer{"foo", "bar"};
   /// assert(pointer.size() == 2);
   /// ```
-  [[nodiscard]] auto size() const noexcept -> size_type {
+  [[nodiscard]] SOURCEMETA_FORCEINLINE auto size() const noexcept -> size_type {
     return this->data.size();
   }
 
@@ -162,7 +164,7 @@ public:
   /// assert(empty_pointer.empty());
   /// assert(!non_empty_pointer.empty());
   /// ```
-  [[nodiscard]] auto empty() const noexcept -> bool {
+  [[nodiscard]] SOURCEMETA_FORCEINLINE auto empty() const noexcept -> bool {
     return this->data.empty();
   }
 
@@ -179,7 +181,8 @@ public:
   /// assert(!pointer.empty());
   /// assert(token.is_property());
   /// ```
-  template <class... Args> auto emplace_back(Args &&...args) -> reference {
+  template <class... Args>
+  SOURCEMETA_FORCEINLINE auto emplace_back(Args &&...args) -> reference {
     return this->data.emplace_back(std::forward<Args>(args)...);
   }
 
@@ -215,7 +218,8 @@ public:
   /// assert(pointer.at(1).to_property() == "bar");
   /// assert(pointer.at(2).to_property() == "baz");
   /// ```
-  auto push_back(const GenericPointer<PropertyT, Hash> &other) -> void {
+  SOURCEMETA_FORCEINLINE auto
+  push_back(const GenericPointer<PropertyT, Hash> &other) -> void {
     if (other.empty()) {
       return;
     } else if (other.size() == 1) {
@@ -224,8 +228,13 @@ public:
     }
 
     this->reserve(this->data.size() + other.size());
+// TODO: Remove once GitHub Actions ship proper C++23 support
+#if __cpp_lib_containers_ranges >= 202202L
+    this->data.append_range(other.data);
+#else
     std::copy(other.data.cbegin(), other.data.cend(),
               std::back_inserter(this->data));
+#endif
   }
 
   /// Move a JSON Pointer into the back of a JSON Pointer. For example:
@@ -248,7 +257,8 @@ public:
   /// assert(pointer.at(1).to_property() == "bar");
   /// assert(pointer.at(2).to_property() == "baz");
   /// ```
-  auto push_back(GenericPointer<PropertyT, Hash> &&other) -> void {
+  SOURCEMETA_FORCEINLINE auto push_back(GenericPointer<PropertyT, Hash> &&other)
+      -> void {
     if (other.empty()) {
       return;
     } else if (other.size() == 1) {
@@ -284,7 +294,8 @@ public:
   /// assert(pointer.at(2).to_property() == "baz");
   /// ```
   template <typename OtherT>
-  auto push_back(const GenericPointer<OtherT, Hash> &other) -> void
+  SOURCEMETA_FORCEINLINE auto
+  push_back(const GenericPointer<OtherT, Hash> &other) -> void
     requires std::is_same_v<PropertyT, std::reference_wrapper<const OtherT>>
   {
     if (other.empty()) {
@@ -328,7 +339,8 @@ public:
   /// assert(pointer.at(0).to_property() == "foo");
   /// assert(pointer.at(1).to_property() == "bar");
   /// ```
-  auto push_back(const typename Token::Property &property) -> void {
+  SOURCEMETA_FORCEINLINE auto
+  push_back(const typename Token::Property &property) -> void {
     this->data.emplace_back(property);
   }
 
@@ -349,7 +361,8 @@ public:
   /// assert(pointer.at(0).to_property() == "foo");
   /// assert(pointer.at(1).to_property() == "bar");
   /// ```
-  auto push_back(typename Token::Property &&property) -> void {
+  SOURCEMETA_FORCEINLINE auto push_back(typename Token::Property &&property)
+      -> void {
     this->data.emplace_back(std::move(property));
   }
 
@@ -371,7 +384,8 @@ public:
   /// assert(pointer.at(0).to_property() == "foo");
   /// assert(pointer.at(1).to_index() == 0);
   /// ```
-  auto push_back(const typename Token::Index &index) -> void {
+  SOURCEMETA_FORCEINLINE auto push_back(const typename Token::Index &index)
+      -> void {
     this->data.emplace_back(index);
   }
 
@@ -456,7 +470,13 @@ public:
     std::advance(new_begin, index);
     GenericPointer<PropertyT, Hash> result;
     result.reserve(this->size() - index);
+// TODO: Remove once GitHub Actions ship proper C++23 support
+#if __cpp_lib_containers_ranges >= 202202L
+    result.data.append_range(
+        std::ranges::subrange(new_begin, this->data.cend()));
+#else
     std::copy(new_begin, this->data.cend(), std::back_inserter(result.data));
+#endif
     return result;
   }
 
@@ -487,7 +507,12 @@ public:
     std::advance(new_end, end);
     GenericPointer<PropertyT, Hash> result;
     result.reserve(end - start);
+// TODO: Remove once GitHub Actions ship proper C++23 support
+#if __cpp_lib_containers_ranges >= 202202L
+    result.data.append_range(std::ranges::subrange(new_begin, new_end));
+#else
     std::copy(new_begin, new_end, std::back_inserter(result.data));
+#endif
     return result;
   }
 
@@ -660,7 +685,13 @@ public:
     auto new_begin{this->data.cbegin()};
     std::advance(new_begin, index);
     GenericPointer<PropertyT, Hash> result{replacement};
+// TODO: Remove once GitHub Actions ship proper C++23 support
+#if __cpp_lib_containers_ranges >= 202202L
+    result.data.append_range(
+        std::ranges::subrange(new_begin, this->data.cend()));
+#else
     std::copy(new_begin, this->data.cend(), std::back_inserter(result.data));
+#endif
     return result;
   }
 
@@ -681,6 +712,10 @@ public:
   [[nodiscard]] auto
   resolve_from(const GenericPointer<PropertyT, Hash> &base) const
       -> GenericPointer<PropertyT, Hash> {
+    if (base.empty()) {
+      return *this;
+    }
+
     typename Container::size_type index{0};
     while (index < base.size()) {
       if (index >= this->size() || base.data[index] != this->data[index]) {
@@ -694,7 +729,16 @@ public:
     auto new_begin{this->data.cbegin()};
     std::advance(new_begin, index);
     GenericPointer<PropertyT, Hash> result;
+    const auto remaining{static_cast<typename Container::size_type>(
+        this->data.cend() - new_begin)};
+    result.data.reserve(remaining);
+// TODO: Remove once GitHub Actions ship proper C++23 support
+#if __cpp_lib_containers_ranges >= 202202L
+    result.data.append_range(
+        std::ranges::subrange(new_begin, this->data.cend()));
+#else
     std::copy(new_begin, this->data.cend(), std::back_inserter(result.data));
+#endif
     return result;
   }
 
@@ -759,15 +803,12 @@ public:
     }
 
   private:
+    // Intentionally only fold hash.a for performance, as the first
+    // 16 bytes already provide sufficient entropy for bucketing
     static auto property_hash(const typename Hash::hash_type &hash) noexcept
         -> std::size_t {
-#if defined(__SIZEOF_INT128__)
-      const auto *parts =
-          reinterpret_cast<const std::uint64_t *>(&hash.a); // NOLINT
-      return parts[0] ^ parts[1];
-#else
-      return hash.a ^ hash.b;
-#endif
+      return static_cast<std::size_t>(hash.a) ^
+             static_cast<std::size_t>(hash.a >> 64);
     }
   };
 
@@ -803,6 +844,40 @@ public:
       return left == right.get();
     }
   };
+
+  /// Serialise a JSON Pointer as a JSON array of tokens
+  [[nodiscard]] auto to_json() const -> Value {
+    auto result{Value::make_array()};
+    for (const auto &token : this->data) {
+      result.push_back(token.to_json());
+    }
+
+    return result;
+  }
+
+  /// Deserialise a JSON Pointer from a JSON array of tokens
+  static auto from_json(const Value &value)
+      -> std::optional<GenericPointer<PropertyT, Hash>>
+    requires std::is_same_v<PropertyT, typename Value::String>
+  {
+    if (!value.is_array()) {
+      return std::nullopt;
+    }
+
+    GenericPointer<PropertyT, Hash> result;
+    for (const auto &element : value.as_array()) {
+      if (element.is_string()) {
+        result.emplace_back(element.to_string());
+      } else if (element.is_integer()) {
+        result.emplace_back(
+            static_cast<typename Token::Index>(element.to_integer()));
+      } else {
+        return std::nullopt;
+      }
+    }
+
+    return result;
+  }
 
 private:
   Container data;
