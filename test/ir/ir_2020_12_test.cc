@@ -1364,26 +1364,15 @@ TEST(IR_2020_12, dynamic_ref_multiple_anchors) {
 
   using namespace sourcemeta::codegen;
 
-  ASSERT_FALSE(result.empty());
-
-  // Find the IRUnion for the $dynamicRef at items
-  bool found_union{false};
-  for (const auto &entity : result) {
-    if (!std::holds_alternative<IRUnion>(entity)) {
-      continue;
-    }
-
-    const auto &ir_union{std::get<IRUnion>(entity)};
-    if (sourcemeta::core::to_string(ir_union.pointer) != "/$defs/list/items") {
-      continue;
-    }
-
-    found_union = true;
-    EXPECT_EQ(ir_union.values.size(), 2);
-    break;
-  }
-
-  EXPECT_TRUE(found_union);
+  ASSERT_EQ(result.size(), 5);
+  EXPECT_IR_SCALAR(result, 0, String, "/$defs/stringItem");
+  EXPECT_TRUE(std::holds_alternative<IRUnion>(result.at(1)));
+  EXPECT_AS_STRING(std::get<IRUnion>(result.at(1)).pointer,
+                   "/$defs/list/items");
+  EXPECT_EQ(std::get<IRUnion>(result.at(1)).values.size(), 2);
+  EXPECT_IR_SCALAR(result, 2, Number, "/$defs/list/$defs/defaultItem");
+  EXPECT_IR_ARRAY(result, 3, "/$defs/list", "/$defs/list/items");
+  EXPECT_IR_REFERENCE(result, 4, "", "/$defs/list");
 }
 
 TEST(IR_2020_12, dynamic_anchor_on_typed_schema) {
