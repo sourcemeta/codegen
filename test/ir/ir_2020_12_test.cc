@@ -1307,3 +1307,99 @@ TEST(IR_2020_12, object_with_mixed_prefix_and_non_prefix_patterns) {
   EXPECT_EQ(object.pattern.at(0).prefix.value(), "x-");
   EXPECT_FALSE(object.pattern.at(1).prefix.has_value());
 }
+
+TEST(IR_2020_12, dynamic_ref_single_anchor) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "array",
+    "items": { "$dynamicRef": "#item" },
+    "$defs": {
+      "foo": {
+        "$dynamicAnchor": "item",
+        "type": "string"
+      }
+    }
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
+
+  using namespace sourcemeta::codegen;
+
+  ASSERT_FALSE(result.empty());
+  EXPECT_IR_REFERENCE(result, 0, "/items", "/$defs/foo");
+  EXPECT_IR_SCALAR(result, 1, String, "/$defs/foo");
+}
+
+TEST(IR_2020_12, dynamic_ref_multiple_anchors) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://example.com/root",
+    "$ref": "list",
+    "$defs": {
+      "stringItem": {
+        "$dynamicAnchor": "item",
+        "type": "string"
+      },
+      "list": {
+        "$id": "list",
+        "type": "array",
+        "items": { "$dynamicRef": "#item" },
+        "$defs": {
+          "defaultItem": {
+            "$dynamicAnchor": "item",
+            "type": "number"
+          }
+        }
+      }
+    }
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
+
+  using namespace sourcemeta::codegen;
+
+  ASSERT_FALSE(result.empty());
+
+  // Find the IRUnion for the $dynamicRef at items
+  bool found_union{false};
+  for (const auto &entity : result) {
+    if (!std::holds_alternative<IRUnion>(entity)) {
+      continue;
+    }
+
+    const auto &ir_union{std::get<IRUnion>(entity)};
+    if (sourcemeta::core::to_string(ir_union.pointer) != "/$defs/list/items") {
+      continue;
+    }
+
+    found_union = true;
+    EXPECT_EQ(ir_union.values.size(), 2);
+    break;
+  }
+
+  EXPECT_TRUE(found_union);
+}
+
+TEST(IR_2020_12, dynamic_anchor_on_typed_schema) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$dynamicAnchor": "item",
+    "type": "string"
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
+
+  using namespace sourcemeta::codegen;
+
+  EXPECT_EQ(result.size(), 1);
+  EXPECT_IR_SCALAR(result, 0, String, "");
+}
