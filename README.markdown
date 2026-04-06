@@ -23,8 +23,8 @@ to use a JSON Schema validator at runtime to enforce remaining constraints.
 | Core (2020-12) | `$ref` | Yes |
 | Core (2020-12) | `$defs` | Yes |
 | Core (2020-12) | `$anchor` | Yes |
-| Core (2020-12) | `$dynamicAnchor` | Pending |
-| Core (2020-12) | `$dynamicRef` | Pending |
+| Core (2020-12) | `$dynamicAnchor` | Yes |
+| Core (2020-12) | `$dynamicRef` | Yes |
 | Core (2020-12) | `$vocabulary` | Ignored |
 | Core (2020-12) | `$comment` | Ignored |
 | Applicator (2020-12) | `properties` | Yes |
