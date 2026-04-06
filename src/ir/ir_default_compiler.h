@@ -146,19 +146,18 @@ auto handle_object(const sourcemeta::core::JSON &schema,
           frame.traverse(sourcemeta::core::to_weak_pointer(pattern_pointer))};
       assert(pattern_location.has_value());
 
+      std::optional<std::string> prefix{std::nullopt};
       const auto regex{sourcemeta::core::to_regex(entry.first)};
-      if (!regex.has_value() ||
-          !std::holds_alternative<sourcemeta::core::RegexTypePrefix>(
+      if (regex.has_value() &&
+          std::holds_alternative<sourcemeta::core::RegexTypePrefix>(
               regex.value())) {
-        throw UnsupportedKeywordValueError(
-            schema, location.pointer, "patternProperties",
-            "Only prefix patterns are supported");
+        prefix = std::get<sourcemeta::core::RegexTypePrefix>(regex.value());
       }
 
       pattern.push_back(IRObjectPatternProperty{
           {.pointer = std::move(pattern_pointer),
            .symbol = symbol(frame, pattern_location.value().get())},
-          std::get<sourcemeta::core::RegexTypePrefix>(regex.value())});
+          std::move(prefix)});
     }
   }
 

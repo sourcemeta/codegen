@@ -1259,7 +1259,7 @@ TEST(IR_2020_12, object_with_pattern_properties_and_additional_false) {
   EXPECT_FALSE(std::get<bool>(object.additional));
 }
 
-TEST(IR_2020_12, object_with_non_prefix_pattern_properties_throws) {
+TEST(IR_2020_12, object_with_non_prefix_pattern_properties) {
   const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
@@ -1268,9 +1268,42 @@ TEST(IR_2020_12, object_with_non_prefix_pattern_properties_throws) {
     }
   })JSON")};
 
-  EXPECT_THROW(
+  const auto result{
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
                                    sourcemeta::core::schema_resolver,
-                                   sourcemeta::codegen::default_compiler),
-      sourcemeta::codegen::UnsupportedKeywordValueError);
+                                   sourcemeta::codegen::default_compiler)};
+
+  using namespace sourcemeta::codegen;
+
+  ASSERT_FALSE(result.empty());
+  EXPECT_TRUE(std::holds_alternative<IRObject>(result.back()));
+  const auto &object{std::get<IRObject>(result.back())};
+  EXPECT_EQ(object.pattern.size(), 1);
+  EXPECT_FALSE(object.pattern.at(0).prefix.has_value());
+}
+
+TEST(IR_2020_12, object_with_mixed_prefix_and_non_prefix_patterns) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "patternProperties": {
+      "^x-": { "type": "string" },
+      "[0-9]+": { "type": "integer" }
+    }
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
+
+  using namespace sourcemeta::codegen;
+
+  ASSERT_FALSE(result.empty());
+  EXPECT_TRUE(std::holds_alternative<IRObject>(result.back()));
+  const auto &object{std::get<IRObject>(result.back())};
+  EXPECT_EQ(object.pattern.size(), 2);
+  EXPECT_TRUE(object.pattern.at(0).prefix.has_value());
+  EXPECT_EQ(object.pattern.at(0).prefix.value(), "x-");
+  EXPECT_FALSE(object.pattern.at(1).prefix.has_value());
 }
