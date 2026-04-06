@@ -11,6 +11,7 @@
 #include <functional>  // std::function
 #include <memory>      // std::unique_ptr
 #include <span>        // std::span
+#include <string>      // std::string
 #include <string_view> // std::string_view
 #include <utility>     // std::pair
 #include <variant>     // std::variant
@@ -68,6 +69,10 @@ public:
   /// Construct an empty router
   URITemplateRouter() = default;
 
+  /// Construct a router with a base path prefix. During matching, the base
+  /// path is stripped from incoming request paths before matching
+  explicit URITemplateRouter(std::string_view base_path);
+
   // To avoid mistakes
   URITemplateRouter(const URITemplateRouter &) = delete;
   URITemplateRouter(URITemplateRouter &&) = delete;
@@ -95,8 +100,12 @@ public:
   [[nodiscard]] auto arguments() const noexcept
       -> const std::vector<std::pair<Identifier, std::vector<Argument>>> &;
 
+  /// Access the base path prefix
+  [[nodiscard]] auto base_path() const noexcept -> std::string_view;
+
 private:
   Node root_;
+  std::string base_path_;
   std::vector<std::pair<Identifier, std::vector<Argument>>> arguments_;
 };
 
@@ -104,25 +113,6 @@ private:
 /// A read-only view of a serialized URI Template router
 class SOURCEMETA_CORE_URITEMPLATE_EXPORT URITemplateRouterView {
 public:
-  /// A serialized node in the binary format
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable : 4324)
-#endif
-  struct alignas(8) Node {
-    std::uint32_t string_offset;
-    std::uint32_t string_length;
-    std::uint32_t first_literal_child;
-    std::uint32_t literal_child_count;
-    std::uint32_t variable_child;
-    URITemplateRouter::NodeType type;
-    std::uint8_t padding;
-    URITemplateRouter::Identifier identifier;
-  };
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#endif
-
   /// Save a router to a binary file
   static auto save(const URITemplateRouter &router,
                    const std::filesystem::path &path) -> void;
@@ -147,6 +137,9 @@ public:
   auto arguments(const URITemplateRouter::Identifier identifier,
                  const URITemplateRouter::ArgumentCallback &callback) const
       -> void;
+
+  /// Access the base path prefix
+  [[nodiscard]] auto base_path() const noexcept -> std::string_view;
 
 private:
   std::vector<std::uint8_t> data_;
