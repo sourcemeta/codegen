@@ -64,7 +64,7 @@ struct IRObjectValue : IRType {
 
 /// @ingroup ir
 struct IRObjectPatternProperty : IRType {
-  std::string prefix;
+  std::optional<std::string> prefix;
 };
 
 /// @ingroup ir

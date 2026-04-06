@@ -1,7 +1,8 @@
 #include <sourcemeta/codegen/generator.h>
 
-#include <iomanip> // std::hex, std::setfill, std::setw
-#include <sstream> // std::ostringstream
+#include <algorithm> // std::ranges::any_of
+#include <iomanip>   // std::hex, std::setfill, std::setw
+#include <sstream>   // std::ostringstream
 
 namespace {
 
@@ -137,7 +138,12 @@ auto TypeScript::operator()(const IRObject &entry) -> void {
   }
 
   for (const auto &pattern_property : entry.pattern) {
-    this->output << "  [key: `" << pattern_property.prefix << "${string}`]: "
+    if (!pattern_property.prefix.has_value()) {
+      continue;
+    }
+
+    this->output << "  [key: `" << pattern_property.prefix.value()
+                 << "${string}`]: "
                  << mangle(this->prefix, pattern_property.pointer,
                            pattern_property.symbol, this->cache);
 
@@ -146,11 +152,11 @@ auto TypeScript::operator()(const IRObject &entry) -> void {
     // is a sub-prefix of another (i.e. "x-data-" starts with "x-"),
     // intersect the types so the constraint is satisfied
     for (const auto &other : entry.pattern) {
-      if (&other == &pattern_property) {
+      if (&other == &pattern_property || !other.prefix.has_value()) {
         continue;
       }
 
-      if (pattern_property.prefix.starts_with(other.prefix)) {
+      if (pattern_property.prefix.value().starts_with(other.prefix.value())) {
         this->output << " & "
                      << mangle(this->prefix, other.pointer, other.symbol,
                                this->cache);
@@ -160,9 +166,14 @@ auto TypeScript::operator()(const IRObject &entry) -> void {
     this->output << ";\n";
   }
 
+  const auto has_non_prefix_pattern{
+      std::ranges::any_of(entry.pattern, [](const auto &pattern_property) {
+        return !pattern_property.prefix.has_value();
+      })};
+
   if (allows_any_additional) {
     this->output << "  [key: string]: unknown | undefined;\n";
-  } else if (has_typed_additional) {
+  } else if (has_typed_additional || has_non_prefix_pattern) {
     // TypeScript index signatures must be a supertype of all property value
     // types. We use a union of all member types plus the additional properties
     // type plus undefined (for optional properties).
@@ -186,11 +197,14 @@ auto TypeScript::operator()(const IRObject &entry) -> void {
                    << " |\n";
     }
 
-    const auto &additional_type{std::get<IRType>(entry.additional)};
-    this->output << "    "
-                 << mangle(this->prefix, additional_type.pointer,
-                           additional_type.symbol, this->cache)
-                 << " |\n";
+    if (has_typed_additional) {
+      const auto &additional_type{std::get<IRType>(entry.additional)};
+      this->output << "    "
+                   << mangle(this->prefix, additional_type.pointer,
+                             additional_type.symbol, this->cache)
+                   << " |\n";
+    }
+
     this->output << "    undefined;\n";
   }
 

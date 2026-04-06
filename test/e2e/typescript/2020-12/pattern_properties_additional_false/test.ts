@@ -22,3 +22,9 @@ const test4: StrictExt = {
   // @ts-expect-error
   other: "value"
 };
+
+// Edge case: key is exactly the prefix with empty suffix
+const test5: StrictExt = {
+  name: "hello",
+  "x-": "value"
+};

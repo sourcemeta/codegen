@@ -32,7 +32,7 @@ to use a JSON Schema validator at runtime to enforce remaining constraints.
 | Applicator (2020-12) | `items` | Yes |
 | Applicator (2020-12) | `prefixItems` | Yes |
 | Applicator (2020-12) | `anyOf` | Yes |
-| Applicator (2020-12) | `patternProperties` | **PARTIAL** (Prefix patterns only) |
+| Applicator (2020-12) | `patternProperties` | **PARTIAL GIVEN LANGUAGE LIMITATIONS** |
 | Applicator (2020-12) | `propertyNames` | Ignored |
 | Applicator (2020-12) | `dependentSchemas` | Pending |
 | Applicator (2020-12) | `contains` | Ignored |
