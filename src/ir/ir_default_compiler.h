@@ -4,6 +4,7 @@
 #include <sourcemeta/codegen/ir.h>
 
 #include <sourcemeta/core/jsonschema.h>
+#include <sourcemeta/core/regex.h>
 
 #include <cassert>       // assert
 #include <string_view>   // std::string_view
@@ -77,7 +78,7 @@ auto handle_object(const sourcemeta::core::JSON &schema,
        // other properties. Therefore, we whitelist this, but we consider it to
        // be the responsability of the validator
        "additionalProperties", "minProperties", "maxProperties",
-       "propertyNames"});
+       "propertyNames", "patternProperties"});
 
   std::vector<std::pair<sourcemeta::core::JSON::String, IRObjectValue>> members;
 
@@ -133,10 +134,39 @@ auto handle_object(const sourcemeta::core::JSON &schema,
     }
   }
 
+  std::vector<IRObjectPatternProperty> pattern;
+  if (subschema.defines("patternProperties")) {
+    const auto &pattern_props{subschema.at("patternProperties")};
+    for (const auto &entry : pattern_props.as_object()) {
+      auto pattern_pointer{sourcemeta::core::to_pointer(location.pointer)};
+      pattern_pointer.push_back("patternProperties");
+      pattern_pointer.push_back(entry.first);
+
+      const auto pattern_location{
+          frame.traverse(sourcemeta::core::to_weak_pointer(pattern_pointer))};
+      assert(pattern_location.has_value());
+
+      const auto regex{sourcemeta::core::to_regex(entry.first)};
+      if (!regex.has_value() ||
+          !std::holds_alternative<sourcemeta::core::RegexTypePrefix>(
+              regex.value())) {
+        throw UnsupportedKeywordValueError(
+            schema, location.pointer, "patternProperties",
+            "Only prefix patterns are supported");
+      }
+
+      pattern.push_back(IRObjectPatternProperty{
+          {.pointer = std::move(pattern_pointer),
+           .symbol = symbol(frame, pattern_location.value().get())},
+          std::get<sourcemeta::core::RegexTypePrefix>(regex.value())});
+    }
+  }
+
   return IRObject{{.pointer = sourcemeta::core::to_pointer(location.pointer),
                    .symbol = symbol(frame, location)},
                   std::move(members),
-                  std::move(additional)};
+                  std::move(additional),
+                  std::move(pattern)};
 }
 
 auto handle_integer(const sourcemeta::core::JSON &schema,
