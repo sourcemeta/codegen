@@ -1163,3 +1163,114 @@ TEST(IR_2020_12, boolean_false_schema) {
       std::get<IRObject>(result.at(1)).additional));
   EXPECT_TRUE(std::get<bool>(std::get<IRObject>(result.at(1)).additional));
 }
+
+TEST(IR_2020_12, object_with_pattern_properties_prefix) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "name": { "type": "string" }
+    },
+    "patternProperties": {
+      "^x-": { "type": "string" }
+    }
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
+
+  using namespace sourcemeta::codegen;
+
+  EXPECT_EQ(result.size(), 3);
+
+  EXPECT_IR_SCALAR(result, 0, String, "/properties/name");
+  EXPECT_SYMBOL(std::get<IRScalar>(result.at(0)).symbol, "name");
+
+  EXPECT_IR_SCALAR(result, 1, String, "/patternProperties/^x-");
+
+  EXPECT_TRUE(std::holds_alternative<IRObject>(result.at(2)));
+  const auto &object{std::get<IRObject>(result.at(2))};
+  EXPECT_AS_STRING(object.pointer, "");
+  EXPECT_EQ(object.members.size(), 1);
+  EXPECT_EQ(object.members.at(0).first, "name");
+
+  EXPECT_EQ(object.pattern.size(), 1);
+  EXPECT_AS_STRING(object.pattern.at(0).pointer, "/patternProperties/^x-");
+  EXPECT_EQ(object.pattern.at(0).prefix, "x-");
+
+  EXPECT_TRUE(std::holds_alternative<bool>(object.additional));
+  EXPECT_TRUE(std::get<bool>(object.additional));
+}
+
+TEST(IR_2020_12, object_with_multiple_pattern_properties) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "patternProperties": {
+      "^x-": { "type": "string" },
+      "^data-": { "type": "integer" }
+    }
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
+
+  using namespace sourcemeta::codegen;
+
+  ASSERT_FALSE(result.empty());
+  EXPECT_TRUE(std::holds_alternative<IRObject>(result.back()));
+  const auto &object{std::get<IRObject>(result.back())};
+  EXPECT_EQ(object.pattern.size(), 2);
+  EXPECT_EQ(object.pattern.at(0).prefix, "x-");
+  EXPECT_EQ(object.pattern.at(1).prefix, "data-");
+}
+
+TEST(IR_2020_12, object_with_pattern_properties_and_additional_false) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "name": { "type": "string" }
+    },
+    "patternProperties": {
+      "^x-": { "type": "string" }
+    },
+    "additionalProperties": false
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
+
+  using namespace sourcemeta::codegen;
+
+  ASSERT_FALSE(result.empty());
+  EXPECT_TRUE(std::holds_alternative<IRObject>(result.back()));
+  const auto &object{std::get<IRObject>(result.back())};
+  EXPECT_EQ(object.members.size(), 1);
+  EXPECT_EQ(object.pattern.size(), 1);
+  EXPECT_EQ(object.pattern.at(0).prefix, "x-");
+  EXPECT_TRUE(std::holds_alternative<bool>(object.additional));
+  EXPECT_FALSE(std::get<bool>(object.additional));
+}
+
+TEST(IR_2020_12, object_with_non_prefix_pattern_properties_throws) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "patternProperties": {
+      "[a-z]+_id": { "type": "integer" }
+    }
+  })JSON")};
+
+  EXPECT_THROW(
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler),
+      sourcemeta::codegen::UnsupportedKeywordValueError);
+}

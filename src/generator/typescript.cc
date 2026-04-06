@@ -101,7 +101,7 @@ auto TypeScript::operator()(const IRObject &entry) -> void {
       std::holds_alternative<bool>(entry.additional) &&
       std::get<bool>(entry.additional)};
 
-  if (has_typed_additional && entry.members.empty()) {
+  if (has_typed_additional && entry.members.empty() && entry.pattern.empty()) {
     const auto &additional_type{std::get<IRType>(entry.additional)};
     this->output << "export type " << type_name << " = Record<string, "
                  << mangle(this->prefix, additional_type.pointer,
@@ -110,7 +110,7 @@ auto TypeScript::operator()(const IRObject &entry) -> void {
     return;
   }
 
-  if (allows_any_additional && entry.members.empty()) {
+  if (allows_any_additional && entry.members.empty() && entry.pattern.empty()) {
     this->output << "export type " << type_name
                  << " = Record<string, unknown>;\n";
     return;
@@ -136,6 +136,30 @@ auto TypeScript::operator()(const IRObject &entry) -> void {
                  << ";\n";
   }
 
+  for (const auto &pattern_property : entry.pattern) {
+    this->output << "  [key: `" << pattern_property.prefix << "${string}`]: "
+                 << mangle(this->prefix, pattern_property.pointer,
+                           pattern_property.symbol, this->cache);
+
+    // TypeScript requires that a more specific index signature type is
+    // assignable to any less specific one that overlaps it. When a prefix
+    // is a sub-prefix of another (i.e. "x-data-" starts with "x-"),
+    // intersect the types so the constraint is satisfied
+    for (const auto &other : entry.pattern) {
+      if (&other == &pattern_property) {
+        continue;
+      }
+
+      if (pattern_property.prefix.starts_with(other.prefix)) {
+        this->output << " & "
+                     << mangle(this->prefix, other.pointer, other.symbol,
+                               this->cache);
+      }
+    }
+
+    this->output << ";\n";
+  }
+
   if (allows_any_additional) {
     this->output << "  [key: string]: unknown | undefined;\n";
   } else if (has_typed_additional) {
@@ -152,6 +176,13 @@ auto TypeScript::operator()(const IRObject &entry) -> void {
       this->output << "    "
                    << mangle(this->prefix, member_value.pointer,
                              member_value.symbol, this->cache)
+                   << " |\n";
+    }
+
+    for (const auto &pattern_property : entry.pattern) {
+      this->output << "    "
+                   << mangle(this->prefix, pattern_property.pointer,
+                             pattern_property.symbol, this->cache)
                    << " |\n";
     }
 
