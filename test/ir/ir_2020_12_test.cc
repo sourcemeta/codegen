@@ -1393,3 +1393,170 @@ TEST(IR_2020_12, dynamic_anchor_on_typed_schema) {
   EXPECT_EQ(result.size(), 1);
   EXPECT_IR_SCALAR(result, 0, String, "");
 }
+
+TEST(IR_2020_12, allof_two_objects) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "allOf": [
+      {
+        "type": "object",
+        "properties": { "name": { "type": "string" } },
+        "required": [ "name" ],
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "properties": { "age": { "type": "integer" } },
+        "required": [ "age" ],
+        "additionalProperties": false
+      }
+    ]
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
+
+  using namespace sourcemeta::codegen;
+
+  ASSERT_EQ(result.size(), 7);
+  EXPECT_IR_INTERSECTION(result, 6, "", 2);
+}
+
+TEST(IR_2020_12, allof_ref_and_object) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "allOf": [
+      { "$ref": "#/$defs/Base" },
+      {
+        "type": "object",
+        "properties": { "extra": { "type": "string" } },
+        "additionalProperties": false
+      }
+    ],
+    "$defs": {
+      "Base": {
+        "type": "object",
+        "properties": { "id": { "type": "integer" } },
+        "required": [ "id" ],
+        "additionalProperties": false
+      }
+    }
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
+
+  using namespace sourcemeta::codegen;
+
+  EXPECT_IR_INTERSECTION(result, result.size() - 1, "", 2);
+}
+
+TEST(IR_2020_12, allof_single_element) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "allOf": [
+      { "type": "string" }
+    ]
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
+
+  using namespace sourcemeta::codegen;
+
+  ASSERT_EQ(result.size(), 2);
+  EXPECT_IR_SCALAR(result, 0, String, "/allOf/0");
+  EXPECT_IR_REFERENCE(result, 1, "", "/allOf/0");
+}
+
+TEST(IR_2020_12, allof_three_branches) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "allOf": [
+      {
+        "type": "object",
+        "properties": { "a": { "type": "string" } },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "properties": { "b": { "type": "integer" } },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "properties": { "c": { "type": "number" } },
+        "additionalProperties": false
+      }
+    ]
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
+
+  using namespace sourcemeta::codegen;
+
+  EXPECT_IR_INTERSECTION(result, result.size() - 1, "", 3);
+}
+
+TEST(IR_2020_12, allof_with_defs) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$defs": {
+      "Named": {
+        "type": "object",
+        "properties": { "name": { "type": "string" } },
+        "required": [ "name" ],
+        "additionalProperties": false
+      },
+      "Aged": {
+        "type": "object",
+        "properties": { "age": { "type": "integer" } },
+        "required": [ "age" ],
+        "additionalProperties": false
+      }
+    },
+    "allOf": [
+      { "$ref": "#/$defs/Named" },
+      { "$ref": "#/$defs/Aged" }
+    ]
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
+
+  using namespace sourcemeta::codegen;
+
+  EXPECT_IR_INTERSECTION(result, result.size() - 1, "", 2);
+
+  // Both allOf branches should be references to their respective $defs
+  bool found_named{false};
+  bool found_aged{false};
+  for (const auto &entry : result) {
+    if (std::holds_alternative<IRReference>(entry)) {
+      const auto &reference{std::get<IRReference>(entry)};
+      const auto pointer_string{sourcemeta::core::to_string(reference.pointer)};
+      const auto target_string{
+          sourcemeta::core::to_string(reference.target.pointer)};
+      if (pointer_string == "/allOf/0" && target_string == "/$defs/Named") {
+        found_named = true;
+      } else if (pointer_string == "/allOf/1" &&
+                 target_string == "/$defs/Aged") {
+        found_aged = true;
+      }
+    }
+  }
+
+  EXPECT_TRUE(found_named);
+  EXPECT_TRUE(found_aged);
+}
