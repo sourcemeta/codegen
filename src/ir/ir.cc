@@ -7,30 +7,48 @@
 
 #include "ir_default_compiler.h"
 
-namespace sourcemeta::codegen {
+namespace {
 
-static auto
-is_validation_only_location(const sourcemeta::core::WeakPointer &pointer)
-    -> bool {
-  static const std::unordered_set<std::string_view> validation_only_keywords{
-      "propertyNames", "contains"};
-  static const std::unordered_set<std::string_view> container_keywords{
-      "properties", "patternProperties", "$defs", "definitions"};
-  for (std::size_t index = 0; index < pointer.size(); ++index) {
-    const auto &token{pointer.at(index)};
-    if (!token.is_property() ||
-        !validation_only_keywords.contains(token.to_property())) {
-      continue;
-    }
-
-    if (index == 0 || !pointer.at(index - 1).is_property() ||
-        !container_keywords.contains(pointer.at(index - 1).to_property())) {
-      return true;
-    }
+auto is_validation_subschema(
+    const sourcemeta::core::SchemaFrame &frame,
+    const sourcemeta::core::SchemaFrame::Location &location,
+    const sourcemeta::core::SchemaWalker &walker,
+    const sourcemeta::core::SchemaResolver &resolver) -> bool {
+  if (!location.parent.has_value()) {
+    return false;
   }
 
-  return false;
+  const auto &parent{location.parent.value()};
+  if (parent.size() >= location.pointer.size()) {
+    return false;
+  }
+
+  const auto &keyword_token{location.pointer.at(parent.size())};
+  if (!keyword_token.is_property()) {
+    return false;
+  }
+
+  const auto parent_location{frame.traverse(parent)};
+  if (!parent_location.has_value()) {
+    return false;
+  }
+
+  const auto vocabularies{
+      frame.vocabularies(parent_location.value().get(), resolver)};
+  const auto &walker_result{walker(keyword_token.to_property(), vocabularies)};
+  using Type = sourcemeta::core::SchemaKeywordType;
+  if (walker_result.type == Type::ApplicatorValueTraverseAnyPropertyKey ||
+      walker_result.type == Type::ApplicatorValueTraverseAnyItem) {
+    return true;
+  }
+
+  return is_validation_subschema(frame, parent_location.value().get(), walker,
+                                 resolver);
 }
+
+} // anonymous namespace
+
+namespace sourcemeta::codegen {
 
 auto compile(const sourcemeta::core::JSON &input,
              const sourcemeta::core::SchemaWalker &walker,
@@ -91,8 +109,8 @@ auto compile(const sourcemeta::core::JSON &input,
     }
 
     // Skip subschemas under validation-only keywords that do not contribute
-    // to the type structure
-    if (is_validation_only_location(location.pointer)) {
+    // to the type structure (like `contains`)
+    if (is_validation_subschema(frame, location, walker, resolver)) {
       continue;
     }
 
