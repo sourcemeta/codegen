@@ -1,3 +1,5 @@
+export type StringList_0 = StringListGenericList;
+
 export type StringListStringItem = string;
 
 export type StringListGenericListItems =
@@ -28,4 +30,4 @@ export type StringListGenericListDefaultItem =
 
 export type StringListGenericList = StringListGenericListItems[];
 
-export type StringList = StringListGenericList;
+export type StringList = StringList_0;

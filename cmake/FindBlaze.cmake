@@ -1,0 +1,11 @@
+if(NOT Blaze_FOUND)
+  if(CODEGEN_INSTALL)
+    set(SOURCEMETA_BLAZE_INSTALL ON CACHE BOOL "enable installation")
+  else()
+    set(SOURCEMETA_BLAZE_INSTALL OFF CACHE BOOL "disable installation")
+  endif()
+
+  add_subdirectory("${PROJECT_SOURCE_DIR}/vendor/blaze")
+  include(Sourcemeta)
+  set(Blaze_FOUND ON)
+endif()

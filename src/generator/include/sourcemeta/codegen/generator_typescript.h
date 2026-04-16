@@ -29,6 +29,7 @@ public:
   auto operator()(const IRReference &entry) -> void;
   auto operator()(const IRTuple &entry) -> void;
   auto operator()(const IRUnion &entry) -> void;
+  auto operator()(const IRIntersection &entry) -> void;
 
 private:
 // Exporting symbols that depends on the standard C++ library is considered

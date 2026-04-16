@@ -9,7 +9,8 @@ if(NOT CODEGEN_COMPONENTS)
 endif()
 
 include(CMakeFindDependencyMacro)
-find_dependency(Core COMPONENTS regex json jsonschema alterschema)
+find_dependency(Core COMPONENTS regex json jsonschema)
+find_dependency(Blaze COMPONENTS alterschema)
 
 foreach(component ${CODEGEN_COMPONENTS})
   if(component STREQUAL "ir")

@@ -1,11 +1,52 @@
+#include <sourcemeta/blaze/alterschema.h>
 #include <sourcemeta/codegen/ir.h>
-#include <sourcemeta/core/alterschema.h>
 
 #include <algorithm>     // std::ranges::sort
 #include <cassert>       // assert
 #include <unordered_set> // std::unordered_set
 
 #include "ir_default_compiler.h"
+
+namespace {
+
+auto is_validation_subschema(
+    const sourcemeta::core::SchemaFrame &frame,
+    const sourcemeta::core::SchemaFrame::Location &location,
+    const sourcemeta::core::SchemaWalker &walker,
+    const sourcemeta::core::SchemaResolver &resolver) -> bool {
+  if (!location.parent.has_value()) {
+    return false;
+  }
+
+  const auto &parent{location.parent.value()};
+  if (parent.size() >= location.pointer.size()) {
+    return false;
+  }
+
+  const auto &keyword_token{location.pointer.at(parent.size())};
+  if (!keyword_token.is_property()) {
+    return false;
+  }
+
+  const auto parent_location{frame.traverse(parent)};
+  if (!parent_location.has_value()) {
+    return false;
+  }
+
+  const auto vocabularies{
+      frame.vocabularies(parent_location.value().get(), resolver)};
+  const auto &walker_result{walker(keyword_token.to_property(), vocabularies)};
+  using Type = sourcemeta::core::SchemaKeywordType;
+  if (walker_result.type == Type::ApplicatorValueTraverseAnyPropertyKey ||
+      walker_result.type == Type::ApplicatorValueTraverseAnyItem) {
+    return true;
+  }
+
+  return is_validation_subschema(frame, parent_location.value().get(), walker,
+                                 resolver);
+}
+
+} // anonymous namespace
 
 namespace sourcemeta::codegen {
 
@@ -25,9 +66,9 @@ auto compile(const sourcemeta::core::JSON &input,
   // (2) Canonicalize the schema for easier analysis
   // --------------------------------------------------------------------------
 
-  sourcemeta::core::SchemaTransformer canonicalizer;
-  sourcemeta::core::add(canonicalizer,
-                        sourcemeta::core::AlterSchemaMode::Canonicalizer);
+  sourcemeta::blaze::SchemaTransformer canonicalizer;
+  sourcemeta::blaze::add(canonicalizer,
+                         sourcemeta::blaze::AlterSchemaMode::Canonicalizer);
   [[maybe_unused]] const auto canonicalized{canonicalizer.apply(
       schema, walker, resolver,
       [](const auto &, const auto, const auto, const auto &,
@@ -64,6 +105,12 @@ auto compile(const sourcemeta::core::JSON &input,
     // nested resources
     const auto [visited_iterator, inserted] = visited.insert(location.pointer);
     if (!inserted) {
+      continue;
+    }
+
+    // Skip subschemas under validation-only keywords that do not contribute
+    // to the type structure (like `contains`)
+    if (is_validation_subschema(frame, location, walker, resolver)) {
       continue;
     }
 

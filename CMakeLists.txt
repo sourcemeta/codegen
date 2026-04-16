@@ -32,6 +32,7 @@ if(CODEGEN_INSTALL)
 endif()
 
 find_package(Core REQUIRED)
+find_package(Blaze REQUIRED)
 
 # Don't force downstream consumers on it
 if(PROJECT_IS_TOP_LEVEL)

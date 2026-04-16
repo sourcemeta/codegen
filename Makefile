@@ -29,6 +29,10 @@ compile: .always
 	$(CMAKE) --install ./build --prefix ./build/dist --config $(PRESET) --verbose \
 		--component sourcemeta_core_dev
 	$(CMAKE) --install ./build --prefix ./build/dist --config $(PRESET) --verbose \
+		--component sourcemeta_blaze
+	$(CMAKE) --install ./build --prefix ./build/dist --config $(PRESET) --verbose \
+		--component sourcemeta_blaze_dev
+	$(CMAKE) --install ./build --prefix ./build/dist --config $(PRESET) --verbose \
 		--component sourcemeta_codegen
 	$(CMAKE) --install ./build --prefix ./build/dist --config $(PRESET) --verbose \
 		--component sourcemeta_codegen_dev
