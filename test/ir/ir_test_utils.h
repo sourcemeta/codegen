@@ -62,6 +62,27 @@
                 .values.size(),                                                \
             expected_count)
 
+#define EXPECT_IR_CONDITIONAL(result, index, expected_pointer, expected_if,    \
+                              expected_then, expected_else)                    \
+  EXPECT_TRUE(std::holds_alternative<sourcemeta::codegen::IRConditional>(      \
+      result.at(index)))                                                       \
+      << "Expected IRConditional at index " << index;                          \
+  EXPECT_AS_STRING(                                                            \
+      std::get<sourcemeta::codegen::IRConditional>(result.at(index)).pointer,  \
+      expected_pointer);                                                       \
+  EXPECT_AS_STRING(                                                            \
+      std::get<sourcemeta::codegen::IRConditional>(result.at(index))           \
+          .condition.pointer,                                                  \
+      expected_if);                                                            \
+  EXPECT_AS_STRING(                                                            \
+      std::get<sourcemeta::codegen::IRConditional>(result.at(index))           \
+          .consequent.pointer,                                                 \
+      expected_then);                                                          \
+  EXPECT_AS_STRING(                                                            \
+      std::get<sourcemeta::codegen::IRConditional>(result.at(index))           \
+          .alternative.pointer,                                                \
+      expected_else)
+
 #define EXPECT_IR_REFERENCE(result, index, expected_pointer,                   \
                             expected_target_pointer)                           \
   EXPECT_TRUE(std::holds_alternative<sourcemeta::codegen::IRReference>(        \

@@ -612,6 +612,53 @@ auto handle_allof(const sourcemeta::core::JSON &schema,
       std::move(branches)};
 }
 
+auto handle_if_then_else(
+    const sourcemeta::core::JSON &schema,
+    const sourcemeta::core::SchemaFrame &frame,
+    const sourcemeta::core::SchemaFrame::Location &location,
+    const sourcemeta::core::Vocabularies &,
+    const sourcemeta::core::SchemaResolver &,
+    const sourcemeta::core::JSON &subschema) -> IREntity {
+  ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
+                          {"$schema", "$id", "$anchor", "$dynamicAnchor",
+                           "$defs", "$vocabulary", "if", "then", "else",
+                           "title", "description", "default", "deprecated",
+                           "readOnly", "writeOnly", "examples",
+                           "unevaluatedProperties", "unevaluatedItems"});
+
+  assert(subschema.defines("if"));
+  assert(subschema.defines("then"));
+  assert(subschema.defines("else"));
+
+  auto if_pointer{sourcemeta::core::to_pointer(location.pointer)};
+  if_pointer.push_back("if");
+  const auto if_location{
+      frame.traverse(sourcemeta::core::to_weak_pointer(if_pointer))};
+  assert(if_location.has_value());
+
+  auto then_pointer{sourcemeta::core::to_pointer(location.pointer)};
+  then_pointer.push_back("then");
+  const auto then_location{
+      frame.traverse(sourcemeta::core::to_weak_pointer(then_pointer))};
+  assert(then_location.has_value());
+
+  auto else_pointer{sourcemeta::core::to_pointer(location.pointer)};
+  else_pointer.push_back("else");
+  const auto else_location{
+      frame.traverse(sourcemeta::core::to_weak_pointer(else_pointer))};
+  assert(else_location.has_value());
+
+  return IRConditional{
+      {.pointer = sourcemeta::core::to_pointer(location.pointer),
+       .symbol = symbol(frame, location)},
+      {.pointer = std::move(if_pointer),
+       .symbol = symbol(frame, if_location.value().get())},
+      {.pointer = std::move(then_pointer),
+       .symbol = symbol(frame, then_location.value().get())},
+      {.pointer = std::move(else_pointer),
+       .symbol = symbol(frame, else_location.value().get())}};
+}
+
 auto default_compiler(const sourcemeta::core::JSON &schema,
                       const sourcemeta::core::SchemaFrame &frame,
                       const sourcemeta::core::SchemaFrame::Location &location,
@@ -704,8 +751,8 @@ auto default_compiler(const sourcemeta::core::JSON &schema,
     return handle_ref(schema, frame, location, vocabularies, resolver,
                       subschema);
   } else if (subschema.defines("if")) {
-    throw UnsupportedKeywordError(schema, location.pointer, "if",
-                                  "Unsupported keyword in subschema");
+    return handle_if_then_else(schema, frame, location, vocabularies, resolver,
+                               subschema);
   } else if (subschema.defines("not")) {
     throw UnsupportedKeywordError(schema, location.pointer, "not",
                                   "Unsupported keyword in subschema");

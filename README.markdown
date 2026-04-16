@@ -39,9 +39,9 @@ to use a JSON Schema validator at runtime to enforce remaining constraints.
 | Applicator (2020-12) | `allOf` | Yes |
 | Applicator (2020-12) | `oneOf` | **PARTIAL GIVEN LANGUAGE LIMITATIONS** |
 | Applicator (2020-12) | `not` | **CANNOT SUPPORT** |
-| Applicator (2020-12) | `if` | Pending |
-| Applicator (2020-12) | `then` | Pending |
-| Applicator (2020-12) | `else` | Pending |
+| Applicator (2020-12) | `if` | **PARTIAL GIVEN LANGUAGE LIMITATIONS** |
+| Applicator (2020-12) | `then` | **PARTIAL GIVEN LANGUAGE LIMITATIONS** |
+| Applicator (2020-12) | `else` | **PARTIAL GIVEN LANGUAGE LIMITATIONS** |
 | Validation (2020-12) | `type` | Yes |
 | Validation (2020-12) | `enum` | Yes |
 | Validation (2020-12) | `required` | Yes |

@@ -16,12 +16,10 @@ TEST(IR, unsupported_dialect_draft3) {
       sourcemeta::core::SchemaVocabularyError);
 }
 
-TEST(IR, unsupported_keyword_error) {
+TEST(IR, unsupported_keyword_error_not) {
   const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "type": "string",
-    "if": { "minLength": 5 },
-    "then": { "maxLength": 10 }
+    "not": { "type": "string" }
   })JSON")};
 
   EXPECT_THROW(
@@ -55,17 +53,4 @@ TEST(IR, unsupported_keyword_value_error_unknown_type) {
                                    sourcemeta::core::schema_resolver,
                                    sourcemeta::codegen::default_compiler),
       sourcemeta::codegen::UnsupportedKeywordValueError);
-}
-
-TEST(IR, unexpected_schema_error_unsupported_shape) {
-  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "not": { "type": "string" }
-  })JSON")};
-
-  EXPECT_THROW(
-      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
-                                   sourcemeta::core::schema_resolver,
-                                   sourcemeta::codegen::default_compiler),
-      sourcemeta::codegen::UnsupportedKeywordError);
 }
