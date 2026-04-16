@@ -1538,25 +1538,142 @@ TEST(IR_2020_12, allof_with_defs) {
   using namespace sourcemeta::codegen;
 
   EXPECT_IR_INTERSECTION(result, result.size() - 1, "", 2);
+  EXPECT_IR_REFERENCE(result, 0, "/allOf/1", "/$defs/Aged");
+  EXPECT_IR_REFERENCE(result, 1, "/allOf/0", "/$defs/Named");
+}
 
-  // Both allOf branches should be references to their respective $defs
-  bool found_named{false};
-  bool found_aged{false};
-  for (const auto &entry : result) {
-    if (std::holds_alternative<IRReference>(entry)) {
-      const auto &reference{std::get<IRReference>(entry)};
-      const auto pointer_string{sourcemeta::core::to_string(reference.pointer)};
-      const auto target_string{
-          sourcemeta::core::to_string(reference.target.pointer)};
-      if (pointer_string == "/allOf/0" && target_string == "/$defs/Named") {
-        found_named = true;
-      } else if (pointer_string == "/allOf/1" &&
-                 target_string == "/$defs/Aged") {
-        found_aged = true;
-      }
+TEST(IR_2020_12, if_then_else_distinct_object_branches) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "if": {
+      "type": "object",
+      "properties": { "kind": { "const": "circle" } },
+      "required": [ "kind" ]
+    },
+    "then": {
+      "type": "object",
+      "properties": { "radius": { "type": "number" } },
+      "required": [ "radius" ]
+    },
+    "else": {
+      "type": "object",
+      "properties": { "sides": { "type": "integer" } },
+      "required": [ "sides" ]
     }
-  }
+  })JSON")};
 
-  EXPECT_TRUE(found_named);
-  EXPECT_TRUE(found_aged);
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
+
+  using namespace sourcemeta::codegen;
+
+  EXPECT_IR_CONDITIONAL(result, result.size() - 1, "", "/if", "/then", "/else");
+}
+
+TEST(IR_2020_12, if_then_else_implicit_else) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "if": { "type": "string" },
+    "then": { "type": "string", "minLength": 1 }
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
+
+  using namespace sourcemeta::codegen;
+
+  EXPECT_IR_CONDITIONAL(result, result.size() - 1, "", "/if", "/then", "/else");
+}
+
+TEST(IR_2020_12, if_then_else_with_type_sibling) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "string",
+    "if": { "type": "string", "maxLength": 10 },
+    "then": { "type": "string", "pattern": "^short" },
+    "else": { "type": "string", "pattern": "^long" }
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
+
+  using namespace sourcemeta::codegen;
+
+  EXPECT_IR_CONDITIONAL(result, result.size() - 2, "/allOf/0", "/allOf/0/if",
+                        "/allOf/0/then", "/allOf/0/else");
+  EXPECT_IR_INTERSECTION(result, result.size() - 1, "", 2);
+}
+
+TEST(IR_2020_12, if_then_else_with_ref_branches) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$defs": {
+      "Circle": {
+        "type": "object",
+        "properties": { "radius": { "type": "number" } },
+        "required": [ "radius" ],
+        "additionalProperties": false
+      },
+      "Square": {
+        "type": "object",
+        "properties": { "side": { "type": "number" } },
+        "required": [ "side" ],
+        "additionalProperties": false
+      }
+    },
+    "if": {
+      "type": "object",
+      "properties": { "kind": { "const": "circle" } },
+      "required": [ "kind" ]
+    },
+    "then": { "$ref": "#/$defs/Circle" },
+    "else": { "$ref": "#/$defs/Square" }
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
+
+  using namespace sourcemeta::codegen;
+
+  ASSERT_EQ(result.size(), 11);
+  EXPECT_IR_REFERENCE(result, 0, "/then", "/$defs/Circle");
+  EXPECT_IR_REFERENCE(result, 3, "/else", "/$defs/Square");
+  EXPECT_IR_CONDITIONAL(result, 10, "", "/if", "/then", "/else");
+}
+
+TEST(IR_2020_12, if_then_else_nested_in_object_property) {
+  const sourcemeta::core::JSON schema{sourcemeta::core::parse_json(R"JSON({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "value": {
+        "if": { "type": "string" },
+        "then": { "type": "string", "minLength": 1 },
+        "else": { "type": "integer" }
+      }
+    },
+    "additionalProperties": false
+  })JSON")};
+
+  const auto result{
+      sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
+                                   sourcemeta::core::schema_resolver,
+                                   sourcemeta::codegen::default_compiler)};
+
+  using namespace sourcemeta::codegen;
+
+  ASSERT_EQ(result.size(), 6);
+  EXPECT_IR_SCALAR(result, 0, String, "/properties/value/then");
+  EXPECT_IR_SCALAR(result, 1, String, "/properties/value/if");
+  EXPECT_IR_SCALAR(result, 2, Integer, "/properties/value/else");
+  EXPECT_IR_CONDITIONAL(result, 3, "/properties/value", "/properties/value/if",
+                        "/properties/value/then", "/properties/value/else");
 }

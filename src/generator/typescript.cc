@@ -303,4 +303,26 @@ auto TypeScript::operator()(const IRIntersection &entry) -> void {
   this->output << ";\n";
 }
 
+auto TypeScript::operator()(const IRConditional &entry) -> void {
+  // As a notable limitation, TypeScript cannot express the negation of an
+  // if/then/else condition, so the else branch is wider than what JSON
+  // Schema allows
+  this->output << "// (if & then) | else approximation: the else branch is "
+                  "wider than what\n";
+  this->output << "// JSON Schema allows, as TypeScript cannot express type "
+                  "negation\n";
+  this->output << "export type "
+               << mangle(this->prefix, entry.pointer, entry.symbol, this->cache)
+               << " =\n  ("
+               << mangle(this->prefix, entry.condition.pointer,
+                         entry.condition.symbol, this->cache)
+               << " & "
+               << mangle(this->prefix, entry.consequent.pointer,
+                         entry.consequent.symbol, this->cache)
+               << ") | "
+               << mangle(this->prefix, entry.alternative.pointer,
+                         entry.alternative.symbol, this->cache)
+               << ";\n";
+}
+
 } // namespace sourcemeta::codegen

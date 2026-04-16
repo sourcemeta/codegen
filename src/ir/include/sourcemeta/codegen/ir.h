@@ -98,14 +98,21 @@ struct IRImpossible : IRType {};
 struct IRAny : IRType {};
 
 /// @ingroup ir
+struct IRConditional : IRType {
+  IRType condition;
+  IRType consequent;
+  IRType alternative;
+};
+
+/// @ingroup ir
 struct IRReference : IRType {
   IRType target;
 };
 
 /// @ingroup ir
-using IREntity =
-    std::variant<IRObject, IRScalar, IREnumeration, IRUnion, IRIntersection,
-                 IRArray, IRTuple, IRImpossible, IRAny, IRReference>;
+using IREntity = std::variant<IRObject, IRScalar, IREnumeration, IRUnion,
+                              IRIntersection, IRConditional, IRArray, IRTuple,
+                              IRImpossible, IRAny, IRReference>;
 
 /// @ingroup ir
 using IRResult = std::vector<IREntity>;
