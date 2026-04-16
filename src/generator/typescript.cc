@@ -287,4 +287,20 @@ auto TypeScript::operator()(const IRUnion &entry) -> void {
   this->output << ";\n";
 }
 
+auto TypeScript::operator()(const IRIntersection &entry) -> void {
+  this->output << "export type "
+               << mangle(this->prefix, entry.pointer, entry.symbol, this->cache)
+               << " =\n";
+
+  const char *separator{""};
+  for (const auto &value : entry.values) {
+    this->output << separator << "  "
+                 << mangle(this->prefix, value.pointer, value.symbol,
+                           this->cache);
+    separator = " &\n";
+  }
+
+  this->output << ";\n";
+}
+
 } // namespace sourcemeta::codegen

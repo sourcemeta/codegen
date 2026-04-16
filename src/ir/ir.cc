@@ -1,5 +1,5 @@
+#include <sourcemeta/blaze/alterschema.h>
 #include <sourcemeta/codegen/ir.h>
-#include <sourcemeta/core/alterschema.h>
 
 #include <algorithm>     // std::ranges::sort
 #include <cassert>       // assert
@@ -8,6 +8,29 @@
 #include "ir_default_compiler.h"
 
 namespace sourcemeta::codegen {
+
+static auto
+is_validation_only_location(const sourcemeta::core::WeakPointer &pointer)
+    -> bool {
+  static const std::unordered_set<std::string_view> validation_only_keywords{
+      "propertyNames", "contains"};
+  static const std::unordered_set<std::string_view> container_keywords{
+      "properties", "patternProperties", "$defs", "definitions"};
+  for (std::size_t index = 0; index < pointer.size(); ++index) {
+    const auto &token{pointer.at(index)};
+    if (!token.is_property() ||
+        !validation_only_keywords.contains(token.to_property())) {
+      continue;
+    }
+
+    if (index == 0 || !pointer.at(index - 1).is_property() ||
+        !container_keywords.contains(pointer.at(index - 1).to_property())) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 auto compile(const sourcemeta::core::JSON &input,
              const sourcemeta::core::SchemaWalker &walker,
@@ -25,9 +48,9 @@ auto compile(const sourcemeta::core::JSON &input,
   // (2) Canonicalize the schema for easier analysis
   // --------------------------------------------------------------------------
 
-  sourcemeta::core::SchemaTransformer canonicalizer;
-  sourcemeta::core::add(canonicalizer,
-                        sourcemeta::core::AlterSchemaMode::Canonicalizer);
+  sourcemeta::blaze::SchemaTransformer canonicalizer;
+  sourcemeta::blaze::add(canonicalizer,
+                         sourcemeta::blaze::AlterSchemaMode::Canonicalizer);
   [[maybe_unused]] const auto canonicalized{canonicalizer.apply(
       schema, walker, resolver,
       [](const auto &, const auto, const auto, const auto &,
@@ -64,6 +87,12 @@ auto compile(const sourcemeta::core::JSON &input,
     // nested resources
     const auto [visited_iterator, inserted] = visited.insert(location.pointer);
     if (!inserted) {
+      continue;
+    }
+
+    // Skip subschemas under validation-only keywords that do not contribute
+    // to the type structure
+    if (is_validation_only_location(location.pointer)) {
       continue;
     }
 

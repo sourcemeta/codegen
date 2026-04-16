@@ -12,4 +12,4 @@ target_link_libraries(sourcemeta_codegen_ir PUBLIC
 target_link_libraries(sourcemeta_codegen_ir PUBLIC
   sourcemeta::core::jsonschema)
 target_link_libraries(sourcemeta_codegen_ir PRIVATE
-  sourcemeta::core::alterschema)
+  sourcemeta::blaze::alterschema)

@@ -67,5 +67,5 @@ TEST(IR, unexpected_schema_error_unsupported_shape) {
       sourcemeta::codegen::compile(schema, sourcemeta::core::schema_walker,
                                    sourcemeta::core::schema_resolver,
                                    sourcemeta::codegen::default_compiler),
-      sourcemeta::codegen::UnexpectedSchemaError);
+      sourcemeta::codegen::UnsupportedKeywordError);
 }

@@ -56,9 +56,27 @@ auto handle_string(const sourcemeta::core::JSON &schema,
                    const sourcemeta::core::SchemaResolver &,
                    const sourcemeta::core::JSON &subschema) -> IRScalar {
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
-                          {"$schema", "$id", "$anchor", "$dynamicAnchor",
-                           "$defs", "$vocabulary", "type", "minLength",
-                           "maxLength", "pattern", "format"});
+                          {"$schema",
+                           "$id",
+                           "$anchor",
+                           "$dynamicAnchor",
+                           "$defs",
+                           "$vocabulary",
+                           "type",
+                           "minLength",
+                           "maxLength",
+                           "pattern",
+                           "format",
+                           "title",
+                           "description",
+                           "default",
+                           "deprecated",
+                           "readOnly",
+                           "writeOnly",
+                           "examples",
+                           "contentEncoding",
+                           "contentMediaType",
+                           "contentSchema"});
   return IRScalar{{.pointer = sourcemeta::core::to_pointer(location.pointer),
                    .symbol = symbol(frame, location)},
                   IRScalarType::String};
@@ -79,7 +97,8 @@ auto handle_object(const sourcemeta::core::JSON &schema,
        // other properties. Therefore, we whitelist this, but we consider it to
        // be the responsability of the validator
        "additionalProperties", "minProperties", "maxProperties",
-       "propertyNames", "patternProperties"});
+       "propertyNames", "patternProperties", "title", "description", "default",
+       "deprecated", "readOnly", "writeOnly", "examples"});
 
   std::vector<std::pair<sourcemeta::core::JSON::String, IRObjectValue>> members;
 
@@ -178,8 +197,9 @@ auto handle_integer(const sourcemeta::core::JSON &schema,
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
                           {"$schema", "$id", "$anchor", "$dynamicAnchor",
                            "$defs", "$vocabulary", "type", "minimum", "maximum",
-                           "exclusiveMinimum", "exclusiveMaximum",
-                           "multipleOf"});
+                           "exclusiveMinimum", "exclusiveMaximum", "multipleOf",
+                           "title", "description", "default", "deprecated",
+                           "readOnly", "writeOnly", "examples"});
   return IRScalar{{.pointer = sourcemeta::core::to_pointer(location.pointer),
                    .symbol = symbol(frame, location)},
                   IRScalarType::Integer};
@@ -194,8 +214,9 @@ auto handle_number(const sourcemeta::core::JSON &schema,
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
                           {"$schema", "$id", "$anchor", "$dynamicAnchor",
                            "$defs", "$vocabulary", "type", "minimum", "maximum",
-                           "exclusiveMinimum", "exclusiveMaximum",
-                           "multipleOf"});
+                           "exclusiveMinimum", "exclusiveMaximum", "multipleOf",
+                           "title", "description", "default", "deprecated",
+                           "readOnly", "writeOnly", "examples"});
   return IRScalar{{.pointer = sourcemeta::core::to_pointer(location.pointer),
                    .symbol = symbol(frame, location)},
                   IRScalarType::Number};
@@ -208,10 +229,14 @@ auto handle_array(const sourcemeta::core::JSON &schema,
                   const sourcemeta::core::SchemaResolver &,
                   const sourcemeta::core::JSON &subschema) -> IREntity {
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
-                          {"$schema", "$id", "$anchor", "$dynamicAnchor",
-                           "$defs", "$vocabulary", "type", "items", "minItems",
-                           "maxItems", "uniqueItems", "contains", "minContains",
-                           "maxContains", "additionalItems", "prefixItems"});
+                          {"$schema",        "$id",         "$anchor",
+                           "$dynamicAnchor", "$defs",       "$vocabulary",
+                           "type",           "items",       "minItems",
+                           "maxItems",       "uniqueItems", "contains",
+                           "minContains",    "maxContains", "additionalItems",
+                           "prefixItems",    "title",       "description",
+                           "default",        "deprecated",  "readOnly",
+                           "writeOnly",      "examples"});
 
   using Vocabularies = sourcemeta::core::Vocabularies;
 
@@ -326,7 +351,9 @@ auto handle_enum(const sourcemeta::core::JSON &schema,
                  const sourcemeta::core::JSON &subschema) -> IREntity {
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
                           {"$schema", "$id", "$anchor", "$dynamicAnchor",
-                           "$defs", "$vocabulary", "enum"});
+                           "$defs", "$vocabulary", "enum", "title",
+                           "description", "default", "deprecated", "readOnly",
+                           "writeOnly", "examples"});
   const auto &enum_json{subschema.at("enum")};
 
   // Boolean and null special cases
@@ -360,9 +387,11 @@ auto handle_anyof(const sourcemeta::core::JSON &schema,
                   const sourcemeta::core::Vocabularies &,
                   const sourcemeta::core::SchemaResolver &,
                   const sourcemeta::core::JSON &subschema) -> IREntity {
-  ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
-                          {"$schema", "$id", "$anchor", "$dynamicAnchor",
-                           "$defs", "$vocabulary", "anyOf"});
+  ONLY_WHITELIST_KEYWORDS(
+      schema, subschema, location.pointer,
+      {"$schema", "$id", "$anchor", "$dynamicAnchor", "$defs", "$vocabulary",
+       "anyOf", "title", "description", "default", "deprecated", "readOnly",
+       "writeOnly", "examples", "unevaluatedProperties", "unevaluatedItems"});
 
   const auto &any_of{subschema.at("anyOf")};
   assert(any_of.is_array());
@@ -394,9 +423,11 @@ auto handle_oneof(const sourcemeta::core::JSON &schema,
                   const sourcemeta::core::Vocabularies &,
                   const sourcemeta::core::SchemaResolver &,
                   const sourcemeta::core::JSON &subschema) -> IREntity {
-  ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
-                          {"$schema", "$id", "$anchor", "$dynamicAnchor",
-                           "$defs", "$vocabulary", "oneOf"});
+  ONLY_WHITELIST_KEYWORDS(
+      schema, subschema, location.pointer,
+      {"$schema", "$id", "$anchor", "$dynamicAnchor", "$defs", "$vocabulary",
+       "oneOf", "title", "description", "default", "deprecated", "readOnly",
+       "writeOnly", "examples", "unevaluatedProperties", "unevaluatedItems"});
 
   const auto &one_of{subschema.at("oneOf")};
   assert(one_of.is_array());
@@ -430,7 +461,9 @@ auto handle_ref(const sourcemeta::core::JSON &schema,
                 const sourcemeta::core::JSON &subschema) -> IREntity {
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
                           {"$schema", "$id", "$anchor", "$dynamicAnchor",
-                           "$defs", "$vocabulary", "$ref"});
+                           "$defs", "$vocabulary", "$ref", "title",
+                           "description", "default", "deprecated", "readOnly",
+                           "writeOnly", "examples"});
 
   auto ref_pointer{sourcemeta::core::to_pointer(location.pointer)};
   ref_pointer.push_back("$ref");
@@ -465,7 +498,9 @@ auto handle_dynamic_ref(const sourcemeta::core::JSON &schema,
                         const sourcemeta::core::JSON &subschema) -> IREntity {
   ONLY_WHITELIST_KEYWORDS(schema, subschema, location.pointer,
                           {"$schema", "$id", "$anchor", "$dynamicAnchor",
-                           "$defs", "$vocabulary", "$dynamicRef"});
+                           "$defs", "$vocabulary", "$dynamicRef", "title",
+                           "description", "default", "deprecated", "readOnly",
+                           "writeOnly", "examples"});
 
   auto ref_pointer{sourcemeta::core::to_pointer(location.pointer)};
   ref_pointer.push_back("$dynamicRef");
@@ -523,6 +558,58 @@ auto handle_dynamic_ref(const sourcemeta::core::JSON &schema,
   return IRUnion{{.pointer = sourcemeta::core::to_pointer(location.pointer),
                   .symbol = symbol(frame, location)},
                  std::move(branches)};
+}
+
+auto handle_allof(const sourcemeta::core::JSON &schema,
+                  const sourcemeta::core::SchemaFrame &frame,
+                  const sourcemeta::core::SchemaFrame::Location &location,
+                  const sourcemeta::core::Vocabularies &,
+                  const sourcemeta::core::SchemaResolver &,
+                  const sourcemeta::core::JSON &subschema) -> IREntity {
+  ONLY_WHITELIST_KEYWORDS(
+      schema, subschema, location.pointer,
+      {"$schema", "$id", "$anchor", "$dynamicAnchor", "$defs", "$vocabulary",
+       "allOf", "title", "description", "default", "deprecated", "readOnly",
+       "writeOnly", "examples", "unevaluatedProperties", "unevaluatedItems"});
+
+  const auto &all_of{subschema.at("allOf")};
+  assert(all_of.is_array());
+
+  if (all_of.size() == 1) {
+    auto target_pointer{sourcemeta::core::to_pointer(location.pointer)};
+    target_pointer.push_back("allOf");
+    target_pointer.push_back(static_cast<std::size_t>(0));
+
+    const auto target_location{
+        frame.traverse(sourcemeta::core::to_weak_pointer(target_pointer))};
+    assert(target_location.has_value());
+
+    return IRReference{
+        {.pointer = sourcemeta::core::to_pointer(location.pointer),
+         .symbol = symbol(frame, location)},
+        {.pointer = std::move(target_pointer),
+         .symbol = symbol(frame, target_location.value().get())}};
+  }
+
+  std::vector<IRType> branches;
+  for (std::size_t index = 0; index < all_of.size(); ++index) {
+    auto branch_pointer{sourcemeta::core::to_pointer(location.pointer)};
+    branch_pointer.push_back("allOf");
+    branch_pointer.push_back(index);
+
+    const auto branch_location{
+        frame.traverse(sourcemeta::core::to_weak_pointer(branch_pointer))};
+    assert(branch_location.has_value());
+
+    branches.push_back(
+        {.pointer = std::move(branch_pointer),
+         .symbol = symbol(frame, branch_location.value().get())});
+  }
+
+  return IRIntersection{
+      {.pointer = sourcemeta::core::to_pointer(location.pointer),
+       .symbol = symbol(frame, location)},
+      std::move(branches)};
 }
 
 auto default_compiler(const sourcemeta::core::JSON &schema,
@@ -607,12 +694,21 @@ auto default_compiler(const sourcemeta::core::JSON &schema,
   } else if (subschema.defines("oneOf")) {
     return handle_oneof(schema, frame, location, vocabularies, resolver,
                         subschema);
+  } else if (subschema.defines("allOf")) {
+    return handle_allof(schema, frame, location, vocabularies, resolver,
+                        subschema);
   } else if (subschema.defines("$dynamicRef")) {
     return handle_dynamic_ref(schema, frame, location, vocabularies, resolver,
                               subschema);
   } else if (subschema.defines("$ref")) {
     return handle_ref(schema, frame, location, vocabularies, resolver,
                       subschema);
+  } else if (subschema.defines("if")) {
+    throw UnsupportedKeywordError(schema, location.pointer, "if",
+                                  "Unsupported keyword in subschema");
+  } else if (subschema.defines("not")) {
+    throw UnsupportedKeywordError(schema, location.pointer, "not",
+                                  "Unsupported keyword in subschema");
   } else {
     throw UnexpectedSchemaError(schema, location.pointer, "Unsupported schema");
   }

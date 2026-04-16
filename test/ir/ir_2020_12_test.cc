@@ -1364,15 +1364,16 @@ TEST(IR_2020_12, dynamic_ref_multiple_anchors) {
 
   using namespace sourcemeta::codegen;
 
-  ASSERT_EQ(result.size(), 5);
-  EXPECT_IR_SCALAR(result, 0, String, "/$defs/stringItem");
-  EXPECT_TRUE(std::holds_alternative<IRUnion>(result.at(1)));
-  EXPECT_AS_STRING(std::get<IRUnion>(result.at(1)).pointer,
+  ASSERT_EQ(result.size(), 6);
+  EXPECT_IR_REFERENCE(result, 0, "/allOf/0", "/$defs/list");
+  EXPECT_IR_SCALAR(result, 1, String, "/$defs/stringItem");
+  EXPECT_TRUE(std::holds_alternative<IRUnion>(result.at(2)));
+  EXPECT_AS_STRING(std::get<IRUnion>(result.at(2)).pointer,
                    "/$defs/list/items");
-  EXPECT_EQ(std::get<IRUnion>(result.at(1)).values.size(), 2);
-  EXPECT_IR_SCALAR(result, 2, Number, "/$defs/list/$defs/defaultItem");
-  EXPECT_IR_ARRAY(result, 3, "/$defs/list", "/$defs/list/items");
-  EXPECT_IR_REFERENCE(result, 4, "", "/$defs/list");
+  EXPECT_EQ(std::get<IRUnion>(result.at(2)).values.size(), 2);
+  EXPECT_IR_SCALAR(result, 3, Number, "/$defs/list/$defs/defaultItem");
+  EXPECT_IR_ARRAY(result, 4, "/$defs/list", "/$defs/list/items");
+  EXPECT_IR_REFERENCE(result, 5, "", "/allOf/0");
 }
 
 TEST(IR_2020_12, dynamic_anchor_on_typed_schema) {
