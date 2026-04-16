@@ -50,6 +50,18 @@
       std::get<sourcemeta::codegen::IRArray>(result.at(index)).items->pointer, \
       expected_items_pointer)
 
+#define EXPECT_IR_INTERSECTION(result, index, expected_pointer,                \
+                               expected_count)                                 \
+  EXPECT_TRUE(std::holds_alternative<sourcemeta::codegen::IRIntersection>(     \
+      result.at(index)))                                                       \
+      << "Expected IRIntersection at index " << index;                         \
+  EXPECT_AS_STRING(                                                            \
+      std::get<sourcemeta::codegen::IRIntersection>(result.at(index)).pointer, \
+      expected_pointer);                                                       \
+  EXPECT_EQ(std::get<sourcemeta::codegen::IRIntersection>(result.at(index))    \
+                .values.size(),                                                \
+            expected_count)
+
 #define EXPECT_IR_REFERENCE(result, index, expected_pointer,                   \
                             expected_target_pointer)                           \
   EXPECT_TRUE(std::holds_alternative<sourcemeta::codegen::IRReference>(        \
