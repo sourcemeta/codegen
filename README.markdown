@@ -1,5 +1,7 @@
 # JSON Schema Codegen
 
+**IMPORTANT: THIS PROJECT HAS BEEN MERGED INTO https://github.com/sourcemeta/blaze**
+
 > Generate type definitions from JSON Schema for multiple programming languages
 
 Existing tools in this space typically support limited subsets of JSON Schema
